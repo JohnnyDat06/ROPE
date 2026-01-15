@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a2ae9d03ccb3c1c4893d7375bd9994e1
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 196526
+  packageName: Starter Assets - ThirdPerson | Updates in new CharacterController
+    package
+  packageVersion: 1.1.5
+  assetPath: Assets/StarterAssets/Environment/Prefabs/Wall_Prefab.prefab
+  uploadId: 691128

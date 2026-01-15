@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f3f67e18f2967c6438d852ca0b4ec54c
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 196526
+  packageName: Starter Assets - ThirdPerson | Updates in new CharacterController
+    package
+  packageVersion: 1.1.5
+  assetPath: Assets/StarterAssets/Environment/Prefabs/Box_350x250x300_Prefab.prefab
+  uploadId: 691128
