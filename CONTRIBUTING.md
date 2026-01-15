@@ -6,7 +6,7 @@ Tài liệu này tóm tắt các điểm quan trọng nhất dành cho những n
 - [Tạo vấn đề](#Tạo-vấn-đề)
 - [Quy trình gửi Pull Request](#Quy-trình-gửi-Pull-Request)
 - [Quy tắc viết Commit Message](#Quy-tắc-viết-Commit-Message)
-- [Cây thư mục](#Cây-thư-mục-Project-Structure)
+- [Cây thư mục](#Cây-thư-mục)
 - [Lưu ý](#lưu-ý)
 
 ## Tạo vấn đề
@@ -120,7 +120,7 @@ Assets/
 >  * Dự án sử dụng **Git LFS** cho các file lớn (Model, Texture, Audio) trên 100MB.
 >  * Không commit toàn bộ asset, hãy ignore và chỉ kéo những file cần sử dụng.
 >  * Hạn chế commit các file nháp, file PSD/Blend nặng nếu không cần thiết.
-```
+
 - Mọi chi tiết thắc mắc hãy liên hệ A. Lê Phan Hòa Thuận, aka Thune.
 - **GitHub**: [lphthuan](https://github.com/lphthuan)
 - **Email**: lephanhoathuan2006@gmail.com
