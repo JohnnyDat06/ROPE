@@ -104,6 +104,7 @@ Assets/
 │   │   └── Utils/              <-- Các hàm hỗ trợ (MathHelper, Timer).
 │   ├── Shaders/            <-- Shader tùy chỉnh (Toon shader, VFX shader).
 │   └── UI/                 <-- Assets UI (Sprites, Fonts, HUD).
+├── _Tool				 <-- Chứa các tool hỗ trợ (Game Creater, Magic cloth,...).
 ├── _ThirdParty/         <-- Các Asset bên ngoài, đã cấu hình ignore không up lên Git.
 └── Settings/            <-- Chứa Input Action, Render Pipeline Settings.
 ```
