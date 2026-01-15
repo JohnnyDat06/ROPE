@@ -13,5 +13,71 @@ MonoBehaviour:
   m_Name: vFolders Data
   m_EditorClassIdentifier: 
   folderDatas_byGuid:
-    keys: []
-    values: []
+    keys:
+    - 709f11a7f3c4041caa4ef136ea32d874
+    - 5335ac77ba4fd0249af762b474fb86aa
+    - 529c34c30b815c04c9441ed5166fc269
+    - 1682c27402a8fbd48be8ff4e512fc427
+    - c986032c20dbd454abc5e40901f92b57
+    - 53e20c7aeaa40754c9f2e0e0f5a743d9
+    - 89b4bbd930ecfea4d8a2fa6200dfb379
+    - cc0da56ffadc4cb4e9ef8225050e1b5e
+    - 810c3b20a404f75478b9eeb884a9feff
+    - 6460aa6bd0dcefb4896f0327e62a8dff
+    - e5b86df24b5cb8a4e81e279964c3cef6
+    - 67f4f83eda8933549920bd351186b6c8
+    - 49f8a25167676c44e926abf4147fea6f
+    - bd855f875ad84ed459fc3e86d6d95e0b
+    - 5a843f043c181f14c8fa8c03c8c298ca
+    - 6d58ebb06b0edc742905cb27c9283838
+    - e89deb2cd0964154d8f66e21440f1848
+    - 625394dc719c9a54f8afc2a353505de5
+    - a5e1b32d45411ab4e8fd6b6fdf494f9d
+    - 39458f7744fd2d242a6b35f3effd00db
+    - f847af4a2b08ec94492139474029d00e
+    - 68fba7479f817e44ca5719c6c27d60cf
+    values:
+    - colorIndex: 0
+      iconNameOrGuid: Settings Icon
+    - colorIndex: 1
+      iconNameOrGuid: 
+    - colorIndex: 4
+      iconNameOrGuid: 
+    - colorIndex: 3
+      iconNameOrGuid: 
+    - colorIndex: 1
+      iconNameOrGuid: AnimatorController Icon
+    - colorIndex: 2
+      iconNameOrGuid: AudioClip Icon
+    - colorIndex: 6
+      iconNameOrGuid: ScriptableObject Icon
+    - colorIndex: 3
+      iconNameOrGuid: RawImage Icon
+    - colorIndex: 7
+      iconNameOrGuid: Prefab Icon
+    - colorIndex: 5
+      iconNameOrGuid: SceneAsset Icon
+    - colorIndex: 4
+      iconNameOrGuid: cs Script Icon
+    - colorIndex: 9
+      iconNameOrGuid: Shader Icon
+    - colorIndex: 6
+      iconNameOrGuid: Font Icon
+    - colorIndex: 0
+      iconNameOrGuid: PrefabModel Icon
+    - colorIndex: 0
+      iconNameOrGuid: Material Icon
+    - colorIndex: 0
+      iconNameOrGuid: Material Icon
+    - colorIndex: 0
+      iconNameOrGuid: RawImage Icon
+    - colorIndex: 0
+      iconNameOrGuid: Material Icon
+    - colorIndex: 0
+      iconNameOrGuid: PrefabModel Icon
+    - colorIndex: 0
+      iconNameOrGuid: RawImage Icon
+    - colorIndex: 0
+      iconNameOrGuid: SceneAsset Icon
+    - colorIndex: 0
+      iconNameOrGuid: SceneAsset Icon
