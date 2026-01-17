@@ -36,6 +36,7 @@ MonoBehaviour:
     - 39458f7744fd2d242a6b35f3effd00db
     - f847af4a2b08ec94492139474029d00e
     - 68fba7479f817e44ca5719c6c27d60cf
+    - f1e821b40ee040141a712673d562f3d7
     values:
     - colorIndex: 0
       iconNameOrGuid: Settings Icon
@@ -77,7 +78,9 @@ MonoBehaviour:
       iconNameOrGuid: PrefabModel Icon
     - colorIndex: 0
       iconNameOrGuid: RawImage Icon
-    - colorIndex: 0
+    - colorIndex: 5
       iconNameOrGuid: SceneAsset Icon
     - colorIndex: 0
       iconNameOrGuid: SceneAsset Icon
+    - colorIndex: 1
+      iconNameOrGuid: 
