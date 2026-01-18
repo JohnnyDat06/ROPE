@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5723092f32f1f5b448c3880208b82f52
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 164492
+  packageName: Abandoned Factory Buildings - Day/Night Scene
+  packageVersion: 1.6
+  assetPath: Assets/ScansFactory/AbandonedFactory_URP/Demo/Factory_01_URP_NightSettings.lighting
+  uploadId: 821418
