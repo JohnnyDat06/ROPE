@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: edd5d752962fc044b831db833e9b784e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 164492
+  packageName: Abandoned Factory Buildings - Day/Night Scene
+  packageVersion: 1.6
+  assetPath: Assets/ScansFactory/AbandonedFactory_URP/Materials/M_en_Background_01_03.mat
+  uploadId: 821418

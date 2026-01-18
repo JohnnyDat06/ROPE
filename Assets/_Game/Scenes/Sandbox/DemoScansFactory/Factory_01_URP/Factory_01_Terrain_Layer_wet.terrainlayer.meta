@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 568d94c8f69075147b46e212bdac9f7d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8574412962073106934
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 164492
+  packageName: Abandoned Factory Buildings - Day/Night Scene
+  packageVersion: 1.6
+  assetPath: Assets/ScansFactory/AbandonedFactory_URP/Demo/Factory_01_URP/Factory_01_Terrain_Layer_wet.terrainlayer
+  uploadId: 821418

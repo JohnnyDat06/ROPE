@@ -97,3 +97,5 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+Assets/_ThirdParty/ScansFactory/AbandonedFactory_BuiltIn/Demo/Factory_01_BuiltIn_Night/LightingData.asset
+/Assets/_ThirdParty/ScansFactory
