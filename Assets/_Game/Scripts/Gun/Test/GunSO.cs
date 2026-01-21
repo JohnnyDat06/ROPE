@@ -1,5 +1,4 @@
-using NUnit.Framework;
-using System;
+using LlamAcademy.ImpactSystem;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -8,6 +7,7 @@ using Random = UnityEngine.Random;
 [CreateAssetMenu(fileName = "GunSO", menuName = "Guns/GunSO", order = 1)]
 public class GunSO : ScriptableObject
 {
+    public ImpactType impactType;
     public GunType type;
     public new string name;
     public GameObject modelPrefab;
@@ -23,7 +23,7 @@ public class GunSO : ScriptableObject
     private ParticleSystem shootSystem;
     private ObjectPool<TrailRenderer> trailPool;
 
-    private void Spawn(Transform parent, MonoBehaviour activeMonobihaviour)
+    public void Spawn(Transform parent, MonoBehaviour activeMonobihaviour)
     {
         this.activeMonobihaviour = activeMonobihaviour;
         lastShootTime = 0;
@@ -37,7 +37,7 @@ public class GunSO : ScriptableObject
         shootSystem = model.GetComponentInChildren<ParticleSystem>();
     }
 
-    private void Shoot()
+    public void Shoot()
     {
         if (Time.time > shootConfig.fireRate + lastShootTime)
         {
@@ -90,7 +90,8 @@ public class GunSO : ScriptableObject
 
         if (hit.collider != null)
         {
-            //SurfaceManager.Instance.HandleImpact();
+            SurfaceManager.Instance.HandleImpact(hit.transform.gameObject, endPoint,
+                hit.normal, impactType, 0);
         }
 
         yield return new WaitForSeconds(trailConfig.duration);
