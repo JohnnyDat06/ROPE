@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 073374ff34a2c3d458f66bdef5aad330
 ModelImporter:
-  serializedVersion: 19301
+  serializedVersion: 22200
   internalIDToNameTable:
   - first:
       1: 100000
@@ -484,9 +484,8 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -509,27 +508,35 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
     fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
+    optimizeBones: 1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -1058,7 +1065,7 @@ ModelImporter:
     - name: Humanoid_ L ForearmTwist
       parentName: Humanoid_ L Forearm
       position: {x: -0.09344421, y: -0.00000006437301, z: 0.0000005340576}
-      rotation: {x: 0.7071064, y: -0.000000030908605, z: -0.000000029802315, w: 0.7071071}
+      rotation: {x: 0.7071065, y: -0.00000003090861, z: -0.000000029802317, w: 0.7071072}
       scale: {x: 1.0000005, y: 0.9999998, z: 1.0000001}
     - name: Humanoid_ L Hand
       parentName: Humanoid_ L Forearm
@@ -1068,7 +1075,7 @@ ModelImporter:
     - name: Humanoid_ L Finger0
       parentName: Humanoid_ L Hand
       position: {x: -0.032554395, y: 0.01371109, z: -0.035932902}
-      rotation: {x: -0.65328115, y: 0.27059826, z: -0.27059814, w: -0.65328175}
+      rotation: {x: -0.65019554, y: 0.27238935, z: -0.2779846, w: -0.6525139}
       scale: {x: 1, y: 1.0000002, z: 0.9999996}
     - name: Humanoid_ L Finger01
       parentName: Humanoid_ L Finger0
@@ -1083,7 +1090,7 @@ ModelImporter:
     - name: Humanoid_ L Finger1
       parentName: Humanoid_ L Hand
       position: {x: -0.089588925, y: -0.011849212, z: -0.041094225}
-      rotation: {x: 0, y: 0, z: 0, w: 1}
+      rotation: {x: 0.00000017881385, y: -0.016113324, z: 0.015522679, w: 0.99974966}
       scale: {x: 1, y: 0.99999994, z: 1.0000001}
     - name: Humanoid_ L Finger11
       parentName: Humanoid_ L Finger1
@@ -1098,7 +1105,7 @@ ModelImporter:
     - name: Humanoid_ L Finger2
       parentName: Humanoid_ L Hand
       position: {x: -0.09621196, y: -0.01414894, z: -0.014687233}
-      rotation: {x: 0, y: 0, z: 0, w: 1}
+      rotation: {x: 0.000000089406925, y: -0.016112166, z: 0.015521816, w: 0.9997498}
       scale: {x: 0.9999998, y: 0.9999997, z: 0.99999994}
     - name: Humanoid_ L Finger21
       parentName: Humanoid_ L Finger2
@@ -1113,7 +1120,7 @@ ModelImporter:
     - name: Humanoid_ L Finger3
       parentName: Humanoid_ L Hand
       position: {x: -0.0947253, y: -0.017331237, z: 0.013546944}
-      rotation: {x: 0, y: 0, z: 0, w: 1}
+      rotation: {x: -0.00000008940692, y: -0.016112626, z: 0.015523329, w: 0.99974966}
       scale: {x: 1, y: 0.99999994, z: 1.0000002}
     - name: Humanoid_ L Finger31
       parentName: Humanoid_ L Finger3
@@ -1128,7 +1135,7 @@ ModelImporter:
     - name: Humanoid_ L Finger4
       parentName: Humanoid_ L Hand
       position: {x: -0.09265007, y: -0.0071149445, z: 0.035617102}
-      rotation: {x: 0, y: 0, z: 0, w: 1}
+      rotation: {x: 0.000000089406925, y: -0.016111154, z: 0.0155212255, w: 0.9997498}
       scale: {x: 1, y: 0.9999997, z: 1.0000002}
     - name: Humanoid_ L Finger41
       parentName: Humanoid_ L Finger4
@@ -1188,7 +1195,7 @@ ModelImporter:
     - name: Humanoid_ R Finger0
       parentName: Humanoid_ R Hand
       position: {x: -0.03255432, y: 0.013711014, z: 0.035932902}
-      rotation: {x: -0.6532814, y: 0.27059814, z: 0.2705979, w: 0.6532816}
+      rotation: {x: -0.65019476, y: 0.27239, z: 0.27798688, w: 0.6525134}
       scale: {x: 0.99999994, y: 0.99999994, z: 1.0000001}
     - name: Humanoid_ R Finger01
       parentName: Humanoid_ R Finger0
@@ -1203,7 +1210,7 @@ ModelImporter:
     - name: Humanoid_ R Finger1
       parentName: Humanoid_ R Hand
       position: {x: -0.08958896, y: -0.011849212, z: 0.04109417}
-      rotation: {x: 0, y: 0, z: 0, w: 1}
+      rotation: {x: -0.00000014901154, y: 0.016112207, z: 0.015521435, w: 0.9997498}
       scale: {x: 1, y: 1.0000004, z: 0.9999997}
     - name: Humanoid_ R Finger11
       parentName: Humanoid_ R Finger1
@@ -1218,7 +1225,7 @@ ModelImporter:
     - name: Humanoid_ R Finger2
       parentName: Humanoid_ R Hand
       position: {x: -0.096212044, y: -0.01414894, z: 0.014687213}
-      rotation: {x: 0, y: 0, z: 0, w: 1}
+      rotation: {x: -0.00000014901154, y: 0.016112331, z: 0.015521477, w: 0.9997498}
       scale: {x: 0.99999994, y: 1.0000004, z: 0.9999998}
     - name: Humanoid_ R Finger21
       parentName: Humanoid_ R Finger2
@@ -1233,7 +1240,7 @@ ModelImporter:
     - name: Humanoid_ R Finger3
       parentName: Humanoid_ R Hand
       position: {x: -0.09472534, y: -0.01733116, z: -0.013546982}
-      rotation: {x: 0, y: 0, z: 0, w: 1}
+      rotation: {x: -0.00000014901154, y: 0.016112207, z: 0.015521435, w: 0.9997498}
       scale: {x: 0.99999994, y: 1.0000001, z: 0.99999994}
     - name: Humanoid_ R Finger31
       parentName: Humanoid_ R Finger3
@@ -1248,7 +1255,7 @@ ModelImporter:
     - name: Humanoid_ R Finger4
       parentName: Humanoid_ R Hand
       position: {x: -0.092650145, y: -0.0071149445, z: -0.035617083}
-      rotation: {x: 0, y: 0, z: 0, w: 1}
+      rotation: {x: -0.00000029802308, y: 0.016110582, z: 0.015519054, w: 0.99974984}
       scale: {x: 1, y: 1.0000005, z: 0.99999994}
     - name: Humanoid_ R Finger41
       parentName: Humanoid_ R Finger4
@@ -1352,6 +1359,9 @@ ModelImporter:
   animationType: 3
   humanoidOversampling: 1
   avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
