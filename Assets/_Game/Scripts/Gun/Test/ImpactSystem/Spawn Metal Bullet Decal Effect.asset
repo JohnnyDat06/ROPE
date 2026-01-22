@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 122ab2a19482d694cb49c1e5e7117bfc, type: 3}
   m_Name: Spawn Metal Bullet Decal Effect
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 158920, guid: 2f52c1f39b6b6485e91e1dd29da29240, type: 3}
+  Prefab: {fileID: 100002, guid: 627bfa08ce624ab40ab2fea71785b5f0, type: 3}
   Probability: 1
   RandomizeRotation: 0
   RandomizedRotationMultiplier: {x: 0, y: 0, z: 0}

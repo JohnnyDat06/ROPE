@@ -16,7 +16,7 @@ MonoBehaviour:
   type: 2
   name: AKX
   modelPrefab: {fileID: 5992170105032228408, guid: ada3d6a134178f84f9afdfd9a1dd75d0, type: 3}
-  spawnPoint: {x: 0.036, y: -0.494, z: 0.134}
-  spawnRotation: {x: 84.347, y: 130.425, z: -4.632}
+  spawnPoint: {x: 0.025, y: -0.491, z: 0.07}
+  spawnRotation: {x: 83.842, y: 127.609, z: 28.471}
   shootConfig: {fileID: 11400000, guid: b30c3ac15d38d014a8bfff429cd96b45, type: 2}
   trailConfig: {fileID: 11400000, guid: 29cce59224204534bbbf66010558c0a6, type: 2}
