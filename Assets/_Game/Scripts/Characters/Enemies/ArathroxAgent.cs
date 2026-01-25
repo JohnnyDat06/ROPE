@@ -58,66 +58,65 @@ public class SpiderAgent : MonoBehaviour
 
 	private void HandleMovementAndRotation()
 	{
-		if (!_agent.hasPath || _isOffMesh)
-		{
-			// Dừng Animation nếu không có đường đi
-			_animator.SetBool(_hashIsMoving, false);
-			_animator.SetFloat(_hashHorizontal, 0, 0.2f, Time.deltaTime);
-			_animator.SetFloat(_hashVertical, 0, 0.2f, Time.deltaTime);
-			return;
-		}
-
-		// Kiểm tra đích đến
-		if (_agent.remainingDistance <= _stopDistance)
+		// 1. Kiểm tra điều kiện cơ bản
+		if (!_agent.hasPath || _isOffMesh || _agent.remainingDistance <= _stopDistance)
 		{
 			Stop();
 			return;
 		}
 
-		// 1. Tính toán vector hướng
-		// steeringTarget là điểm tiếp theo trên đường đi (góc cua)
+		// 2. Tính toán Vector hướng
 		Vector3 directionToTarget = (_agent.steeringTarget - transform.position).normalized;
-
-		// Chuyển hướng thế giới sang hướng cục bộ của Nhện
 		Vector3 localDir = transform.InverseTransformDirection(directionToTarget);
-
-		// Tính góc lệch giữa mặt nhện và mục tiêu
 		float angle = Vector3.SignedAngle(transform.forward, directionToTarget, Vector3.up);
 
-		// 2. Logic điều khiển Animation
-		// Nếu góc quá lớn (>60 độ), ưu tiên xoay tại chỗ (nếu nhện đang đứng yên hoặc đi rất chậm)
-		bool needTurnInPlace = Mathf.Abs(angle) > _turnThreshold;
+		// 3. Logic Quyết định: Xoay hay Đi?
+		// Nếu góc lệch > 45 độ, coi như cần "Xoay tại chỗ"
+		bool needTurnInPlace = Mathf.Abs(angle) > 45f;
 
 		if (needTurnInPlace)
 		{
-			// Gửi tín hiệu xoay sang Animator (Turn Blend Tree)
-			// angle > 0 là phải, angle < 0 là trái
+			// --- TRẠNG THÁI XOAY ---
+
+			// Tạm dừng NavMeshAgent để không bị trượt khi đang xoay
+			_agent.isStopped = true;
+
+			// Báo cho Animator biết là đang ĐỨNG YÊN (để chuyển sang state Turn/Idle)
+			_animator.SetBool(_hashIsMoving, false);
+
+			// Gửi giá trị Turn (-1 trái, 1 phải)
+			// Chia cho 90 để chuẩn hóa giá trị về khoảng -1 đến 1
 			float turnVal = Mathf.Clamp(angle / 90f, -1f, 1f);
 			_animator.SetFloat(_hashTurn, turnVal, _turnSmoothTime, Time.deltaTime);
 
-			// Giảm tốc độ đi thẳng khi đang xoay gắt
-			_animator.SetFloat(_hashVertical, 0, 0.2f, Time.deltaTime);
-			_animator.SetFloat(_hashHorizontal, 0, 0.2f, Time.deltaTime);
+			// Reset các thông số di chuyển về 0
+			_animator.SetFloat(_hashVertical, 0, 0.1f, Time.deltaTime);
+			_animator.SetFloat(_hashHorizontal, 0, 0.1f, Time.deltaTime);
 		}
 		else
 		{
-			// Góc nhỏ, cho phép di chuyển + Strafing
+			// --- TRẠNG THÁI DI CHUYỂN ---
+
+			// Cho phép đi tiếp
+			_agent.isStopped = false;
+
+			// Báo cho Animator biết là đang DI CHUYỂN
+			_animator.SetBool(_hashIsMoving, true);
+
+			// Reset Turn về 0 (để không bị kẹt ở pose xoay)
 			_animator.SetFloat(_hashTurn, 0, 0.2f, Time.deltaTime);
 
-			// localDir.z là đi tới/lùi, localDir.x là đi ngang (Strafing)
+			// Cập nhật hướng di chuyển (Strafing)
 			_animator.SetFloat(_hashVertical, localDir.z, 0.2f, Time.deltaTime);
 			_animator.SetFloat(_hashHorizontal, localDir.x, 0.2f, Time.deltaTime);
 		}
 
-		_animator.SetBool(_hashIsMoving, true);
-
-		// 3. Hỗ trợ xoay Transform mượt mà (Bổ trợ cho Root Motion)
-		// Root Motion sẽ xoay model, nhưng ta phụ trợ thêm để đảm bảo chính xác
+		// 4. Phụ trợ xoay Transform thực tế (quan trọng để góc angle giảm dần theo thời gian)
 		if (directionToTarget != Vector3.zero)
 		{
 			Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
-			// Xoay chậm hơn nếu đang di chuyển để tạo độ trễ tự nhiên
-			float rotateSpeed = needTurnInPlace ? 2.0f : 5.0f;
+			// Khi đang đứng xoay (needTurnInPlace), ta xoay nhanh hơn một chút
+			float rotateSpeed = needTurnInPlace ? 3.0f : 5.0f;
 			transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
 		}
 	}
@@ -133,6 +132,42 @@ public class SpiderAgent : MonoBehaviour
 
 	private IEnumerator DoOffMeshLink(OffMeshLinkData data)
 	{
+		Vector3 jumpDir = (data.endPos - data.startPos).normalized;
+		while (Vector3.Dot(transform.forward, jumpDir) < 0.99f)
+		{
+			Quaternion goalRot = Quaternion.LookRotation(jumpDir);
+			transform.rotation = Quaternion.RotateTowards(transform.rotation, goalRot, 180f * Time.deltaTime);
+			yield return null;
+		}
+
+		// Giai đoạn 2: Kích hoạt Animation
+		_animator.CrossFade("Jump", 0.2f);
+
+		// Giai đoạn 3: Di chuyển vị trí (Lerp)
+		float totalTime = 0.7f; // Thời gian nhảy giả định
+		float currentTime = totalTime;
+
+		while (currentTime > 0)
+		{
+			currentTime -= Time.deltaTime;
+			float t = 1 - (currentTime / totalTime);
+
+			Vector3 goalPos = Vector3.Lerp(data.startPos, data.endPos, t);
+			float elapsed = totalTime - currentTime;
+
+			// Blend vị trí hiện tại vào quỹ đạo trong 0.3s đầu
+			// [00:21:56]
+			if (elapsed < 0.3f)
+			{
+				transform.position = Vector3.Lerp(transform.position, goalPos, elapsed / 0.3f);
+			}
+			else
+			{
+				transform.position = goalPos;
+			}
+
+			yield return null;
+		}
 		//... (Giữ nguyên logic Jump cũ của bạn ở đây)
 		// Lưu ý: Nhớ reset _isOffMesh = false và gọi _agent.CompleteOffMeshLink() khi xong
 		yield return null;
