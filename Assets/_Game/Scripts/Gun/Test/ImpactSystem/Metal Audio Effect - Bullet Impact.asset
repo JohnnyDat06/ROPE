@@ -12,8 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f05eebee7dd21149b14060d6f342497, type: 3}
   m_Name: Metal Audio Effect - Bullet Impact
   m_EditorClassIdentifier: 
-  AudioSourcePrefab: {fileID: 7124221795396211526, guid: f5393af7b9f343445bbabf443c775fa4, type: 3}
+  AudioSourcePrefab: {fileID: 1517315014505334097, guid: d6191c5ab4f491445a9cb58f6c199a9f, type: 3}
   AudioClips:
-  - {fileID: 8300000, guid: 3d34e2960d0d3dc4b8ce370d43f0dbd0, type: 3}
-  - {fileID: 8300000, guid: 3d34e2960d0d3dc4b8ce370d43f0dbd0, type: 3}
+  - {fileID: 8300000, guid: a78ee26f80ff8024ea4ee5b193388ff0, type: 3}
+  - {fileID: 8300000, guid: ba6a2bc5db1f756499a4415aa656f8d0, type: 3}
+  - {fileID: 8300000, guid: dcf1be229b33d084a97d6bfc37de8b83, type: 3}
+  - {fileID: 8300000, guid: ca7269da3b1a3834881a5e08961c47f2, type: 3}
+  - {fileID: 8300000, guid: ba3efa989ea92504393199ed8d4d33ff, type: 3}
+  - {fileID: 8300000, guid: 3a03467cb7b65074f9262896309b868f, type: 3}
+  - {fileID: 8300000, guid: bf926a24b8d5c844095dbc55c12e4197, type: 3}
+  - {fileID: 8300000, guid: 5175ac42ee8ab64439bd31095d00b60d, type: 3}
+  - {fileID: 8300000, guid: a7137054d86248b4cbafd4c3e777a46f, type: 3}
+  - {fileID: 8300000, guid: a2ad3cc351cc59c44a31f8e3304b6b6e, type: 3}
   VolumeRange: {x: 0.5, y: 0.75}

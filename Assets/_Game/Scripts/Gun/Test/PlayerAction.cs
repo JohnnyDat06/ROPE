@@ -15,9 +15,9 @@ public class PlayerAction : MonoBehaviour
 
     private void Update()
     {
-        if (starterAssetsInputs.shoot && gunSelector.activeGun != null)
+        if (gunSelector.activeGun != null)
         {
-            gunSelector.activeGun.Shoot();
+            gunSelector.activeGun.Tick(starterAssetsInputs.shoot);
         }
     }
 }
