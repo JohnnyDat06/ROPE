@@ -81,15 +81,8 @@ public class GunSO : ScriptableObject
         }
     }
 
-    public void EndReload()
-    {
-        ammoConfig.Reload();
-    }
-
-    public bool CanReload()
-    {
-        return ammoConfig.CanReload();
-    }
+    public void EndReload() => ammoConfig.Reload();
+    public bool CanReload() => ammoConfig.CanReload();
 
     public void Tick(bool wantsToShoot)
     {
