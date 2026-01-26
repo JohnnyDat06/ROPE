@@ -18,6 +18,7 @@ MonoBehaviour:
   modelPrefab: {fileID: 5992170105032228408, guid: ada3d6a134178f84f9afdfd9a1dd75d0, type: 3}
   spawnPoint: {x: -0.029, y: -0.142, z: 0.447}
   spawnRotation: {x: 0.043, y: -5.072, z: -1.046}
+  ammoConfig: {fileID: 11400000, guid: e1023d11459919845a3c1407161e3ff1, type: 2}
   damageConfig: {fileID: 11400000, guid: 150c3195169c1f14a8dc9143c323ab64, type: 2}
   shootConfig: {fileID: 11400000, guid: b30c3ac15d38d014a8bfff429cd96b45, type: 2}
   trailConfig: {fileID: 11400000, guid: 29cce59224204534bbbf66010558c0a6, type: 2}
