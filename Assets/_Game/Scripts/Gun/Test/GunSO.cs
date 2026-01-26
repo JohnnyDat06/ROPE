@@ -14,6 +14,7 @@ public class GunSO : ScriptableObject
     public Vector3 spawnPoint;
     public Vector3 spawnRotation;
 
+    public AmmoConfigSO ammoConfig;
     public DamgeConfigSO damageConfig;
     public ShootConfigSO shootConfig;
     public TrailConfigSO trailConfig;
@@ -63,6 +64,9 @@ public class GunSO : ScriptableObject
 
             Vector3 shootDirection = model.transform.forward;
 
+            // minus one ammo
+            ammoConfig.currentClipAmmo--;
+
             if (Physics.Raycast(shootSystem.transform.position, shootDirection,
                 out RaycastHit hit, float.MaxValue, shootConfig.hitMask))
             {
@@ -77,6 +81,16 @@ public class GunSO : ScriptableObject
         }
     }
 
+    public void EndReload()
+    {
+        ammoConfig.Reload();
+    }
+
+    public bool CanReload()
+    {
+        return ammoConfig.CanReload();
+    }
+
     public void Tick(bool wantsToShoot)
     {
         model.transform.localRotation = Quaternion.Lerp(
@@ -88,7 +102,7 @@ public class GunSO : ScriptableObject
         if (wantsToShoot)
         {
             lastFrameWantedToShoot = true;
-            Shoot();
+            if (ammoConfig.currentClipAmmo > 0) Shoot();
         }
         else if (!wantsToShoot && lastFrameWantedToShoot)
         {
