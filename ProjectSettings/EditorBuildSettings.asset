@@ -5,9 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Game/Scenes/Sandbox/DatTestPlayer/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/_Game/Scenes/Sandbox/DangEnviroment/Menu.unity
+    guid: 7c8c19a10851a3b47b23083b4d7b17ce
+  - enabled: 1
+    path: Assets/_Game/Scenes/Sandbox/DangEnviroment/Playground.unity
+    guid: 5893578de71fded4b9ceecf9a97509df
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
