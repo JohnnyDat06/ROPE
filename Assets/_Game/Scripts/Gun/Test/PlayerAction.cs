@@ -29,6 +29,7 @@ public class PlayerAction : MonoBehaviour
 
         if (ShouldAutoReload() || ShouldManualReload())
         {
+            gunSelector.activeGun.StartReloading();
             isReloading = true;
             playerAnimator.SetTrigger("Reload");
             //invenseKeinematics.HandIKAmount = 0.25;

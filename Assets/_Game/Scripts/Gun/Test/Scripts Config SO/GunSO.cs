@@ -1,4 +1,4 @@
-using LlamAcademy.ImpactSystem;
+﻿using LlamAcademy.ImpactSystem;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -18,9 +18,11 @@ public class GunSO : ScriptableObject
     public DamgeConfigSO damageConfig;
     public ShootConfigSO shootConfig;
     public TrailConfigSO trailConfig;
+    public AudioConfigSO audioConfig;
 
     private MonoBehaviour activeMonobihaviour;
     private GameObject model;
+    private AudioSource shootingAudioSource;
     private float lastShootTime;
 
     private float initialClickTime;
@@ -42,10 +44,12 @@ public class GunSO : ScriptableObject
         model.transform.localRotation = Quaternion.Euler(spawnRotation);
 
         shootSystem = model.GetComponentInChildren<ParticleSystem>();
+        shootingAudioSource = model.AddComponent<AudioSource>();
     }
 
-    public void Shoot()
+    public void TryToShoot()
     {
+        //if (ammoConfig.currentClipAmmo <= 0) return;
         if (Time.time - lastShootTime - shootConfig.fireRate > Time.deltaTime)
         {
             float lastDuration = Mathf.Clamp(0, (stopShootingTime - initialClickTime), shootConfig.maxSpreadTime);
@@ -57,7 +61,15 @@ public class GunSO : ScriptableObject
         if (Time.time > shootConfig.fireRate + lastShootTime)
         {
             lastShootTime = Time.time;
-            shootSystem.Play();
+
+            if (ammoConfig.currentClipAmmo == 0)
+            {
+                audioConfig.PlayOutAmmoClip(shootingAudioSource);
+                return;
+            }
+
+            shootSystem.Play(); // play muzzle, smoke,... particle effect
+            audioConfig.PlayShootingClip(shootingAudioSource, ammoConfig.currentClipAmmo == 1);
 
             Vector3 spreadAmount = shootConfig.GetSpread(Time.time - initialClickTime);
             model.transform.forward += model.transform.TransformDirection(spreadAmount);
@@ -81,6 +93,7 @@ public class GunSO : ScriptableObject
         }
     }
 
+    public void StartReloading() => audioConfig.PlayReloadClip(shootingAudioSource);
     public void EndReload() => ammoConfig.Reload();
     public bool CanReload() => ammoConfig.CanReload();
 
@@ -95,7 +108,7 @@ public class GunSO : ScriptableObject
         if (wantsToShoot)
         {
             lastFrameWantedToShoot = true;
-            if (ammoConfig.currentClipAmmo > 0) Shoot();
+            TryToShoot();
         }
         else if (!wantsToShoot && lastFrameWantedToShoot)
         {

@@ -7321,7 +7321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunSelector: {fileID: 1068967029}
-  autoReload: 1
+  autoReload: 0
   playerAnimator: {fileID: 1068967027}
 --- !u!114 &1068967022
 MonoBehaviour:
