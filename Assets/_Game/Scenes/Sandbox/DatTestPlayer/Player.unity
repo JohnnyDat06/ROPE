@@ -817,6 +817,7 @@ GameObject:
   - component: {fileID: 477531437}
   - component: {fileID: 477531439}
   - component: {fileID: 477531438}
+  - component: {fileID: 477531440}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -942,6 +943,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 477531436}
   m_CullTransparentMesh: 1
+--- !u!114 &477531440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 477531436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5577a538a3dff5443b02b3560259cf02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunSelector: {fileID: 1068967029}
 --- !u!1 &485683656
 GameObject:
   m_ObjectHideFlags: 0
@@ -7307,7 +7321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunSelector: {fileID: 1068967029}
-  autoReload: 0
+  autoReload: 1
   playerAnimator: {fileID: 1068967027}
 --- !u!114 &1068967022
 MonoBehaviour:
@@ -8339,7 +8353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.6039216}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.8117647}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
