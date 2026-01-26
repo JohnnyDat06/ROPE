@@ -2,250 +2,199 @@
 using UnityEngine.AI;
 using System.Collections;
 
-/// <summary>
-/// Điều khiển chuyển động của Agent (nhện) kết hợp NavMeshAgent và Root Motion Animation.
-/// Sử dụng cơ chế Hysteresis (Ngưỡng đôi) để xử lý mượt mà chuyển đổi giữa xoay tại chỗ và di chuyển.
-/// </summary>
 [RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
 public class SpiderAgent : MonoBehaviour
 {
-    #region Configuration
-    
-    [Header("Rotation Settings")]
-    [Tooltip("Ngưỡng BẮT ĐẦU xoay (Hysteresis High): Nếu góc lệch lớn hơn số này, Agent sẽ dừng lại để xoay tại chỗ.")]
-    [Range(10f, 180f)]
-    [SerializeField] private float _startTurnThreshold = 60f;
+	[Header("Rotation Threshold (Hysteresis)")]
+	[Range(10f, 180f)][SerializeField] private float startTurnThreshold = 60f;
+	[Range(1f, 30f)][SerializeField] private float stopTurnThreshold = 8f;
 
-    [Tooltip("Ngưỡng KẾT THÚC xoay (Hysteresis Low): Khi góc lệch nhỏ hơn số này, Agent sẽ ngừng xoay và bắt đầu di chuyển.")]
-    [Range(1f, 20f)]
-    [SerializeField] private float _stopTurnThreshold = 5f;
+	[Header("Stop")]
+	[SerializeField] private float stopDistance = 0.2f;
 
-    [Tooltip("Tốc độ hỗ trợ xoay của Transform khi đang di chuyển (Steering assist).")]
-    [SerializeField] private float _runRotationSpeed = 2f;
+	private NavMeshAgent agent;
+	private Animator animator;
 
-    [Header("Movement Settings")]
-    [Tooltip("Khoảng cách tới đích để coi như đã dừng hẳn.")]
-    [SerializeField] private float _stopDistance = 0.2f;
+	private bool isTurningInPlace;
+	private bool isOffMesh;
 
-    #endregion
+	private readonly int hForward = Animator.StringToHash("Vertical");
+	private readonly int hStrafe = Animator.StringToHash("Horizontal");
+	private readonly int hTurn = Animator.StringToHash("Turn");
+	private readonly int hMoving = Animator.StringToHash("IsMoving");
 
-    #region Internal State
+	void Awake()
+	{
+		agent = GetComponent<NavMeshAgent>();
+		animator = GetComponent<Animator>();
 
-    private NavMeshAgent _agent;
-    private Animator _animator;
-    private bool _isOffMesh;
-    private bool _isTurningInPlace = false;
+		agent.updatePosition = false;   // 🔥 RẤT QUAN TRỌNG
+		agent.updateRotation = false;
+		agent.angularSpeed = 0;
+	}
 
-    // Animator Hashes (Cached for performance)
-    private readonly int _hashHorizontal = Animator.StringToHash("Horizontal");
-    private readonly int _hashVertical = Animator.StringToHash("Vertical");
-    private readonly int _hashTurn = Animator.StringToHash("Turn");
-    private readonly int _hashIsMoving = Animator.StringToHash("IsMoving");
+	void Update()
+	{
+		HandleOffMeshLink();
+		HandleMovement();
+	}
 
-    /// <summary>
-    /// Kiểm tra xem Agent có đang thực sự di chuyển trên đường đi hay không.
-    /// </summary>
-    public bool IsMoving => _agent.hasPath && _agent.remainingDistance > _agent.stoppingDistance;
+	void OnAnimatorMove()
+	{
+		Vector3 nextPos = transform.position + animator.deltaPosition;
 
-    #endregion
+		// Ép vị trí lên NavMesh
+		if (NavMesh.SamplePosition(nextPos, out NavMeshHit hit, 0.5f, NavMesh.AllAreas))
+		{
+			transform.position = hit.position;
+		}
+		else
+		{
+			// Nếu lệch quá xa → đứng yên
+			transform.position = transform.position;
+		}
 
-    #region Unity Lifecycle
+		transform.rotation *= animator.deltaRotation;
 
-    private void Awake()
-    {
-        _agent = GetComponent<NavMeshAgent>();
-        _animator = GetComponent<Animator>();
+		// Sync ngược lại cho agent
+		agent.nextPosition = transform.position;
+	}
 
-        // Cấu hình NavMeshAgent để hoạt động với Root Motion
-        _agent.updateRotation = false; // Tắt xoay tự động của NavMesh
-        _agent.updatePosition = true;  // Giữ đồng bộ vị trí vật lý
-        _agent.angularSpeed = 0;       // Loại bỏ hoàn toàn lực xoay của Agent
-    }
 
-    private void Update()
-    {
-        HandleOffMeshLink();
-        HandleMovementAndRotation();
-    }
+	public void MoveTo(Vector3 pos)
+	{
+		if (!agent.isOnNavMesh) return;
 
-    #endregion
+		agent.nextPosition = transform.position;
+		agent.SetDestination(pos);
+	}
 
-    #region Public Methods
+	private void StopMovementOnly()
+	{
+		animator.SetBool(hMoving, false);
+		animator.SetFloat(hForward, 0);
+		animator.SetFloat(hStrafe, 0);
+		animator.SetFloat(hTurn, 0);
+	}
 
-    /// <summary>
-    /// Ra lệnh cho Agent di chuyển đến vị trí chỉ định.
-    /// </summary>
-    /// <param name="targetPosition">Tọa độ thế giới (World Position) cần đến.</param>
-    public void MoveTo(Vector3 targetPosition)
-    {
-        // Đảm bảo Agent đang hoạt động trên NavMesh trước khi set đích
-        if (_agent.isOnNavMesh)
-        {
-            _agent.SetDestination(targetPosition);
-            _agent.isStopped = false;
-        }
-    }
+	private void StopAgentCompletely()
+	{
+		agent.ResetPath();
+		StopMovementOnly();
+	}
 
-    /// <summary>
-    /// Dừng Agent ngay lập tức và reset các trạng thái Animation.
-    /// </summary>
-    public void Stop()
-    {
-        if (_agent.hasPath) _agent.ResetPath();
-        
-        _agent.isStopped = true;
-        _agent.velocity = Vector3.zero;
-        
-        ResetAnimatorParameters();
-    }
 
-    #endregion
+	private void HandleMovement()
+	{
+		if (!agent.hasPath || isOffMesh)
+			return;
 
-    #region Core Logic
+		if (agent.pathPending)
+			return;
 
-    /// <summary>
-    /// Reset toàn bộ tham số Animator về trạng thái Idle.
-    /// </summary>
-    private void ResetAnimatorParameters()
-    {
-        _animator.SetFloat(_hashHorizontal, 0);
-        _animator.SetFloat(_hashVertical, 0);
-        _animator.SetFloat(_hashTurn, 0);
-        _animator.SetBool(_hashIsMoving, false);
-        _isTurningInPlace = false;
-    }
+		if (agent.remainingDistance <= stopDistance)
+		{
+			StopAgentCompletely();
+			return;
+		}
 
-    private void HandleMovementAndRotation()
-    {
-        // 1. Kiểm tra điều kiện dừng
-        if (!_agent.hasPath || _isOffMesh || _agent.remainingDistance <= _stopDistance)
-        {
-            Stop();
-            return;
-        }
+		Vector3 toTarget = agent.steeringTarget - transform.position;
+		toTarget.y = 0;
 
-        // 2. Tính toán Vector hướng và Góc lệch
-        Vector3 vectorToTarget = _agent.steeringTarget - transform.position;
+		if (toTarget.sqrMagnitude < 0.001f)
+			return;
 
-        // Bỏ qua nếu vector quá nhỏ (lỗi Floating point)
-        if (vectorToTarget.sqrMagnitude < 0.01f) return;
+		Vector3 dir = toTarget.normalized;
+		float angle = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
 
-        Vector3 directionToTarget = vectorToTarget.normalized;
-        float angle = Vector3.SignedAngle(transform.forward, directionToTarget, Vector3.up);
+		if (!isTurningInPlace && Mathf.Abs(angle) > startTurnThreshold)
+			isTurningInPlace = true;
+		else if (isTurningInPlace && Mathf.Abs(angle) < stopTurnThreshold)
+			isTurningInPlace = false;
 
-        // 3. Logic Hysteresis (Ngưỡng đôi) để ổn định trạng thái xoay
-        // Tránh hiện tượng nhân vật bị giật (jitter) ở ranh giới góc
-        if (!_isTurningInPlace && Mathf.Abs(angle) > _startTurnThreshold)
-        {
-            _isTurningInPlace = true; // Bắt đầu xoay
-        }
-        else if (_isTurningInPlace && Mathf.Abs(angle) < _stopTurnThreshold)
-        {
-            _isTurningInPlace = false; // Kết thúc xoay, chuyển sang đi
-        }
+		if (isTurningInPlace)
+			DoTurnInPlace(angle);
+		else
+			DoMove(dir);
+	}
 
-        // 4. Thực thi hành động dựa trên trạng thái
-        if (_isTurningInPlace)
-        {
-            ProcessTurnInPlace(angle);
-        }
-        else
-        {
-            ProcessMovement(directionToTarget);
-        }
-    }
+	void OnDrawGizmos()
+	{
+		if (agent == null) return;
 
-    private void ProcessTurnInPlace(float angle)
-    {
-        // Dừng di chuyển tịnh tiến
-        _agent.isStopped = true;
-        _agent.velocity = Vector3.zero;
+		Gizmos.color = Color.red;
+		Gizmos.DrawSphere(transform.position, 0.05f);
 
-        _animator.SetBool(_hashIsMoving, false);
+		Gizmos.color = Color.green;
+		Gizmos.DrawSphere(agent.nextPosition, 0.05f);
+	}
 
-        // Xoay dứt khoát theo hướng (-1: Trái, 1: Phải)
-        float turnDir = Mathf.Sign(angle);
-        _animator.SetFloat(_hashTurn, turnDir, 0.1f, Time.deltaTime);
 
-        // Reset các thông số di chuyển để tránh trượt chân
-        _animator.SetFloat(_hashVertical, 0);
-        _animator.SetFloat(_hashHorizontal, 0);
-    }
 
-    private void ProcessMovement(Vector3 directionToTarget)
-    {
-        // Cho phép di chuyển tịnh tiến
-        _agent.isStopped = false;
-        _animator.SetBool(_hashIsMoving, true);
-        
-        // Tắt xoay tại chỗ
-        _animator.SetFloat(_hashTurn, 0, 0.2f, Time.deltaTime);
+	private void DoTurnInPlace(float angle)
+	{
+		animator.SetBool(hMoving, false);
 
-        // Tính toán Strafe (Đi ngang)
-        Vector3 localDir = transform.InverseTransformDirection(directionToTarget);
-        _animator.SetFloat(_hashVertical, localDir.z, 0.2f, Time.deltaTime);
-        _animator.SetFloat(_hashHorizontal, localDir.x, 0.2f, Time.deltaTime);
+		float turnDir = Mathf.Sign(angle);
+		animator.SetFloat(hTurn, turnDir, 0.1f, Time.deltaTime);
 
-        // Steering Assist: Hỗ trợ xoay nhẹ Transform để bám sát hướng NavMesh
-        // Giúp nhân vật không bị trôi lệch hướng khi Animation Strafe không hoàn hảo
-        if (directionToTarget != Vector3.zero)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(directionToTarget);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, _runRotationSpeed * Time.deltaTime);
-        }
-    }
+		animator.SetFloat(hForward, 0);
+		animator.SetFloat(hStrafe, 0);
+	}
 
-    #endregion
+	private void DoMove(Vector3 worldDir)
+	{
+		animator.SetBool(hMoving, true);
+		animator.SetFloat(hTurn, 0, 0.2f, Time.deltaTime);
 
-    #region Off-Mesh Link Handling (Jumping)
+		Vector3 localDir = transform.InverseTransformDirection(worldDir);
+		animator.SetFloat(hForward, localDir.z, 0.2f, Time.deltaTime);
+		animator.SetFloat(hStrafe, localDir.x, 0.2f, Time.deltaTime);
+	}
 
-    private void HandleOffMeshLink()
-    {
-        if (_agent.isOnOffMeshLink && !_isOffMesh)
-        {
-            _isOffMesh = true;
-            StartCoroutine(DoOffMeshLinkCoroutine(_agent.currentOffMeshLinkData));
-        }
-    }
+	private void StopAgent()
+	{
+		agent.ResetPath();
+		animator.SetBool(hMoving, false);
+		animator.SetFloat(hTurn, 0);
+		animator.SetFloat(hForward, 0);
+		animator.SetFloat(hStrafe, 0);
+		isTurningInPlace = false;
+	}
 
-    private IEnumerator DoOffMeshLinkCoroutine(OffMeshLinkData data)
-    {
-        // Giai đoạn 1: Xoay hướng về điểm đáp
-        Vector3 jumpDir = (data.endPos - data.startPos).normalized;
-        while (Vector3.Dot(transform.forward, jumpDir) < 0.99f)
-        {
-            Quaternion goalRot = Quaternion.LookRotation(jumpDir);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, goalRot, 120f * Time.deltaTime);
-            yield return null;
-        }
+	// ================= OFF MESH =================
 
-        // Giai đoạn 2: Thực hiện nhảy
-        _animator.CrossFade("Jump", 0.2f);
+	private void HandleOffMeshLink()
+	{
+		if (agent.isOnOffMeshLink && !isOffMesh)
+		{
+			StartCoroutine(OffMeshRoutine(agent.currentOffMeshLinkData));
+		}
+	}
 
-        float totalTime = 0.7f; // Thời gian nhảy giả định (nên khớp với Animation)
-        float currentTime = totalTime;
+	private IEnumerator OffMeshRoutine(OffMeshLinkData data)
+	{
+		isOffMesh = true;
 
-        while (currentTime > 0)
-        {
-            currentTime -= Time.deltaTime;
-            float t = 1 - (currentTime / totalTime);
-            Vector3 goalPos = Vector3.Lerp(data.startPos, data.endPos, t);
+		animator.CrossFade("Jump", 0.15f);
 
-            // Lerp vị trí để tạo chuyển động mượt mà thay vì snap
-            float elapsed = totalTime - currentTime;
-            if (elapsed < 0.3f)
-                transform.position = Vector3.Lerp(transform.position, goalPos, elapsed / 0.3f);
-            else
-                transform.position = goalPos;
+		Vector3 start = data.startPos;
+		Vector3 end = data.endPos;
 
-            yield return null;
-        }
+		float t = 0;
+		float duration = 0.7f;
 
-        // Kết thúc nhảy
-        transform.position = data.endPos;
-        _agent.CompleteOffMeshLink();
-        _isOffMesh = false;
-    }
+		while (t < duration)
+		{
+			t += Time.deltaTime;
+			float lerp = t / duration;
+			transform.position = Vector3.Lerp(start, end, lerp);
+			agent.nextPosition = transform.position;
+			yield return null;
+		}
 
-    #endregion
+		transform.position = end;
+		agent.CompleteOffMeshLink();
+		isOffMesh = false;
+	}
 }
