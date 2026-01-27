@@ -7320,6 +7320,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c8ff9265ce4cba4aab2e7dd815b5aec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aimVirtualCamera: {fileID: 1753247779}
+  aimColliderLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  debugTransform: {fileID: 1508434700}
+  normalSensitivity: 1
+  aimSensitivity: 0.5
   gunSelector: {fileID: 1068967029}
   autoReload: 0
   playerAnimator: {fileID: 1068967027}
@@ -9601,7 +9608,7 @@ PrefabInstance:
     - target: {fileID: 2070925441746177913, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_Follow
       value: 
-      objectReference: {fileID: 8338988566623341652}
+      objectReference: {fileID: 2069705813}
     - target: {fileID: 2070925441746177913, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_Priority
       value: 20
