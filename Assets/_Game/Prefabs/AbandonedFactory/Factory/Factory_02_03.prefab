@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6543794864267000390}
+  - component: {fileID: 5384045112662264129}
   m_Layer: 0
   m_Name: Factory_02_03
   m_TagString: Untagged
@@ -55,6 +56,27 @@ Transform:
   - {fileID: 9198019305016801305}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &5384045112662264129
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6543794864267000391}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &300205593073898469
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1201,7 +1223,8 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 4300000, guid: 423276c86e986804883dbf19482166fb, type: 3}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7225577283877760868, guid: bf658a08835df9d48ba9725eb7614104, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
