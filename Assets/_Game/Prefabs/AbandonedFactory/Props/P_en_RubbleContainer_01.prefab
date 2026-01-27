@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 4928047955760302235}
   - component: {fileID: 4928047955758975167}
   - component: {fileID: 4928047955758008959}
-  - component: {fileID: 4056262545892229107}
+  - component: {fileID: 4539199698950755089}
   m_Layer: 0
   m_Name: sm_en_RubbleContainer_01_LOD0
   m_TagString: Untagged
@@ -345,8 +345,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4056262545892229107
-MeshCollider:
+--- !u!65 &4539199698950755089
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -363,10 +363,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: 1d9516e88b4500447831bd48f29af58b, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 3.5922768, y: 1.8709455, z: 1.495403}
+  m_Center: {x: 0.09217595, y: -0.048583224, z: 0.6981826}
 --- !u!1 &4928047955759944895
 GameObject:
   m_ObjectHideFlags: 0
