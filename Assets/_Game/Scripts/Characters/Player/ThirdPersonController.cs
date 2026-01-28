@@ -3,7 +3,7 @@
 using UnityEngine.InputSystem;
 #endif
 
-/* Note: animations are called via the controller for both the character and capsule using animator null checks
+/* Note: animations are called via the PlayerAnimationController
  */
 
 namespace StarterAssets
@@ -12,6 +12,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
 #endif
+    [RequireComponent(typeof(PlayerAnimationController))] // Bắt buộc phải có script animation
     public class ThirdPersonController : MonoBehaviour
     {
         [Header("Player")]
@@ -29,9 +30,10 @@ namespace StarterAssets
         public float SpeedChangeRate = 10.0f;
         public float Sensitivity = 1f;
 
-        public AudioClip LandingAudioClip;
-        public AudioClip[] FootstepAudioClips;
-        [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+        [Header("Strafe Settings")]
+        [Tooltip("Toggle Strafe Mode (Always face camera direction)")]
+        public bool StrafeMode = false;
+        public float StrafeMoveSpeed = 3f;
 
         [Space(10)]
         [Tooltip("The height the player can jump")]
@@ -92,26 +94,16 @@ namespace StarterAssets
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
 
-        // animation IDs
-        private int _animIDSpeed;
-        private int _animIDGrounded;
-        private int _animIDJump;
-        private int _animIDFreeFall;
-        private int _animIDMotionSpeed;
-
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
 #endif
-        private Animator _animator;
+        // Thay thế Animator trực tiếp bằng Animation Controller riêng
+        private PlayerAnimationController _animationController;
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
 
-        private bool _rotateOnMove = true;
-
         private const float _threshold = 0.01f;
-
-        private bool _hasAnimator;
 
         private bool IsCurrentDeviceMouse
         {
@@ -124,7 +116,6 @@ namespace StarterAssets
 #endif
             }
         }
-
 
         private void Awake()
         {
@@ -139,16 +130,16 @@ namespace StarterAssets
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
-            _hasAnimator = TryGetComponent(out _animator);
+            // Get references
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM 
+            _animationController = GetComponent<PlayerAnimationController>();
+
+#if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
-
-            AssignAnimationIDs();
 
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
@@ -157,8 +148,8 @@ namespace StarterAssets
 
         private void Update()
         {
-            _hasAnimator = TryGetComponent(out _animator);
-
+            if (_input.shoot == true || _input.aim) StrafeMode = true;
+            else StrafeMode = false;
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -169,15 +160,6 @@ namespace StarterAssets
             CameraRotation();
         }
 
-        private void AssignAnimationIDs()
-        {
-            _animIDSpeed = Animator.StringToHash("Speed");
-            _animIDGrounded = Animator.StringToHash("Grounded");
-            _animIDJump = Animator.StringToHash("Jump");
-            _animIDFreeFall = Animator.StringToHash("FreeFall");
-            _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
-        }
-
         private void GroundedCheck()
         {
             // set sphere position, with offset
@@ -186,11 +168,8 @@ namespace StarterAssets
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
 
-            // update animator if using character
-            if (_hasAnimator)
-            {
-                _animator.SetBool(_animIDGrounded, Grounded);
-            }
+            // Gửi trạng thái Grounded sang Animation Controller
+            _animationController.UpdateGrounded(Grounded);
         }
 
         private void CameraRotation()
@@ -219,9 +198,6 @@ namespace StarterAssets
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
-            // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
-
-            // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
@@ -236,11 +212,8 @@ namespace StarterAssets
                 currentHorizontalSpeed > targetSpeed + speedOffset)
             {
                 // creates curved result rather than a linear one giving a more organic speed change
-                // note T in Lerp is clamped, so we don't need to clamp our speed
                 _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
                     Time.deltaTime * SpeedChangeRate);
-
-                // round speed to 3 decimal places
                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
             }
             else
@@ -254,19 +227,33 @@ namespace StarterAssets
             // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
-            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is a move input rotate player when the player is moving
+            // --- XỬ LÝ XOAY NHÂN VẬT (ROTATION) ---
+
             if (_input.move != Vector2.zero)
             {
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                   _mainCamera.transform.eulerAngles.y;
-                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-                    RotationSmoothTime);
 
-                // rotate to face input direction relative to camera position
-                if (_rotateOnMove)
-                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                // 1. Chế độ Adventure (Cũ): Xoay nhân vật theo hướng di chuyển
+                if (!StrafeMode)
+                {
+                    float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                        RotationSmoothTime);
+                    if (_rotateOnMove) transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                }
             }
+
+            // 2. Chế độ Strafe (Mới): Luôn xoay nhân vật theo hướng Camera
+            if (StrafeMode)
+            {
+                MoveSpeed = StrafeMoveSpeed;
+                _input.sprint = false;
+                float targetCameraRotation = _mainCamera.transform.eulerAngles.y;
+                float strafeRotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetCameraRotation, ref _rotationVelocity,
+                        RotationSmoothTime);
+                transform.rotation = Quaternion.Euler(0.0f, strafeRotation, 0.0f);
+            }
+            // ---------------------------------------
 
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
@@ -275,12 +262,11 @@ namespace StarterAssets
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
-            // update animator if using character
-            if (_hasAnimator)
-            {
-                _animator.SetFloat(_animIDSpeed, _animationBlend);
-                _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
-            }
+            // --- CẬP NHẬT ANIMATION ---
+            _animationController.UpdateLocomotion(_animationBlend, inputMagnitude);
+
+            // Gửi dữ liệu X/Y sang animation controller (nó sẽ tự xử lý việc làm mượt)
+            _animationController.UpdateStrafe(_input.move, StrafeMode, Time.deltaTime);
         }
 
         private void JumpAndGravity()
@@ -290,12 +276,9 @@ namespace StarterAssets
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
 
-                // update animator if using character
-                if (_hasAnimator)
-                {
-                    _animator.SetBool(_animIDJump, false);
-                    _animator.SetBool(_animIDFreeFall, false);
-                }
+                // Animation: Tắt trạng thái nhảy/rơi
+                _animationController.UpdateJump(false);
+                _animationController.UpdateFreeFall(false);
 
                 // stop our velocity dropping infinitely when grounded
                 if (_verticalVelocity < 0.0f)
@@ -309,11 +292,8 @@ namespace StarterAssets
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
-                    // update animator if using character
-                    if (_hasAnimator)
-                    {
-                        _animator.SetBool(_animIDJump, true);
-                    }
+                    // Animation: Bật trạng thái nhảy
+                    _animationController.UpdateJump(true);
                 }
 
                 // jump timeout
@@ -334,11 +314,8 @@ namespace StarterAssets
                 }
                 else
                 {
-                    // update animator if using character
-                    if (_hasAnimator)
-                    {
-                        _animator.SetBool(_animIDFreeFall, true);
-                    }
+                    // Animation: Bật trạng thái rơi tự do
+                    _animationController.UpdateFreeFall(true);
                 }
 
                 // if we are not grounded, do not jump
@@ -367,7 +344,6 @@ namespace StarterAssets
             if (Grounded) Gizmos.color = transparentGreen;
             else Gizmos.color = transparentRed;
 
-            // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
             Gizmos.DrawSphere(
                 new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
                 GroundedRadius);
@@ -378,29 +354,11 @@ namespace StarterAssets
             Sensitivity = newSensitivity;
         }
 
+        // Biến này để hỗ trợ UI toggle nếu cần
         public void SetRotateOnMove(bool rotateOnMove)
         {
-            _rotateOnMove = rotateOnMove;
+            // _rotateOnMove logic giờ nằm trong điều kiện StrafeMode
         }
-
-        private void OnFootstep(AnimationEvent animationEvent)
-        {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                if (FootstepAudioClips.Length > 0)
-                {
-                    var index = Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
-                }
-            }
-        }
-
-        private void OnLand(AnimationEvent animationEvent)
-        {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-            }
-        }
+        private bool _rotateOnMove = true; // Giữ lại để tương thích logic cũ trong khối !StrafeMode
     }
 }
