@@ -86,8 +86,12 @@ public class PlayerAction : MonoBehaviour
         if (starterAssetsInputs.aim)
         {
             aimVirtualCamera.gameObject.SetActive(true);
-            thirdPersonController.SetSensitivity(aimSensitivity);
-            thirdPersonController.SetRotateOnMove(false);
+            if (thirdPersonController != null)
+            {
+                thirdPersonController.SetSensitivity(aimSensitivity);
+                thirdPersonController.SetRotateOnMove(false);
+            }
+
             playerAnimator.SetLayerWeight(1, Mathf.Lerp(playerAnimator.GetLayerWeight(1), 1f, Time.deltaTime * 10f));
 
             Vector3 worldAimTarget = mouseWorldPosition;
@@ -99,8 +103,11 @@ public class PlayerAction : MonoBehaviour
         else
         {
             aimVirtualCamera.gameObject.SetActive(false);
-            thirdPersonController.SetSensitivity(normalSensitivity);
-            thirdPersonController.SetRotateOnMove(true);
+            if (thirdPersonController != null)
+            {
+                thirdPersonController.SetSensitivity(normalSensitivity);
+                thirdPersonController.SetRotateOnMove(true);
+            }
             playerAnimator.SetLayerWeight(1, Mathf.Lerp(playerAnimator.GetLayerWeight(1), 0f, Time.deltaTime * 10f));
 
         }

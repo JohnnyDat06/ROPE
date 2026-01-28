@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 5113999054515687492}
   - component: {fileID: 5113999054516457568}
   - component: {fileID: 5113999054517457568}
-  - component: {fileID: 2043878786431783376}
+  - component: {fileID: 2044590690053046258}
   m_Layer: 0
   m_Name: sm_en_MetalSupport_01_01_LOD0
   m_TagString: Untagged
@@ -154,8 +154,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2043878786431783376
-MeshCollider:
+--- !u!65 &2044590690053046258
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,10 +172,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: 95c73e8ad42896f4a9479472b7ac19f7, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 1.4026108, y: 3.5646849, z: 0.98989576}
+  m_Center: {x: -0.02366814, y: 1.7319062, z: 0.53128487}
 --- !u!1 &5113999054515260518
 GameObject:
   m_ObjectHideFlags: 0
