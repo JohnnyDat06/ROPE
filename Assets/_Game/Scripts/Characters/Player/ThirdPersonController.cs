@@ -148,8 +148,7 @@ namespace StarterAssets
 
         private void Update()
         {
-            if (_input.shoot == true || _input.aim) StrafeMode = true;
-            else StrafeMode = false;
+            StrafeModeControl();
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -246,7 +245,6 @@ namespace StarterAssets
             // 2. Chế độ Strafe (Mới): Luôn xoay nhân vật theo hướng Camera
             if (StrafeMode)
             {
-                MoveSpeed = StrafeMoveSpeed;
                 _input.sprint = false;
                 float targetCameraRotation = _mainCamera.transform.eulerAngles.y;
                 float strafeRotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetCameraRotation, ref _rotationVelocity,
@@ -326,6 +324,20 @@ namespace StarterAssets
             if (_verticalVelocity < _terminalVelocity)
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
+            }
+        }
+
+        private void StrafeModeControl()
+        {
+            if (_input.shoot == true || _input.aim)
+            {
+                MoveSpeed = StrafeMoveSpeed;
+                StrafeMode = true;
+            }
+            else
+            {
+                MoveSpeed = 2f;
+                StrafeMode = false;
             }
         }
 
