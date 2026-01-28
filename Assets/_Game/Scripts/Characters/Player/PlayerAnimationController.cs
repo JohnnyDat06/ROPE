@@ -52,7 +52,6 @@ namespace StarterAssets
             _animIDInputY = Animator.StringToHash("InputY");
         }
 
-        // --- PUBLIC METHODS (API cho ThirdPersonController gọi) ---
 
         public void UpdateGrounded(bool isGrounded)
         {
@@ -86,7 +85,6 @@ namespace StarterAssets
 
             if (isStrafing)
             {
-                // Dùng Lerp để làm mượt giá trị input trước khi gửi vào Animator
                 _currentInputX = Mathf.Lerp(_currentInputX, moveInput.x, deltaTime / StrafeSmoothTime);
                 _currentInputY = Mathf.Lerp(_currentInputY, moveInput.y, deltaTime / StrafeSmoothTime);
 
@@ -98,15 +96,12 @@ namespace StarterAssets
             }
             else
             {
-                // Reset về 0 khi tắt chế độ Strafe để tránh lỗi blend
                 _currentInputX = 0f;
                 _currentInputY = 0f;
                 _animator.SetFloat(_animIDInputX, 0f);
                 _animator.SetFloat(_animIDInputY, 0f);
             }
         }
-
-        // --- ANIMATION EVENTS (Được gọi từ Animation Clip) ---
 
         private void OnFootstep(AnimationEvent animationEvent)
         {
