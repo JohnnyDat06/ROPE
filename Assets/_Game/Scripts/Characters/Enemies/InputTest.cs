@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class SpiderInputTest : MonoBehaviour
 {
-	private SpiderAgent _spider;
+	private ArathroxMovement _spider;
 
-	private void Start() => _spider = GetComponent<SpiderAgent>();
+	private void Start() => _spider = GetComponent<ArathroxMovement>();
 
 	private void Update()
 	{
