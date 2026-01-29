@@ -147,17 +147,32 @@ public class ArathroxMovement : MonoBehaviour
 		}
 	}
 
-	// --- XỬ LÝ ROOT MOTION (QUAN TRỌNG) ---
+	// --- XỬ LÝ ROOT MOTION ĐÃ NÂNG CẤP ---
 	private void OnAnimatorMove()
 	{
-		// Áp dụng vị trí từ Animation vào Transform
-		transform.position += _animator.deltaPosition;
+		// 1. Tính toán vị trí dự kiến dựa trên Animation (chỉ X và Z)
+		Vector3 newPos = transform.position + _animator.deltaPosition;
 
-		// Áp dụng xoay từ Animation vào Transform
+		// 2. Xử lý độ cao (Y-Axis) để bám địa hình/cầu thang
+		// Tìm điểm gần nhất trên NavMesh trong bán kính nhỏ (VD: 1.0f) tại vị trí newPos
+		NavMeshHit hit;
+
+		// SamplePosition giúp tìm độ cao thực tế của sàn NavMesh tại tọa độ X,Z đó
+		if (NavMesh.SamplePosition(newPos, out hit, 1.0f, NavMesh.AllAreas))
+		{
+			// Gán lại độ cao Y của nhân vật bằng độ cao của NavMesh
+			// Dùng Lerp nhẹ để khi leo cầu thang không bị giật cục (snap) quá gắt
+			float targetY = hit.position.y;
+			newPos.y = Mathf.Lerp(transform.position.y, targetY, 20f * Time.deltaTime);
+		}
+
+		// 3. Áp dụng vị trí mới
+		transform.position = newPos;
+
+		// 4. Áp dụng xoay từ Animation
 		transform.rotation *= _animator.deltaRotation;
 
-		// ĐỒNG BỘ NGƯỢC: Báo cho NavMeshAgent biết vị trí mới của nhân vật
-		// Nếu không có dòng này, Agent sẽ kẹt lại phía sau hoặc trôi đi chỗ khác
+		// 5. ĐỒNG BỘ NGƯỢC: Kéo NavMeshAgent theo vị trí thực tế của nhân vật
 		_agent.nextPosition = transform.position;
 	}
 
