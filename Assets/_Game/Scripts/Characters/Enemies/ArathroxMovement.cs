@@ -5,13 +5,13 @@ using UnityEngine.AI;
 public class ArathroxMovement : MonoBehaviour
 {
 	[Header("Settings")]
-	[Tooltip("Góc lệch lớn hơn giá trị này sẽ kích hoạt xoay tại chỗ")]
-	[SerializeField] private float _turnThreshold = 45f;
+	[Tooltip("Góc lệch lớn hơn giá trị này sẽ BẮT ĐẦU xoay tại chỗ")]
+	[SerializeField] private float _turnStartThreshold = 45f;
 
-	[Tooltip("Góc lệch nhỏ hơn giá trị này sẽ kích hoạt xoay chỉnh hướng nhẹ khi đang đi")]
-	[SerializeField] private float _alignThreshold = 10f;
+	[Tooltip("Góc lệch nhỏ hơn giá trị này sẽ KẾT THÚC xoay tại chỗ")]
+	[SerializeField] private float _turnEndThreshold = 10f;
 
-	[Tooltip("Tốc độ xoay thủ công khi góc lệch nhỏ (độ/giây)")]
+	[Tooltip("Tốc độ xoay thủ công khi đang di chuyển (độ/giây)")]
 	[SerializeField] private float _alignSpeed = 120f;
 
 	[Tooltip("Khoảng cách chấp nhận đã đến đích")]
@@ -22,28 +22,26 @@ public class ArathroxMovement : MonoBehaviour
 	private Animator _animator;
 
 	// State Variables
-	private bool _isTurningInPlace;
-	private Vector3 _lookTarget;
+	private bool _isTurningInPlace; // Biến khóa trạng thái xoay
 	private bool _hasTarget;
 
-	// Animator Hashes (Tối ưu hiệu năng thay vì dùng string)
+	// Animator Hashes
 	private readonly int _hashHorizontal = Animator.StringToHash("Horizontal");
 	private readonly int _hashVertical = Animator.StringToHash("Vertical");
 	private readonly int _hashTurn = Animator.StringToHash("Turn");
+	private readonly int _hashIsMoving = Animator.StringToHash("IsMoving"); // Parameter mới
 
 	private void Awake()
 	{
 		_agent = GetComponent<NavMeshAgent>();
 		_animator = GetComponent<Animator>();
 
-		// Cấu hình Agent để ta tự kiểm soát việc xoay
+		// QUAN TRỌNG: Tắt hoàn toàn việc Agent tự điều khiển Transform
+		// Để Root Motion của Animation chịu trách nhiệm di chuyển và xoay
 		_agent.updateRotation = false;
-		_agent.updatePosition = true; // Vẫn để Agent lo vị trí khi di chuyển
+		_agent.updatePosition = false;
 	}
 
-	/// <summary>
-	/// Hàm API để các script khác (Input, AI) gọi
-	/// </summary>
 	public void MoveTo(Vector3 position)
 	{
 		_agent.SetDestination(position);
@@ -57,7 +55,8 @@ public class ArathroxMovement : MonoBehaviour
 		_hasTarget = false;
 		_agent.isStopped = true;
 
-		// Reset animator về Idle
+		// Reset animator
+		_animator.SetBool(_hashIsMoving, false);
 		_animator.SetFloat(_hashHorizontal, 0);
 		_animator.SetFloat(_hashVertical, 0);
 		_animator.SetFloat(_hashTurn, 0);
@@ -67,106 +66,108 @@ public class ArathroxMovement : MonoBehaviour
 	{
 		if (!_hasTarget) return;
 
-		// 1. Kiểm tra nếu đã đến đích
+		// 1. Kiểm tra đích đến
 		if (!_agent.pathPending && _agent.remainingDistance <= _stopDistance)
 		{
 			Stop();
 			return;
 		}
 
-		// 2. Tính toán góc lệch so với điểm tiếp theo trên đường đi (SteeringTarget)
-		// Lưu ý: Dùng steeringTarget thay vì destination để xử lý NavMesh Corner tốt hơn
+		// 2. Tính toán góc lệch
 		Vector3 targetDir = (_agent.steeringTarget - transform.position).normalized;
-
-		// Loại bỏ trục Y để tính góc phẳng (tránh lỗi khi địa hình dốc)
 		targetDir.y = 0;
 		if (targetDir == Vector3.zero) targetDir = transform.forward;
 
 		float signedAngle = Vector3.SignedAngle(transform.forward, targetDir, Vector3.up);
 		float absAngle = Mathf.Abs(signedAngle);
 
-		// --- LOGIC XỬ LÝ THEO GÓC ---
+		// --- STATE MACHINE LOGIC ---
 
-		// CASE 1: Góc lớn (> 45 độ) -> Xoay tại chỗ (Root Motion)
-		if (absAngle > _turnThreshold)
+		// Kiểm tra điều kiện để BẮT ĐẦU hoặc KẾT THÚC xoay tại chỗ
+		if (!_isTurningInPlace)
 		{
-			_isTurningInPlace = true;
-			_agent.isStopped = true; // Dừng di chuyển vị trí của Agent
+			// Nếu đang đi mà góc quá lớn > 45 -> Vào trạng thái xoay
+			if (absAngle > _turnStartThreshold)
+			{
+				_isTurningInPlace = true;
+			}
+		}
+		else
+		{
+			// Nếu đang xoay, chỉ thoát khi góc đã đủ nhỏ < 10
+			if (absAngle < _turnEndThreshold)
+			{
+				_isTurningInPlace = false;
+			}
+		}
 
-			// Truyền tham số xoay cho Animator (-1 là Trái, 1 là Phải)
-			// SignedAngle dương là bên phải (Right), âm là trái (Left) 
-			// Blend Tree: -1 (Left), 1 (Right) -> Logic này khớp
+		// --- XỬ LÝ HÀNH VI DỰA TRÊN TRẠNG THÁI ---
+
+		if (_isTurningInPlace)
+		{
+			// TRẠNG THÁI: TURN IN PLACE
+			// Dừng di chuyển logic (để Animation Turn hoạt động đúng chỗ)
+			_animator.SetBool(_hashIsMoving, false);
+
+			// Cập nhật giá trị Turn (-1 hoặc 1)
 			float turnVal = Mathf.Sign(signedAngle);
 			_animator.SetFloat(_hashTurn, turnVal, 0.1f, Time.deltaTime);
 
-			// Reset Locomotion để tránh trôi
+			// Reset Locomotion
 			_animator.SetFloat(_hashHorizontal, 0);
 			_animator.SetFloat(_hashVertical, 0);
 		}
-		// CASE 2 & 3: Góc nhỏ hoặc trung bình (<= 45 độ) -> Di chuyển
 		else
 		{
-			_isTurningInPlace = false;
-			_agent.isStopped = false; // Agent tiếp tục đẩy nhân vật đi
-			_animator.SetFloat(_hashTurn, 0, 0.2f, Time.deltaTime); // Tắt xoay tại chỗ
+			// TRẠNG THÁI: LOCOMOTION
+			_animator.SetBool(_hashIsMoving, true);
+			_animator.SetFloat(_hashTurn, 0, 0.2f, Time.deltaTime); // Trả Turn về 0
 
-			// CASE 3: Góc siêu nhỏ (< 10 độ) -> Hỗ trợ xoay thủ công cho thẳng hàng
-			if (absAngle < _alignThreshold)
+			// Hỗ trợ xoay thủ công cho thẳng hàng (chỉ khi góc < 10 độ nhưng > 0)
+			// Logic này giúp nhân vật luôn hướng mặt về đích khi di chuyển
+			if (absAngle > 0.1f)
 			{
 				Quaternion targetRot = Quaternion.LookRotation(targetDir);
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, _alignSpeed * Time.deltaTime);
 			}
-			// CASE 2 (10-45 độ): Không làm gì cả, để Locomotion tự lo hướng chéo
 
-			// --- XỬ LÝ LOCOMOTION BLEND TREE ---
-			// Chuyển vận tốc thế giới (World Velocity) sang cục bộ (Local Velocity)
-			// Agent.velocity mượt hơn SteeringTarget cho animation
-			Vector3 localVel = transform.InverseTransformDirection(_agent.velocity);
+			// Tính toán Input cho Blend Tree Locomotion
+			// Vì dùng Root Motion, ta lấy hướng mong muốn từ Agent (Desired Velocity)
+			// để bảo Animator biết nên chạy hướng nào
+			Vector3 desiredVel = _agent.desiredVelocity; // Vận tốc mong muốn của Agent
+			Vector3 localVel = transform.InverseTransformDirection(desiredVel);
 
-			// Normalize velocity theo speed tối đa của agent để map vào Blend Tree (0-1)
-			// Tránh chia cho 0
+			// Normalize để lấy hướng (-1 đến 1) thay vì độ lớn vận tốc
+			// (Vì tốc độ thực tế sẽ do Root Motion quyết định)
 			float speedFactor = _agent.speed > 0 ? _agent.speed : 1f;
-			Vector3 normalizedLocalVel = localVel / speedFactor;
+			Vector3 normalizedInput = localVel / speedFactor;
 
-			_animator.SetFloat(_hashHorizontal, normalizedLocalVel.x, 0.1f, Time.deltaTime);
-			_animator.SetFloat(_hashVertical, normalizedLocalVel.z, 0.1f, Time.deltaTime);
+			_animator.SetFloat(_hashHorizontal, normalizedInput.x, 0.1f, Time.deltaTime);
+			_animator.SetFloat(_hashVertical, normalizedInput.z, 0.1f, Time.deltaTime);
 		}
 	}
 
-	// Xử lý Root Motion khi đang Xoay tại chỗ
+	// --- XỬ LÝ ROOT MOTION (QUAN TRỌNG) ---
 	private void OnAnimatorMove()
 	{
-		// Chỉ áp dụng Root Motion cho Rotation khi đang xoay tại chỗ
-		if (_isTurningInPlace)
-		{
-			// Cộng dồn độ xoay từ Animation vào Transform thực
-			transform.rotation *= _animator.deltaRotation;
+		// Áp dụng vị trí từ Animation vào Transform
+		transform.position += _animator.deltaPosition;
 
-			// Tùy chọn: Nếu Animation xoay có dịch chuyển vị trí nhẹ, có thể áp dụng:
-			// transform.position += _animator.deltaPosition;
-		}
-		else
-		{
-			// Khi đang di chuyển Locomotion, để NavMeshAgent lo Position.
-			// Nhưng cần đồng bộ vị trí Agent với Animation nếu có sai lệch (thường không cần nếu setup chuẩn)
-			_agent.velocity = _animator.deltaPosition / Time.deltaTime; // Nếu muốn dùng Root Motion Move hoàn toàn
-		}
+		// Áp dụng xoay từ Animation vào Transform
+		transform.rotation *= _animator.deltaRotation;
+
+		// ĐỒNG BỘ NGƯỢC: Báo cho NavMeshAgent biết vị trí mới của nhân vật
+		// Nếu không có dòng này, Agent sẽ kẹt lại phía sau hoặc trôi đi chỗ khác
+		_agent.nextPosition = transform.position;
 	}
 
-	// Debug trực quan
 	private void OnDrawGizmosSelected()
 	{
 		if (_agent != null && _agent.hasPath)
 		{
-			Gizmos.color = Color.blue;
+			Gizmos.color = _isTurningInPlace ? Color.red : Color.green;
+			Gizmos.DrawLine(transform.position, transform.position + Vector3.up * 2);
 			Gizmos.DrawLine(transform.position, _agent.steeringTarget);
-
-			// Vẽ góc Threshold
-			Vector3 leftDir = Quaternion.Euler(0, -_turnThreshold, 0) * transform.forward;
-			Vector3 rightDir = Quaternion.Euler(0, _turnThreshold, 0) * transform.forward;
-			Gizmos.color = Color.yellow;
-			Gizmos.DrawRay(transform.position, leftDir * 2);
-			Gizmos.DrawRay(transform.position, rightDir * 2);
 		}
 	}
 }
