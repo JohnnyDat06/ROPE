@@ -148,26 +148,6 @@ public class ArathroxMovement : MonoBehaviour
 		_agent.nextPosition = transform.position;
 	}
 
-	// Thêm vào ArathroxMovement.cs
-	public void FaceTarget(Vector3 targetPos)
-	{
-		Vector3 dir = (targetPos - transform.position).normalized;
-		dir.y = 0; // Giữ thăng bằng, không ngửa mặt lên trời
-		if (dir != Vector3.zero)
-		{
-			Quaternion lookRot = Quaternion.LookRotation(dir);
-			// Xoay nhanh hơn di chuyển bình thường để kịp tấn công
-			transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, 10f * Time.deltaTime);
-		}
-	}
-
-	// Hàm kiểm tra xem đã đến đích chưa (để Controller dùng)
-	public bool HasReachedDestination()
-	{
-		if (_agent.pathPending) return false;
-		return _agent.remainingDistance <= _agent.stoppingDistance + 0.1f; // +0.1f sai số
-	}
-
 	// Debug Gizmos
 	private void OnDrawGizmosSelected()
 	{
