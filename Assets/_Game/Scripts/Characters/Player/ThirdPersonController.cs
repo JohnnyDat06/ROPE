@@ -177,7 +177,6 @@ namespace StarterAssets
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
 
-            // Gửi trạng thái Grounded sang Animation Controller
             _animationController.UpdateGrounded(Grounded);
         }
 
@@ -233,17 +232,13 @@ namespace StarterAssets
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-            // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
-
-            // --- XỬ LÝ XOAY NHÂN VẬT (ROTATION) ---
 
             if (_input.move != Vector2.zero)
             {
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                   _mainCamera.transform.eulerAngles.y;
 
-                // 1. Chế độ Adventure (Cũ): Xoay nhân vật theo hướng di chuyển
                 if (!StrafeMode)
                 {
                     float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
@@ -252,7 +247,6 @@ namespace StarterAssets
                 }
             }
 
-            // 2. Chế độ Strafe (Mới): Luôn xoay nhân vật theo hướng Camera
             if (StrafeMode)
             {
                 _input.sprint = false;
@@ -362,12 +356,16 @@ namespace StarterAssets
         {
             if (_input.shoot)
             {
-                _raycastWeapon.StartFiring();
+                if (!_raycastWeapon.isFiring)
+                    _raycastWeapon.StartFiring();
+
+                _raycastWeapon.UpdateFiring(Time.deltaTime);
             }
             else
-            {
-                _raycastWeapon.StopFiring();
-            }
+                if (_raycastWeapon.isFiring)
+                    _raycastWeapon.StopFiring();
+
+            _raycastWeapon.UpdateBullets(Time.deltaTime);
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
