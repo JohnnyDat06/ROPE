@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
-#if ENABLE_INPUT_SYSTEM 
+using System.Net.NetworkInformation;
+
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+using UnityEngine.Animations.Rigging;
 #endif
 
 /* Note: animations are called via the PlayerAnimationController
@@ -78,6 +81,11 @@ namespace StarterAssets
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
+        [Header("Rigging Animation")]
+        [SerializeField] private Rig rigWeaponAim;
+        [SerializeField] private Rig rigBodyAim;
+        [SerializeField] private float AimRigTransitionSpeed = 10.0f;
+
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
@@ -97,11 +105,11 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
 #endif
-        // Thay thế Animator trực tiếp bằng Animation Controller riêng
         private PlayerAnimationController _animationController;
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
+        private RaycastWeapon _raycastWeapon;
 
         private const float _threshold = 0.01f;
 
@@ -134,6 +142,7 @@ namespace StarterAssets
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
             _animationController = GetComponent<PlayerAnimationController>();
+            _raycastWeapon = GetComponentInChildren<RaycastWeapon>();
 
 #if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
@@ -148,6 +157,7 @@ namespace StarterAssets
 
         private void Update()
         {
+            ShootControl();
             StrafeModeControl();
             JumpAndGravity();
             GroundedCheck();
@@ -329,15 +339,34 @@ namespace StarterAssets
 
         private void StrafeModeControl()
         {
+            float targetRigWeight;
+
             if (_input.shoot == true || _input.aim)
             {
                 MoveSpeed = StrafeMoveSpeed;
                 StrafeMode = true;
+                targetRigWeight = 1;
             }
             else
             {
                 MoveSpeed = 2f;
                 StrafeMode = false;
+                targetRigWeight = 0;
+            }
+
+            rigWeaponAim.weight = Mathf.Lerp(rigWeaponAim.weight, targetRigWeight, Time.deltaTime * AimRigTransitionSpeed);
+            rigBodyAim.weight = Mathf.Lerp(rigBodyAim.weight, targetRigWeight, Time.deltaTime * AimRigTransitionSpeed);
+        }
+
+        private void ShootControl()
+        {
+            if (_input.shoot)
+            {
+                _raycastWeapon.StartFiring();
+            }
+            else
+            {
+                _raycastWeapon.StopFiring();
             }
         }
 
@@ -371,6 +400,12 @@ namespace StarterAssets
         {
             // _rotateOnMove logic giờ nằm trong điều kiện StrafeMode
         }
-        private bool _rotateOnMove = true; // Giữ lại để tương thích logic cũ trong khối !StrafeMode
+
+        private bool _rotateOnMove = true;
+
+        private void OnAnimatorMove()
+        {
+            
+        }
     }
 }
