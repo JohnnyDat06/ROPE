@@ -5,23 +5,26 @@ using Unity.Behavior;
 public class VisionSensor : MonoBehaviour
 {
 	[Header("Settings - Eyes")]
-	[Tooltip("Gán các object mắt vào đây. Nếu để trống sẽ dùng vị trí của chính object này.")]
+	[Tooltip("Assign eye objects here. If empty, the object's own transform will be used.")]
 	public Transform[] eyes;
 
-	[Tooltip("Góc nhìn (Cone Angle)")]
+	[Tooltip("Field of View angle (Cone Angle).")]
 	[Range(0, 360)] public float viewAngle = 110f;
 
-	[Tooltip("Tầm xa (View Radius)")]
+	[Tooltip("Maximum view distance (View Radius).")]
 	public float viewRadius = 15f;
 
-	[Tooltip("Tầm nhìn gần tuyệt đối (Mù cũng thấy nếu đứng sát sạt)")]
-	public float closeRange = 1.0f;
+	[Tooltip("Absolute close range detection (detects even if behind or blinded).")]
+	public float closeRange = 3.0f;
+
+	[Tooltip("Time (in seconds) to keep the 'Detected' state true after losing visual contact.")]
+	public float detectionHoldTime = 3.0f;
 
 	[Header("Settings - Layers")]
-	[Tooltip("Layer của Player (Bắt buộc phải set đúng Layer cho Player GameObject)")]
+	[Tooltip("Player Layer (Must be set correctly on the Player GameObject).")]
 	public LayerMask targetMask;
 
-	[Tooltip("Layer vật cản (Tường, Đất...). TUYỆT ĐỐI KHÔNG CHỌN LAYER CỦA QUÁI.")]
+	[Tooltip("Obstacle Layers (Walls, Ground...). DO NOT INCLUDE THE ENEMY LAYER.")]
 	public LayerMask obstacleMask;
 
 	[Header("Blackboard Configuration")]
@@ -30,21 +33,25 @@ public class VisionSensor : MonoBehaviour
 
 	[Header("Debug")]
 	[SerializeField] private Transform _playerTarget;
-	[SerializeField] private bool _canSeePlayer;
+	[SerializeField] private bool _canSeePlayer; // Final state sent to Blackboard
+	[SerializeField] private bool _isPhysicallyVisible; // Real-time physical visibility status
 
-	// Cache component
+	// Cached components
 	private BehaviorGraphAgent _behaviorAgent;
-	private Collider _playerCollider; // Cache collider để lấy bounds
+	private Collider _playerCollider;
 
-	// Mask tổng hợp dùng để bắn Raycast (Bao gồm cả Tường và Player)
-	// Để đảm bảo tia bắn ra sẽ dừng lại ở vật cản ĐẦU TIÊN mà nó gặp (dù là Tường hay Player)
+	// Combined mask for Raycasting (Includes both Obstacles and Player)
+	// Ensures the ray stops at the FIRST object hit (whether it is a Wall or the Player)
 	private int _combinedMask;
+
+	// Timer for detection memory
+	private float _lastTimeSeen = -100f;
 
 	private void Start()
 	{
 		_behaviorAgent = GetComponent<BehaviorGraphAgent>();
 
-		// Tự động tìm Player
+		// Automatically find Player if not manually assigned
 		if (_playerTarget == null)
 		{
 			GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -55,17 +62,17 @@ public class VisionSensor : MonoBehaviour
 			}
 		}
 
-		// Gán Player vào Blackboard (1 lần)
+		// Set Player to Blackboard (Once at start)
 		if (_playerTarget != null)
 		{
 			_behaviorAgent.SetVariableValue(playerVariableName, _playerTarget.gameObject);
 		}
 		else
 		{
-			Debug.LogWarning("VisionSensor: Chưa tìm thấy Player! Hãy chắc chắn Player có Tag 'Player'.");
+			Debug.LogWarning("VisionSensor: Player not found! Ensure Player has the 'Player' tag.");
 		}
 
-		// Config mặc định cho Obstacle Mask
+		// Default config for Obstacle Mask
 		if (obstacleMask == 0)
 		{
 			obstacleMask = LayerMask.GetMask("Default");
@@ -76,10 +83,29 @@ public class VisionSensor : MonoBehaviour
 
 	private void Update()
 	{
-		// Tính toán tầm nhìn
-		_canSeePlayer = CheckVision();
+		// 1. Perform physical vision check
+		_isPhysicallyVisible = CheckVision();
 
-		// Ghi vào Blackboard
+		// 2. Handle Detection Hold Time (Hysteresis)
+		if (_isPhysicallyVisible)
+		{
+			_lastTimeSeen = Time.time;
+			_canSeePlayer = true;
+		}
+		else
+		{
+			// If the time since last seen is within the hold duration, keep detected as true
+			if (Time.time - _lastTimeSeen < detectionHoldTime)
+			{
+				_canSeePlayer = true;
+			}
+			else
+			{
+				_canSeePlayer = false;
+			}
+		}
+
+		// 3. Write result to Blackboard
 		_behaviorAgent.SetVariableValue(detectedVariableName, _canSeePlayer);
 	}
 
@@ -87,13 +113,13 @@ public class VisionSensor : MonoBehaviour
 	{
 		if (_playerTarget == null) return false;
 
-		// Xử lý trường hợp không gán mắt
+		// Handle case where no eyes are assigned
 		if (eyes == null || eyes.Length == 0)
 		{
 			return CheckEyesLogic(transform);
 		}
 
-		// Duyệt qua từng mắt
+		// Iterate through all eyes
 		foreach (var eye in eyes)
 		{
 			if (eye != null && CheckEyesLogic(eye)) return true;
@@ -107,34 +133,34 @@ public class VisionSensor : MonoBehaviour
 		Vector3 vectorToPlayer = _playerTarget.position - eye.position;
 		float distanceToPlayer = vectorToPlayer.magnitude;
 
-		// 1. Kiểm tra Khoảng cách (Radius)
+		// 1. Check Radius
 		if (distanceToPlayer > viewRadius) return false;
 
-		// 2. Logic góc nhìn (Kết hợp logic cũ của bạn)
+		// 2. Check View Angle
 		float halfAngle = viewAngle * 0.5f;
 		float angleToPlayer = Vector3.Angle(eye.forward, vectorToPlayer);
 
-		// Nếu ở quá gần (<1m) HOẶC góc nhìn thỏa mãn -> OK
+		// Success if very close (<1m) OR within view angle
 		bool angleOK = (distanceToPlayer <= closeRange) || (angleToPlayer <= halfAngle);
 
 		if (angleOK)
 		{
-			// 3. Raycast kiểm tra vật cản (Check 3 điểm: Tâm, Đỉnh, Đáy)
+			// 3. Raycast Check (Check 3 points: Center, Top, Bottom)
 			if (_playerCollider != null)
 			{
-				// Ưu tiên check Tâm trước (Center)
+				// Prioritize Center check
 				if (CheckLineOfSight(eye.position, _playerCollider.bounds.center)) return true;
 
-				// Check Đỉnh đầu (Top) - giúp thấy khi núp sau vật thấp
+				// Check Top (Head) - helps when hiding behind low obstacles
 				if (CheckLineOfSight(eye.position, _playerCollider.bounds.max)) return true;
 
-				// Check Chân (Bottom) - giúp thấy khi lòi chân ra
+				// Check Bottom (Feet) - helps when only legs are visible
 				if (CheckLineOfSight(eye.position, _playerCollider.bounds.min)) return true;
 			}
 			else
 			{
-				// Fallback nếu Player không có Collider (chỉ check pivot)
-				// Nâng điểm check lên 1 chút (thường pivot ở chân) để tránh chạm đất
+				// Fallback if Player has no Collider (check pivot + offset)
+				// Raise check point slightly to avoid hitting ground
 				if (CheckLineOfSight(eye.position, _playerTarget.position + Vector3.up * 1.0f)) return true;
 			}
 		}
@@ -147,30 +173,36 @@ public class VisionSensor : MonoBehaviour
 		Vector3 direction = end - start;
 		float distance = direction.magnitude;
 
+		// Raycast with CombinedMask
+		// QueryTriggerInteraction.Ignore to look through trigger volumes
 		if (Physics.Raycast(start, direction.normalized, out RaycastHit hit, distance, _combinedMask, QueryTriggerInteraction.Ignore))
 		{
-			// LOGIC 1: Kiểm tra xem có trúng Player (hoặc bộ phận của Player) không?
-			// Dùng IsChildOf để đảm bảo nếu bắn trúng tay/chân/đầu (collider con) thì vẫn tính là trúng Player
+			// LOGIC 1: Check if it hit the Player (or a child of the Player)
 			if (hit.transform == _playerTarget || hit.transform.IsChildOf(_playerTarget))
 			{
-				return true; // Vật cản đầu tiên là Player -> NHÌN THẤY
+				return true; // First hit is Player -> VISIBLE
 			}
 
-			// LOGIC 2: Nếu không phải Player, thì chắc chắn là vật cản môi trường (do Mask chỉ có Player + Obstacle)
-			// (Ví dụ: Trúng Tường, Đất...)
-			return false; // Vật cản đầu tiên là Tường -> KHÔNG THẤY
+			// LOGIC 2: If not Player, it must be an obstacle (since mask only has Player + Obstacle)
+			return false; // First hit is Wall/Obstacle -> BLOCKED
 		}
 
-		// Không trúng vật cản gì cả -> Đường thoáng -> Nhìn thấy
+		// No hit occurred -> Clear line of sight -> VISIBLE
 		return true;
 	}
 
-	// Vẽ Debug
+	// Draw Debug Gizmos
 	private void OnDrawGizmos()
 	{
 		if (eyes == null) return;
 
-		Gizmos.color = _canSeePlayer ? Color.green : Color.red;
+		// Green if visible, Yellow if hidden but in memory (hold time), Red if lost
+		if (_isPhysicallyVisible)
+			Gizmos.color = Color.green;
+		else if (_canSeePlayer)
+			Gizmos.color = Color.yellow;
+		else
+			Gizmos.color = Color.red;
 
 		foreach (var eye in eyes)
 		{
@@ -184,10 +216,10 @@ public class VisionSensor : MonoBehaviour
 			Gizmos.DrawLine(eye.position, eye.position + viewAngleA * viewRadius);
 			Gizmos.DrawLine(eye.position, eye.position + viewAngleB * viewRadius);
 
-			// Vẽ tia debug đến 3 điểm của Player nếu có thể
+			// Draw debug lines to player bounds if applicable
 			if (_playerTarget != null && _playerCollider != null)
 			{
-				Gizmos.color = new Color(1, 1, 0, 0.3f); // Vàng mờ
+				Gizmos.color = new Color(1, 1, 0, 0.3f); // Faint yellow
 				Gizmos.DrawLine(eye.position, _playerCollider.bounds.center);
 				Gizmos.DrawLine(eye.position, _playerCollider.bounds.max);
 				Gizmos.DrawLine(eye.position, _playerCollider.bounds.min);
