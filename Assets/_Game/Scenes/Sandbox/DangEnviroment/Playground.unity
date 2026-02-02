@@ -384,7 +384,7 @@ Transform:
   m_GameObject: {fileID: 75683150}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.3100004, y: 0, z: 7.05}
+  m_LocalPosition: {x: -3.3100004, y: 0, z: 12.43}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2662,7 +2662,7 @@ Transform:
   m_GameObject: {fileID: 336926880}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 14.31, z: 0}
+  m_LocalPosition: {x: 0, y: 6.89, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5162,7 +5162,7 @@ MonoBehaviour:
   sellDelay: 7
   floatHeight: 1.5
   rocketSpeed: 50
-  rugCenter: {fileID: 646442517}
+  rugCenter: {fileID: 336926881}
   infoText: {fileID: 0}
 --- !u!65 &646442514
 BoxCollider:
@@ -10393,7 +10393,7 @@ Transform:
   m_GameObject: {fileID: 1589044991}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.3100004, y: 0, z: 7.05}
+  m_LocalPosition: {x: -3.3100004, y: 0, z: 8.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14168,8 +14168,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rainParticleSystem: {fileID: 155816937}
-  targetToFollow: {fileID: 0}
-  rainChance: 0.697
+  targetToFollow: {fileID: 170471929}
+  rainChance: 0.817
   rainHeightOffset: 15
   lightningPrefab: {fileID: 5768471219620145695, guid: 981546f6817ab44429b47369a64fb9a2, type: 3}
   obstacleLayer:
