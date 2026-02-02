@@ -2,18 +2,17 @@
 
 public class TriggerRelay : MonoBehaviour
 {
-    // Kéo thằng cha (PressurePlate_Group) vào đây
+    [Header("Liên kết")]
+    [Tooltip("Kéo script PressurePlate từ object cha vào đây")]
     [SerializeField] private PressurePlate plateLogic;
 
     private void OnTriggerEnter(Collider other)
     {
-        // Gọi hàm của cha
-        plateLogic.OnObjectEnter(other);
+        if (plateLogic) plateLogic.OnObjectEnter(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // Gọi hàm của cha
-        plateLogic.OnObjectExit(other);
+        if (plateLogic) plateLogic.OnObjectExit(other);
     }
 }

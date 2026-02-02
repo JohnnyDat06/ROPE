@@ -4,74 +4,94 @@ using System.Collections.Generic;
 public class PressurePlate : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private Transform visualModel; // Kéo Visual_Model vào đây
-    [SerializeField] private float moveSpeed = 5f;  // Tốc độ lún xuống/nảy lên
-    [SerializeField] private float pressDepth = 0.15f; // Độ sâu lún xuống (mét)
+    [SerializeField] private Transform visualModel;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float pressDepth = 0.15f;
 
     [Header("Debug Info")]
-    public bool IsPressed => objectsOnPlate.Count > 0; // Public để Controller đọc
+    // Kiểm tra xem có vật nào hợp lệ đang đè lên không
+    public bool IsPressed => objectsOnPlate.Count > 0;
 
     private List<Collider> objectsOnPlate = new List<Collider>();
     private Vector3 initialPos;
-    private Vector3 targetPos;
-    public void OnObjectEnter(Collider other)
-    {
-        // Kiểm tra Tag Player hoặc Vật phẩm
-        if (other.CompareTag("Player") || other.CompareTag("QuestItem"))
-        {
-            if (!objectsOnPlate.Contains(other))
-            {
-                objectsOnPlate.Add(other);
-            }
-        }
-    }
 
-    public void OnObjectExit(Collider other)
-    {
-        if (objectsOnPlate.Contains(other))
-        {
-            objectsOnPlate.Remove(other);
-        }
-    }
     void Start()
     {
-        // Lưu vị trí ban đầu của phần hình ảnh
         if (visualModel != null)
         {
             initialPos = visualModel.localPosition;
-        }
-        else
-        {
-            Debug.LogError("Chưa gán Visual Model cho Pressure Plate!");
         }
     }
 
     void Update()
     {
+        // 1. Dọn dẹp danh sách (QUAN TRỌNG)
+        // Nếu món đồ bị người chơi nhặt -> Nó bị Disable hoặc Destroy -> Cần xóa khỏi list để bàn đạp nảy lên
+        ValidateObjectsOnPlate();
+
+        // 2. Xử lý chuyển động
         HandleMovement();
     }
 
-    // Hàm xử lý di chuyển lên xuống mượt mà
+    // --- LOGIC NHẬN DIỆN MỚI ---
+    public void OnObjectEnter(Collider other)
+    {
+        // A. Kiểm tra Player
+        if (other.CompareTag("Player"))
+        {
+            AddObj(other);
+            return;
+        }
+
+        // B. Kiểm tra Item từ hệ thống Inventory (ĐỒNG BỘ VỚI INTERACTABLE)
+        // Thay vì check Tag, ta check xem nó có script ItemController không
+        if (other.TryGetComponent(out ItemController item))
+        {
+            AddObj(other);
+        }
+    }
+
+    public void OnObjectExit(Collider other)
+    {
+        RemoveObj(other);
+    }
+
+    // Các hàm phụ trợ để quản lý List an toàn hơn
+    void AddObj(Collider col)
+    {
+        if (!objectsOnPlate.Contains(col))
+        {
+            objectsOnPlate.Add(col);
+        }
+    }
+
+    void RemoveObj(Collider col)
+    {
+        if (objectsOnPlate.Contains(col))
+        {
+            objectsOnPlate.Remove(col);
+        }
+    }
+
+    void ValidateObjectsOnPlate()
+    {
+        // Duyệt ngược để xóa các phần tử null hoặc không còn active (đã bị nhặt)
+        for (int i = objectsOnPlate.Count - 1; i >= 0; i--)
+        {
+            Collider col = objectsOnPlate[i];
+
+            // Nếu vật thể bị hủy (null) hoặc bị tắt (SetActive false - do chui vào túi đồ)
+            if (col == null || !col.gameObject.activeInHierarchy || !col.enabled)
+            {
+                objectsOnPlate.RemoveAt(i);
+            }
+        }
+    }
+
     void HandleMovement()
     {
         if (visualModel == null) return;
-
-        // Nếu đang bị đè -> Đích đến là vị trí lún xuống (trừ trục Y)
-        // Nếu không -> Đích đến là vị trí ban đầu
         Vector3 destination = IsPressed ? (initialPos - new Vector3(0, pressDepth, 0)) : initialPos;
-
-        // Dùng MoveTowards để di chuyển tuyến tính, tránh rung lắc
         visualModel.localPosition = Vector3.MoveTowards(visualModel.localPosition, destination, moveSpeed * Time.deltaTime);
     }
-
-    // --- PHẦN XỬ LÝ TRIGGER (Của Sensor) ---
-    // Lưu ý: Script này nằm ở cha, nhưng Trigger nằm ở con (Sensor_Trigger).
-    // Để cha nhận được sự kiện của con, bạn cần 1 thủ thuật nhỏ hoặc gắn script này trực tiếp vào Sensor.
-    // NHƯNG để Pro và gọn, ta sẽ dùng hàm OnTriggerEnter TỪ SENSOR gọi lên CHA.
-
-    // --> Cách đơn giản nhất cho bạn: Hãy gắn script này vào thằng cha (Group).
-    // Nhưng thằng Sensor_Trigger cần thêm script phụ trợ nhỏ ở dưới hoặc chỉnh lại Physics settings.
-
-    // CÁCH DỄ NHẤT: Để Script này ở Cha, và đổi logic Trigger một chút:
-    // Bạn hãy làm theo hướng dẫn "Bước 3" bên dưới để kết nối logic.
 }

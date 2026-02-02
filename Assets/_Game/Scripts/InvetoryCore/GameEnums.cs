@@ -1,20 +1,22 @@
 ﻿public enum CheckMode
 {
-    Quantity,
-    Weight
+    Quantity,   // Số lượng món đồ
+    TotalValue  // Tổng giá trị tiền ($) - Thay thế cho Weight
 }
 
 public enum ConditionType
 {
-    Lower, Equal, Higher
+    Lower,   // Thấp hơn
+    Equal,   // Bằng
+    Higher   // Cao hơn
 }
 
-// --- THÊM MỚI ---
+// Giữ nguyên ItemType
 public enum ItemType
 {
-    Small,      // Đồ nhỏ (1-10$)
-    Large,      // Đồ lớn (11-36$)
-    IronSmall,  // Sắt nhỏ (16-44$)
-    IronLarge,  // Sắt lớn (50-100$)
-    Special     // Đặc biệt (>500$)
+    Small,
+    Large,
+    IronSmall,
+    IronLarge,
+    Special
 }
