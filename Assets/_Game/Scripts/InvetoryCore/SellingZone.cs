@@ -24,10 +24,8 @@ public class SellingZone : MonoBehaviour
     [Tooltip("Độ rơi chậm lúc đang bay")]
     public float rewardFallingDrag = 4.0f;
 
-    // --- MỚI: CHỌN LAYER ĐỂ RAYCAST ---
     [Tooltip("Chỉ chọn Layer của sàn nhà (Ground/Default). Đừng chọn Trigger!")]
     public LayerMask groundLayer;
-    // ----------------------------------
 
     [Header("--- References ---")]
     public Transform rugCenter;
@@ -38,6 +36,10 @@ public class SellingZone : MonoBehaviour
     private Coroutine sellProcess;
     private bool isSelling = false;
     private bool isLaunching = false;
+
+    // --- BIẾN MỚI CHO LOGIC BẠN YÊU CẦU ---
+    private bool hasSpawnedKeyCard = false; // Kiểm soát chỉ spawn 1 lần
+    private bool isQuotaRevealed = false;   // Kiểm soát lộ diện số tiền vĩnh viễn
 
     private void Start()
     {
@@ -100,8 +102,16 @@ public class SellingZone : MonoBehaviour
     void CheckAndHandleState()
     {
         if (isLaunching) return;
+
         int total = CalculateTotalValue();
+
+        // --- LOGIC MỚI: LỘ DIỆN VĨNH VIỄN ---
+        // Chỉ cần 1 lần total > 0 là bật cờ luôn
+        if (total > 0) isQuotaRevealed = true;
+        // ------------------------------------
+
         UpdateUI(total);
+
         if (total >= quotaMoney)
         {
             if (!isSelling) StartSellingProcess();
@@ -185,9 +195,11 @@ public class SellingZone : MonoBehaviour
         itemsOnRug.Clear();
         if (infoText) infoText.text = $"SOLD: {finalMoney}$";
 
-        // >>> GIAI ĐOẠN 4: SPAWN KEY CARD <<<
-        if (keyCardPrefab != null)
+        // >>> GIAI ĐOẠN 4: SPAWN KEY CARD (CHỈ 1 LẦN) <<<
+        if (keyCardPrefab != null && !hasSpawnedKeyCard) // Check cờ
         {
+            hasSpawnedKeyCard = true; // Đánh dấu đã spawn
+
             Vector3 spawnPos = (rewardSpawnPoint != null) ? rewardSpawnPoint.position : (rugCenter.position + Vector3.up * 3.5f);
             if (rewardSpawnPoint != null && spawnPos.y < rugCenter.position.y + 1f) spawnPos.y += 3.5f;
 
@@ -201,14 +213,13 @@ public class SellingZone : MonoBehaviour
                 StartCoroutine(HandleCardLanding(card, cardRb));
             }
         }
+
         yield return new WaitForSeconds(3.0f);
         isSelling = false; isLaunching = false; UpdateUI(0);
     }
 
-    // --- FIX: THÊM LAYER MASK VÀO RAYCAST ---
     IEnumerator HandleCardLanding(GameObject card, Rigidbody rb)
     {
-        // Thời gian chờ tối thiểu (0.5s) để tránh Raycast trúng chính nó hoặc vật cản lúc vừa spawn
         yield return new WaitForSeconds(0.5f);
 
         bool isGrounded = false;
@@ -217,9 +228,6 @@ public class SellingZone : MonoBehaviour
         while (!isGrounded && card != null && timeout > 0)
         {
             timeout -= Time.deltaTime;
-
-            // CHỈ RAYCAST TRÚNG GROUND LAYER
-            // (card.transform.position, hướng xuống, khoảng cách 0.5m, chỉ layer được chọn)
             if (Physics.Raycast(card.transform.position, Vector3.down, 0.5f, groundLayer))
             {
                 isGrounded = true;
@@ -247,7 +255,15 @@ public class SellingZone : MonoBehaviour
         if (card != null && rb != null)
         {
             card.transform.rotation = targetRot;
-            rb.isKinematic = false; // Khóa cứng
+
+            // --- FIX YÊU CẦU: KHÔNG KHÓA KINEMATIC ---
+            rb.isKinematic = false; // Vẫn giữ vật lý
+                                    // -----------------------------------------
+
+            // Reset vận tốc lần cuối để nó nằm im, không bị trượt đi do quán tính
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.linearDamping = 1f; // Trả về damping bình thường
         }
     }
 
@@ -255,8 +271,13 @@ public class SellingZone : MonoBehaviour
     {
         if (infoText == null || isLaunching) return;
         if (isSelling) return;
+
         string color = current >= quotaMoney ? "green" : "red";
-        string displayQuota = (current > 0) ? quotaMoney.ToString() : "???";
+
+        // --- LOGIC MỚI: DÙNG CỜ isQuotaRevealed ---
+        string displayQuota = (isQuotaRevealed) ? quotaMoney.ToString() : "???";
+        // ------------------------------------------
+
         infoText.text = $"TOTAL: <color={color}>{current}</color> / {displayQuota}$";
     }
 }
