@@ -14708,6 +14708,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00669c99b332af742915cdd073c96c7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winPercentage: 0.75
   quotaMoney: 150
   sellDelay: 7
   floatHeight: 1.5
@@ -14715,6 +14716,9 @@ MonoBehaviour:
   keyCardPrefab: {fileID: 2676784039702478555, guid: ca1a7273f05f70345be963f2ddf2be05, type: 3}
   rewardSpawnPoint: {fileID: 2085788705}
   rewardFallingDrag: 8
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
   rugCenter: {fileID: 336926881}
   infoText: {fileID: 129797367}
 --- !u!1 &2097268059
