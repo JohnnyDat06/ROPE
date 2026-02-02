@@ -15,14 +15,17 @@ public class PlayerInventorySystem : MonoBehaviour
 
     [Header("--- 2. Charge Throw (Ném Gồng Lực) ---")]
     public float minThrowForce = 2.0f;   // Nhấp nhẹ: Rơi ngay dưới chân
-    public float maxThrowForce = 15.0f;  // Đè lâu: Ném xa
+
+    // --- CẬP NHẬT: Tăng lực ném tối đa lên 25 (Ném cực mạnh) ---
+    public float maxThrowForce = 25.0f;
+
     [Tooltip("Thời gian gồng tối đa. Nếu giữ quá thời gian này sẽ tự bắn.")]
-    public float maxChargeTime = 5.0f;
+    public float maxChargeTime = 3.0f; // Giảm xuống 3s cho gồng lẹ hơn
 
     [Header("--- 3. Drop Physics (Rơi Đầm) ---")]
     public float dropLinearDamping = 1.0f;
     public float dropAngularDamping = 1.0f;
-    public float objectSpin = 2.0f; // Độ xoay ngẫu nhiên khi ném
+    public float objectSpin = 5.0f; // Tăng độ xoay khi ném mạnh cho ngầu
 
     [Header("--- 4. Inventory 3D Slots ---")]
     [Tooltip("Kéo 4 Empty Object dưới lòng đất vào đây")]
@@ -41,7 +44,7 @@ public class PlayerInventorySystem : MonoBehaviour
     public TextMeshProUGUI totalValueText;
 
     [Header("--- 7. External Systems ---")]
-    public WeatherManager weatherManager; // Để cập nhật tỷ lệ sét đánh
+    public WeatherManager weatherManager;
 
     // ========================================================================
     // 2. PRIVATE VARIABLES & PROPERTIES
@@ -175,7 +178,7 @@ public class PlayerInventorySystem : MonoBehaviour
             float chargePercent = Mathf.Clamp01(throwChargeTimer / maxChargeTime);
             if (progressCircle) progressCircle.fillAmount = chargePercent;
 
-            // Auto Throw sau 5s
+            // Auto Throw sau khi gồng Max
             if (throwChargeTimer >= maxChargeTime)
             {
                 DropItem(currentSlotIndex, maxThrowForce);
@@ -188,6 +191,7 @@ public class PlayerInventorySystem : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Q) && isChargingThrow)
         {
+            // Tính toán lực ném dựa trên thời gian giữ
             float finalForce = Mathf.Lerp(minThrowForce, maxThrowForce, throwChargeTimer / maxChargeTime);
             DropItem(currentSlotIndex, finalForce);
             isChargingThrow = false;
@@ -197,7 +201,7 @@ public class PlayerInventorySystem : MonoBehaviour
     }
 
     // ========================================================================
-    // 5. ITEM HANDLING (PICKUP & SMART DROP)
+    // 5. ITEM HANDLING
     // ========================================================================
     void PickupItem(ItemController item, int slotIndex)
     {
@@ -209,7 +213,7 @@ public class PlayerInventorySystem : MonoBehaviour
         item.SetState(true);
     }
 
-    // --- HÀM DROP ĐƯỢC NÂNG CẤP (Xếp chồng an toàn) ---
+    // --- HÀM DROP THÔNG MINH (XẾP CHỒNG + NÉM MẠNH) ---
     void DropItem(int slotIndex, float forceToApply)
     {
         if (slotIndex < 0 || slotIndex >= inventoryItems.Length) return;
@@ -219,30 +223,29 @@ public class PlayerInventorySystem : MonoBehaviour
         // 1. Tách khỏi người chơi
         item.transform.SetParent(null);
 
-        // 2. Reset Scale & Rotation (Nếu ném nhẹ thì dựng đứng để dễ xếp chồng)
+        // 2. Reset Scale & Rotation
+        // Nếu ném nhẹ (Nhấp Q) -> Dựng đứng item để dễ xếp chồng
+        bool isGentleDrop = (forceToApply <= minThrowForce * 1.5f);
+
         item.transform.localScale = Vector3.one;
-        if (forceToApply <= minThrowForce * 1.5f)
+        if (isGentleDrop)
         {
             item.transform.rotation = Quaternion.identity;
         }
 
-        // 3. Tính toán kích thước thật của vật phẩm
-        float itemHalfHeight = 0.25f; // Mặc định
+        // 3. Tính toán kích thước thật
+        float itemHalfHeight = 0.25f;
         Collider col = item.GetComponent<Collider>();
         if (col != null) itemHalfHeight = col.bounds.extents.y;
 
-        // 4. Dùng SphereCast quét xuống để tìm chỗ đặt an toàn
+        // 4. SphereCast để tìm chỗ đặt an toàn (Chống xuyên vật thể)
         Vector3 finalPos = dropPoint.position;
         float checkRadius = 0.2f;
         float checkDistance = 1.5f;
 
-        // Layer mask: ~0 (All layers) hoặc tránh layer Player nếu cần
         if (Physics.SphereCast(dropPoint.position, checkRadius, Vector3.down, out RaycastHit hit, checkDistance))
         {
-            // Tính toán độ cao cần thiết để không lồng vào vật bên dưới
-            float targetHeight = hit.point.y + itemHalfHeight + 0.05f; // +5cm hở
-
-            // Nếu vị trí thả thấp hơn mặt vật cản -> Nâng lên
+            float targetHeight = hit.point.y + itemHalfHeight + 0.05f;
             if (finalPos.y < targetHeight || (finalPos.y - hit.point.y) < itemHalfHeight * 2)
             {
                 finalPos.y = targetHeight;
@@ -259,19 +262,23 @@ public class PlayerInventorySystem : MonoBehaviour
         Rigidbody rb = item.GetComponent<Rigidbody>();
         if (rb != null)
         {
+            // --- QUAN TRỌNG: BẬT LẠI TRỌNG LỰC ---
+            rb.useGravity = true;
+
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             rb.linearDamping = dropLinearDamping;
             rb.angularDamping = dropAngularDamping;
 
-            // Chỉ đẩy tới nếu ném mạnh
-            if (forceToApply > minThrowForce * 1.5f)
+            // --- LOGIC PHÂN LOẠI LỰC NÉM ---
+            if (!isGentleDrop)
             {
+                // NÉM MẠNH: Thêm lực đẩy tới + Xoay mạnh
                 Vector3 throwDir = (playerCam.transform.forward + Vector3.up * 0.2f).normalized;
                 rb.AddForce(throwDir * forceToApply, ForceMode.Impulse);
                 rb.AddTorque(Random.insideUnitSphere * objectSpin, ForceMode.Impulse);
             }
-            // Nếu ném nhẹ -> Rơi tự do tại chỗ (đã tính toán vị trí an toàn ở trên)
+            // NÉM NHẸ: Không AddForce, chỉ rơi tự do tại chỗ (đã tính toán ở trên)
         }
 
         inventoryItems[slotIndex] = null;
@@ -320,7 +327,6 @@ public class PlayerInventorySystem : MonoBehaviour
                 v += item.scrapValue;
                 c++;
 
-                // Logic Sét: +10% cho sắt nhỏ, +15% cho sắt lớn
                 if (item.data.itemType == ItemType.IronSmall) lightningChance += 0.10f;
                 else if (item.data.itemType == ItemType.IronLarge) lightningChance += 0.15f;
             }
@@ -330,10 +336,7 @@ public class PlayerInventorySystem : MonoBehaviour
         TotalValue = v;
         TotalItemCount = c;
 
-        // UI Tổng tiền
         if (totalValueText != null) totalValueText.text = $"TOTAL: <color=yellow>${TotalValue}</color>";
-
-        // Cập nhật WeatherManager
         if (weatherManager) weatherManager.currentStrikeChance = lightningChance;
     }
 }
