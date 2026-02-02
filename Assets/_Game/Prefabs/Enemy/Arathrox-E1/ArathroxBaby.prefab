@@ -723,10 +723,10 @@ NavMeshAgent:
   m_GameObject: {fileID: 3816726762416881362}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.6
+  m_Radius: 0.9
   m_Speed: 1.5
   m_Acceleration: 100
-  avoidancePriority: 40
+  avoidancePriority: 60
   m_AngularSpeed: 360
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 0
@@ -837,7 +837,7 @@ MonoBehaviour:
   eyes:
   - {fileID: 6918076560442937467}
   viewAngle: 110
-  viewRadius: 8
+  viewRadius: 10
   closeRange: 4
   detectionHoldTime: 3
   targetMask:
