@@ -7,6 +7,7 @@ public class ActiveWeapon : MonoBehaviour
 {
     [SerializeField] private Rig HandIK;
     public Transform crossHairTarget;
+    private bool isAiming = false;
 
     [Header("Weapon")]
     [SerializeField] private Transform weaponLeftGrip;
@@ -33,10 +34,13 @@ public class ActiveWeapon : MonoBehaviour
     {
         ShootControl();
     }
+
+    public bool IsAiming() => isAiming;
     private void ShootControl()
     {
         if (weapon)
         {
+            isAiming = true;
             if (_input.shoot)
             {
                 if (!weapon.isFiring)
@@ -52,6 +56,7 @@ public class ActiveWeapon : MonoBehaviour
         }
         else
         {
+            isAiming = false;
             HandIK.weight = 0f;
             anim.SetLayerWeight(1, 0f);
         }
