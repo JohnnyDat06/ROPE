@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4000010507042020}
   - component: {fileID: 33000013731957406}
   - component: {fileID: 23000013943122684}
-  - component: {fileID: 64000010251917238}
+  - component: {fileID: 6453513954535752131}
   m_Layer: 0
   m_Name: Oil_tank_v2
   m_TagString: Untagged
@@ -87,8 +87,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64000010251917238
-MeshCollider:
+--- !u!65 &6453513954535752131
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -105,7 +105,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300002, guid: 7e189a73bb9572344b1bf8d0bddfdaeb, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 1.7406738, y: 5.1842904, z: 1.7142303}
+  m_Center: {x: -0.000001847744, y: -0.013386011, z: -0.0000011026859}

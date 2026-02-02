@@ -275,6 +275,7 @@ GameObject:
   - component: {fileID: 7222184730924458395}
   - component: {fileID: 7222184730927882687}
   - component: {fileID: 7222184730926883711}
+  - component: {fileID: 8180890268805032256}
   m_Layer: 0
   m_Name: sm_Column_B_02_01_LOD0
   m_TagString: Untagged
@@ -352,6 +353,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8180890268805032256
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7222184730924891579}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3902655, y: 1.0114157, z: 7.924038}
+  m_Center: {x: -0.1665626, y: 0.41106203, z: 3.961738}
 --- !u!1 &7222184730924891583
 GameObject:
   m_ObjectHideFlags: 0

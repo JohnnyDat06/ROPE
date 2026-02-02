@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 5586607051477760131}
   - component: {fileID: 5586607051480660135}
   - component: {fileID: 5586607051479661159}
-  - component: {fileID: 1510496160060671408}
+  - component: {fileID: 4188819571207683031}
   m_Layer: 0
   m_Name: sm_en_WoodSpool_01_01_LOD0
   m_TagString: Untagged
@@ -173,8 +173,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1510496160060671408
-MeshCollider:
+--- !u!65 &4188819571207683031
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -191,10 +191,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: 24b033d871ce08648b5f4cef883af811, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 1.5621673, y: 1.5723661, z: 0.9428817}
+  m_Center: {x: 0.00000029802322, y: -0.003143937, z: 0.47653157}
 --- !u!1 &5586607051477460135
 GameObject:
   m_ObjectHideFlags: 0

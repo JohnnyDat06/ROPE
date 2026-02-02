@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 9097007178204831617}
   - component: {fileID: 9097007178206125989}
   - component: {fileID: 9097007178207124837}
-  - component: {fileID: 4068113769961990980}
-  - component: {fileID: 1236898780097332854}
+  - component: {fileID: 5047830680045341087}
   m_Layer: 0
   m_Name: sm_WallA_02_02_LOD0
   m_TagString: Untagged
@@ -96,8 +95,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4068113769961990980
-BoxCollider:
+--- !u!64 &5047830680045341087
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -114,30 +113,10 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 12.340886, y: 0.39643854, z: 3.8499966}
-  m_Center: {x: -6.170442, y: 0.00096285297, z: 1.7832824}
---- !u!65 &1236898780097332854
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9097007178204857249}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.36285114, y: 6.602511, z: 3.8499966}
-  m_Center: {x: -12.15946, y: 3.1039996, z: 1.7832824}
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 80e4aeecd111ec34a859cfbcaa60d8de, type: 3}
 --- !u!1 &9097007178204857251
 GameObject:
   m_ObjectHideFlags: 0

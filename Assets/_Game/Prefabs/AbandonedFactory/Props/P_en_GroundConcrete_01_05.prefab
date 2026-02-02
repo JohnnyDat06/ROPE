@@ -336,7 +336,7 @@ GameObject:
   - component: {fileID: 6877608708008057646}
   - component: {fileID: 6877608708004666122}
   - component: {fileID: 6877608708005763530}
-  - component: {fileID: 8285374751096860833}
+  - component: {fileID: 956046829667169667}
   m_Layer: 0
   m_Name: sm_en_GroundConcrete_01_05_LOD0
   m_TagString: Untagged
@@ -412,7 +412,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8285374751096860833
+--- !u!64 &956046829667169667
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -431,6 +431,6 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: 7a6a140664baa7a428ad3ce60f034dda, type: 3}
+  m_Mesh: {fileID: 4300000, guid: fef2dcc5acaaa7a4b9c7f246b90f5a0a, type: 3}

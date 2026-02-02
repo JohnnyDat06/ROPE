@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 3176481017489858211}
   - component: {fileID: 3176481017493282439}
   - component: {fileID: 3176481017492151367}
-  - component: {fileID: 4762466145441492062}
+  - component: {fileID: 7965298525953616044}
   m_Layer: 0
   m_Name: sm_en_pipe_01_01_LOD0
   m_TagString: Untagged
@@ -173,7 +173,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4762466145441492062
+--- !u!64 &7965298525953616044
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -192,9 +192,9 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: f47b472f475970241837f4d1efd1a695, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 9e7e2f8394a1edd4788e05ca27eafa76, type: 3}
 --- !u!1 &3176481017490211463
 GameObject:
   m_ObjectHideFlags: 0
