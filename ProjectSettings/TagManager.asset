@@ -16,8 +16,8 @@ TagManager:
   - UI
   - Weapon
   - Player
-  - 
-  - 
+  - InventoryRender
+  - Interactable
   - 
   - 
   - 
