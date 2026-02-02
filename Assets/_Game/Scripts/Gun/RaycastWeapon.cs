@@ -21,10 +21,12 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private ParticleSystem[] muzzleFlash;
     [SerializeField] private ParticleSystem hitEffect;
     [SerializeField] private Transform raycastOrigin;
-    [SerializeField] private Transform raycastDestination;
+    [SerializeField] public Transform raycastDestination;
 
     [SerializeField] private TrailRenderer tracerEffect;
     [SerializeField] private LayerMask bulletLayerMask;
+
+    [SerializeField] public AnimationClip weaponAnimation;
 
     Ray ray;
     RaycastHit hitInfo;
@@ -76,7 +78,6 @@ public class RaycastWeapon : MonoBehaviour
 
     private void DestroyBullets()
     {
-        // FIX: Hủy GameObject tracer trước khi xóa khỏi list
         bullets.RemoveAll(bullet => {
             if (bullet.time >= maxLifeTime)
             {
@@ -100,7 +101,6 @@ public class RaycastWeapon : MonoBehaviour
 
     private void RaycastSegment(Vector3 start, Vector3 end, Bullet bullet)
     {
-        // FIX: Thêm dòng này để chặn lỗi MissingReferenceException
         if (bullet.tracer == null) return;
 
         Vector3 direction = end - start;

@@ -142,7 +142,6 @@ namespace StarterAssets
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
             _animationController = GetComponent<PlayerAnimationController>();
-            _raycastWeapon = GetComponentInChildren<RaycastWeapon>();
 
 #if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
@@ -157,7 +156,6 @@ namespace StarterAssets
 
         private void Update()
         {
-            ShootControl();
             StrafeModeControl();
             JumpAndGravity();
             GroundedCheck();
@@ -344,29 +342,14 @@ namespace StarterAssets
             else
             {
                 MoveSpeed = 2f;
-                StrafeMode = false;
-                targetRigWeight = 0;
+                StrafeMode = true;
+                targetRigWeight = 1;
             }
 
             rigWeaponAim.weight = Mathf.Lerp(rigWeaponAim.weight, targetRigWeight, Time.deltaTime * AimRigTransitionSpeed);
             rigBodyAim.weight = Mathf.Lerp(rigBodyAim.weight, targetRigWeight, Time.deltaTime * AimRigTransitionSpeed);
         }
-
-        private void ShootControl()
-        {
-            if (_input.shoot)
-            {
-                if (!_raycastWeapon.isFiring)
-                    _raycastWeapon.StartFiring();
-
-                _raycastWeapon.UpdateFiring(Time.deltaTime);
-            }
-            else
-                if (_raycastWeapon.isFiring)
-                    _raycastWeapon.StopFiring();
-
-            _raycastWeapon.UpdateBullets(Time.deltaTime);
-        }
+        
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
@@ -393,7 +376,6 @@ namespace StarterAssets
             Sensitivity = newSensitivity;
         }
 
-        // Biến này để hỗ trợ UI toggle nếu cần
         public void SetRotateOnMove(bool rotateOnMove)
         {
             // _rotateOnMove logic giờ nằm trong điều kiện StrafeMode
