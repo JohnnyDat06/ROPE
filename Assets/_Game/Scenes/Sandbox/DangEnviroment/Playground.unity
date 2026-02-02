@@ -12385,6 +12385,8 @@ MonoBehaviour:
   currentMode: 0
   currentCondition: 1
   targetValue: 0
+  showDebugRays: 1
+  showDebugLogs: 1
 --- !u!65 &357073896
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20236,6 +20238,7 @@ GameObject:
   - component: {fileID: 978662537}
   - component: {fileID: 978662536}
   - component: {fileID: 978662535}
+  - component: {fileID: 978662538}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -20396,6 +20399,18 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 978662532}
   m_Enabled: 1
+--- !u!114 &978662538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 978662532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e03734c569b38b44b22927dffa03677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1006674273
 GameObject:
   m_ObjectHideFlags: 0

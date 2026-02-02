@@ -10,52 +10,55 @@ public class PlayerInventorySystem : MonoBehaviour
     [Header("--- 1. Interaction Settings ---")]
     [Tooltip("Khoảng cách có thể nhặt đồ")]
     public float interactDistance = 6.0f;
-    public LayerMask itemLayer;
-    public Transform dropPoint;
+    public LayerMask itemLayer; // Chỉ chọn layer "Interactable"
+    public Transform dropPoint; // Vị trí đồ rơi ra (trước mặt Camera)
 
     [Header("--- 2. Charge Throw (Ném Gồng Lực) ---")]
-    public float minThrowForce = 2.0f;
-    public float maxThrowForce = 15.0f;
+    public float minThrowForce = 2.0f;   // Nhấp nhẹ: Rơi ngay dưới chân
+    public float maxThrowForce = 15.0f;  // Đè lâu: Ném xa
+    [Tooltip("Thời gian gồng tối đa. Nếu giữ quá thời gian này sẽ tự bắn.")]
     public float maxChargeTime = 5.0f;
 
-    [Header("--- 3. Drop Physics ---")]
+    [Header("--- 3. Drop Physics (Rơi Đầm) ---")]
     public float dropLinearDamping = 1.0f;
     public float dropAngularDamping = 1.0f;
-    public float objectSpin = 2.0f;
+    public float objectSpin = 2.0f; // Độ xoay ngẫu nhiên khi ném
 
     [Header("--- 4. Inventory 3D Slots ---")]
+    [Tooltip("Kéo 4 Empty Object dưới lòng đất vào đây")]
     public Transform[] inventorySlots;
 
-    [Header("--- 5. UI Inventory Slots ---")]
+    [Header("--- 5. UI Display ---")]
     public RectTransform[] slotUIFrames;
     public float selectedScale = 1.2f;
     public float normalScale = 1.0f;
     public float uiScaleSpeed = 10f;
 
-    [Header("--- 6. General UI References ---")]
+    [Header("--- 6. UI References ---")]
     public Image progressCircle;
     public TextMeshProUGUI promptText;
-
-    [Tooltip("Kéo TextMeshPro để hiển thị tổng tiền vào đây (VD: TOTAL: 50$)")]
-    public TextMeshProUGUI totalValueText; // <--- MỚI: HIỂN THỊ TỔNG TIỀN
+    [Tooltip("Kéo Text hiển thị tổng tiền vào đây")]
+    public TextMeshProUGUI totalValueText;
 
     [Header("--- 7. External Systems ---")]
-    public WeatherManager weatherManager;
+    public WeatherManager weatherManager; // Để cập nhật tỷ lệ sét đánh
 
     // ========================================================================
-    // 2. PRIVATE VARIABLES
+    // 2. PRIVATE VARIABLES & PROPERTIES
     // ========================================================================
     private Camera playerCam;
     private ItemController[] inventoryItems;
     private ItemController targetItem;
 
     private int currentSlotIndex = 0;
+
+    // Biến xử lý timer
     private float pickupTimer = 0f;
     private float throwChargeTimer = 0f;
     private bool isChargingThrow = false;
 
     // Properties
-    public float TotalWeight { get; private set; } // Vẫn giữ để tính logic vật lý nếu cần
+    public float TotalWeight { get; private set; }
     public int TotalValue { get; private set; }
     public int TotalItemCount { get; private set; }
 
@@ -67,24 +70,23 @@ public class PlayerInventorySystem : MonoBehaviour
         playerCam = Camera.main;
         inventoryItems = new ItemController[inventorySlots.Length];
 
+        // Ẩn UI lúc đầu
         if (progressCircle) progressCircle.fillAmount = 0;
         if (promptText) promptText.gameObject.SetActive(false);
-
-        // Reset text tiền ban đầu
         if (totalValueText) totalValueText.text = "TOTAL: $0";
     }
 
     void Update()
     {
-        HandleInteraction();
-        HandleInput();
-        HandleSlotSelectionUI();
-        RotateInventoryItems();
-        UpdateStats();
+        HandleInteraction();    // Xử lý nhìn đồ
+        HandleInput();          // Xử lý phím bấm (Nhặt & Ném)
+        HandleSlotSelectionUI();// Hiệu ứng phóng to ô túi
+        RotateInventoryItems(); // Xoay đồ trong túi 3D
+        UpdateStats();          // Cập nhật thông số
     }
 
     // ========================================================================
-    // 4. INPUT & INTERACTION
+    // 4. INPUT & INTERACTION LOGIC
     // ========================================================================
     void HandleInteraction()
     {
@@ -117,7 +119,7 @@ public class PlayerInventorySystem : MonoBehaviour
 
     void HandleInput()
     {
-        // A. CHỌN SLOT
+        // --- A. CHỌN SLOT ---
         if (Input.GetKeyDown(KeyCode.Alpha1)) currentSlotIndex = 0;
         if (Input.GetKeyDown(KeyCode.Alpha2)) currentSlotIndex = 1;
         if (Input.GetKeyDown(KeyCode.Alpha3)) currentSlotIndex = 2;
@@ -128,7 +130,7 @@ public class PlayerInventorySystem : MonoBehaviour
         if (scroll > 0) currentSlotIndex = (currentSlotIndex + 1) % inventorySlots.Length;
         if (scroll < 0) currentSlotIndex = (currentSlotIndex - 1 + inventorySlots.Length) % inventorySlots.Length;
 
-        // B. NHẶT ĐỒ
+        // --- B. NHẶT ĐỒ ---
         if (Input.GetKey(KeyCode.E) && targetItem != null && !isChargingThrow)
         {
             int emptyIndex = GetEmptySlot();
@@ -149,7 +151,7 @@ public class PlayerInventorySystem : MonoBehaviour
                     if (promptText) promptText.gameObject.SetActive(false);
                 }
             }
-            else if (promptText) promptText.text = "<color=red>INVENTORY FULL!</color>";
+            else if (promptText) promptText.text = "<color=red>FULL!</color>";
         }
         else if (!isChargingThrow)
         {
@@ -157,7 +159,7 @@ public class PlayerInventorySystem : MonoBehaviour
             if (progressCircle) progressCircle.fillAmount = 0;
         }
 
-        // C. NÉM GỒNG LỰC
+        // --- C. NÉM ĐỒ (Q) ---
         if (Input.GetKeyDown(KeyCode.Q))
         {
             if (inventoryItems[currentSlotIndex] != null)
@@ -173,6 +175,7 @@ public class PlayerInventorySystem : MonoBehaviour
             float chargePercent = Mathf.Clamp01(throwChargeTimer / maxChargeTime);
             if (progressCircle) progressCircle.fillAmount = chargePercent;
 
+            // Auto Throw sau 5s
             if (throwChargeTimer >= maxChargeTime)
             {
                 DropItem(currentSlotIndex, maxThrowForce);
@@ -194,7 +197,7 @@ public class PlayerInventorySystem : MonoBehaviour
     }
 
     // ========================================================================
-    // 5. ITEM HANDLING
+    // 5. ITEM HANDLING (PICKUP & SMART DROP)
     // ========================================================================
     void PickupItem(ItemController item, int slotIndex)
     {
@@ -206,15 +209,51 @@ public class PlayerInventorySystem : MonoBehaviour
         item.SetState(true);
     }
 
+    // --- HÀM DROP ĐƯỢC NÂNG CẤP (Xếp chồng an toàn) ---
     void DropItem(int slotIndex, float forceToApply)
     {
         if (slotIndex < 0 || slotIndex >= inventoryItems.Length) return;
         ItemController item = inventoryItems[slotIndex];
         if (item == null) return;
 
+        // 1. Tách khỏi người chơi
         item.transform.SetParent(null);
-        item.transform.position = dropPoint.position;
+
+        // 2. Reset Scale & Rotation (Nếu ném nhẹ thì dựng đứng để dễ xếp chồng)
         item.transform.localScale = Vector3.one;
+        if (forceToApply <= minThrowForce * 1.5f)
+        {
+            item.transform.rotation = Quaternion.identity;
+        }
+
+        // 3. Tính toán kích thước thật của vật phẩm
+        float itemHalfHeight = 0.25f; // Mặc định
+        Collider col = item.GetComponent<Collider>();
+        if (col != null) itemHalfHeight = col.bounds.extents.y;
+
+        // 4. Dùng SphereCast quét xuống để tìm chỗ đặt an toàn
+        Vector3 finalPos = dropPoint.position;
+        float checkRadius = 0.2f;
+        float checkDistance = 1.5f;
+
+        // Layer mask: ~0 (All layers) hoặc tránh layer Player nếu cần
+        if (Physics.SphereCast(dropPoint.position, checkRadius, Vector3.down, out RaycastHit hit, checkDistance))
+        {
+            // Tính toán độ cao cần thiết để không lồng vào vật bên dưới
+            float targetHeight = hit.point.y + itemHalfHeight + 0.05f; // +5cm hở
+
+            // Nếu vị trí thả thấp hơn mặt vật cản -> Nâng lên
+            if (finalPos.y < targetHeight || (finalPos.y - hit.point.y) < itemHalfHeight * 2)
+            {
+                finalPos.y = targetHeight;
+                finalPos.x = dropPoint.position.x;
+                finalPos.z = dropPoint.position.z;
+            }
+        }
+
+        item.transform.position = finalPos;
+
+        // 5. Bật lại vật lý
         item.SetState(false);
 
         Rigidbody rb = item.GetComponent<Rigidbody>();
@@ -225,14 +264,22 @@ public class PlayerInventorySystem : MonoBehaviour
             rb.linearDamping = dropLinearDamping;
             rb.angularDamping = dropAngularDamping;
 
-            Vector3 throwDir = (playerCam.transform.forward + Vector3.up * 0.2f).normalized;
-            rb.AddForce(throwDir * forceToApply, ForceMode.Impulse);
-            rb.AddTorque(Random.insideUnitSphere * objectSpin, ForceMode.Impulse);
+            // Chỉ đẩy tới nếu ném mạnh
+            if (forceToApply > minThrowForce * 1.5f)
+            {
+                Vector3 throwDir = (playerCam.transform.forward + Vector3.up * 0.2f).normalized;
+                rb.AddForce(throwDir * forceToApply, ForceMode.Impulse);
+                rb.AddTorque(Random.insideUnitSphere * objectSpin, ForceMode.Impulse);
+            }
+            // Nếu ném nhẹ -> Rơi tự do tại chỗ (đã tính toán vị trí an toàn ở trên)
         }
 
         inventoryItems[slotIndex] = null;
     }
 
+    // ========================================================================
+    // 6. HELPER FUNCTIONS & UI
+    // ========================================================================
     int GetEmptySlot()
     {
         for (int i = 0; i < inventoryItems.Length; i++) if (inventoryItems[i] == null) return i;
@@ -258,9 +305,6 @@ public class PlayerInventorySystem : MonoBehaviour
         }
     }
 
-    // ========================================================================
-    // 6. UPDATE STATS & UI (MỚI)
-    // ========================================================================
     void UpdateStats()
     {
         float w = 0;
@@ -276,7 +320,7 @@ public class PlayerInventorySystem : MonoBehaviour
                 v += item.scrapValue;
                 c++;
 
-                // Logic Sét
+                // Logic Sét: +10% cho sắt nhỏ, +15% cho sắt lớn
                 if (item.data.itemType == ItemType.IronSmall) lightningChance += 0.10f;
                 else if (item.data.itemType == ItemType.IronLarge) lightningChance += 0.15f;
             }
@@ -286,13 +330,10 @@ public class PlayerInventorySystem : MonoBehaviour
         TotalValue = v;
         TotalItemCount = c;
 
-        // --- CẬP NHẬT UI TỔNG TIỀN (MỚI) ---
-        if (totalValueText != null)
-        {
-            totalValueText.text = $"TOTAL: <color=yellow>${TotalValue}</color>";
-        }
+        // UI Tổng tiền
+        if (totalValueText != null) totalValueText.text = $"TOTAL: <color=yellow>${TotalValue}</color>";
 
-        // Cập nhật Weather
+        // Cập nhật WeatherManager
         if (weatherManager) weatherManager.currentStrikeChance = lightningChance;
     }
 }

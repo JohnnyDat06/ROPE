@@ -11,21 +11,22 @@ public class SecurityRoomManager : MonoBehaviour
     [Header("Calibration")]
     public float quotaMultiplierMin = 1.3f;
     public float quotaMultiplierMax = 2.5f;
-    [Tooltip("Thời gian chờ quét an ninh (Giây). Giúp game tự nhiên hơn, tránh giật lag.")]
-    public float scanningDuration = 1.0f; // Chờ 1 giây rồi mới phán xét
+    public float scanningDuration = 1.0f; 
 
     [Header("Game Logic Data")]
     public CheckMode currentMode;
     public ConditionType currentCondition;
     public float targetValue;
 
-    // --- BIẾN TRẠNG THÁI ---
+    [Header("--- DEBUG SETTINGS ---")]
+    public bool showDebugRays = true; 
+    public bool showDebugLogs = true; 
+
     private PlayerInventorySystem currentPlayerInside = null;
     private float realMapAverageValue = 0;
-
-    private bool isScanning = false;    // Đang trong quá trình quét?
-    private float scanTimer = 0f;       // Bộ đếm thời gian
-    private bool hasPassedInitialScan = false; // Đã quét xong lần đầu chưa?
+    private bool isScanning = false;    
+    private float scanTimer = 0f;       
+    private bool hasPassedInitialScan = false; 
 
     private void Start()
     {
@@ -38,7 +39,6 @@ public class SecurityRoomManager : MonoBehaviour
         RandomizeRoomRules();
     }
 
-    // (Giữ nguyên hàm ScanMapItems như cũ)
     void ScanMapItems()
     {
         ItemController[] allItems = FindObjectsByType<ItemController>(FindObjectsSortMode.None);
@@ -51,7 +51,6 @@ public class SecurityRoomManager : MonoBehaviour
         else realMapAverageValue = 50f;
     }
 
-    // (Giữ nguyên RandomizeRoomRules như cũ)
     public void RandomizeRoomRules()
     {
         currentMode = (CheckMode)Random.Range(0, 2);
@@ -67,44 +66,36 @@ public class SecurityRoomManager : MonoBehaviour
             targetValue = Mathf.RoundToInt(calculatedTarget / 10) * 10;
             if (targetValue < 10) targetValue = 10;
         }
-        UpdateNeonBoard_Idle(); // Hiển thị trạng thái chờ ban đầu
+        UpdateNeonBoard_Idle(); 
     }
 
-    // --- LOGIC MỚI TRONG UPDATE ---
     private void Update()
     {
         if (currentPlayerInside != null)
         {
             if (isScanning)
             {
-                // 1. GIAI ĐOẠN QUÉT (SCANNING)
                 HandleScanningPhase();
+                // [DEBUG] Vẽ tia màu vàng (Cảnh báo)
+                if (showDebugRays) DrawDebugRays(Color.yellow);
             }
             else
             {
-                // 2. GIAI ĐOẠN GIÁM SÁT (REAL-TIME MONITORING)
-                // Chỉ chạy khi đã quét xong
                 CheckPlayerRealtime(currentPlayerInside);
             }
         }
     }
 
-    // Xử lý đếm ngược khi mới bước vào
     void HandleScanningPhase()
     {
         scanTimer -= Time.deltaTime;
-
-        // Hiệu ứng chữ nhấp nháy hoặc chấm chấm cho ngầu
         if (neonBoardText)
         {
             neonBoardText.color = Color.yellow;
-            // Tạo hiệu ứng dấu chấm chạy chạy: SCANNING. -> SCANNING.. -> SCANNING...
             int dotCount = (int)(Time.time * 3) % 4;
             string dots = new string('.', dotCount);
             neonBoardText.text = $"SCANNING{dots}";
         }
-
-        // Hết giờ -> Kết thúc quét -> Chuyển sang phán xét
         if (scanTimer <= 0)
         {
             isScanning = false;
@@ -120,14 +111,11 @@ public class SecurityRoomManager : MonoBehaviour
             if (playerInv != null)
             {
                 currentPlayerInside = playerInv;
-
-                // --- BẮT ĐẦU QUY TRÌNH QUÉT MỚI ---
                 isScanning = true;
-                scanTimer = scanningDuration; // Đặt lại thời gian chờ (1s)
+                scanTimer = scanningDuration; 
                 hasPassedInitialScan = false;
-
-                // Đảm bảo súng KHÔNG BẮN trong lúc đang quét
                 foreach (var turret in turrets) turret.DeactivateTrap();
+                if (showDebugLogs) Debug.Log("<color=yellow>SECURITY: Player entered. Scanning started...</color>");
             }
         }
     }
@@ -139,11 +127,7 @@ public class SecurityRoomManager : MonoBehaviour
             currentPlayerInside = null;
             isScanning = false;
             hasPassedInitialScan = false;
-
-            // Tắt súng
             foreach (var turret in turrets) turret.DeactivateTrap();
-
-            // Trả lại bảng hiển thị gốc
             UpdateNeonBoard_Idle();
         }
     }
@@ -162,8 +146,15 @@ public class SecurityRoomManager : MonoBehaviour
 
         if (!isSafe)
         {
-            // VI PHẠM: Kích hoạt súng
-            foreach (var turret in turrets) turret.ActivateTrap(player.transform);
+            // --- VI PHẠM ---
+            foreach (var turret in turrets) 
+            {
+                turret.ActivateTrap(); // SỬA: Không cần truyền player nữa
+                
+                // [DEBUG] Vẽ tia ĐỎ thẳng tắp từ nòng súng
+                if (showDebugRays && turret.firePoint != null)
+                    Debug.DrawRay(turret.firePoint.position, turret.firePoint.forward * 10f, Color.red);
+            }
 
             if (neonBoardText)
             {
@@ -173,8 +164,15 @@ public class SecurityRoomManager : MonoBehaviour
         }
         else
         {
-            // AN TOÀN
-            foreach (var turret in turrets) turret.DeactivateTrap();
+            // --- AN TOÀN ---
+            foreach (var turret in turrets) 
+            {
+                turret.DeactivateTrap();
+                
+                // [DEBUG] Vẽ tia XANH LÁ thẳng tắp (An toàn)
+                if (showDebugRays && turret.firePoint != null)
+                    Debug.DrawRay(turret.firePoint.position, turret.firePoint.forward * 10f, Color.green);
+            }
 
             if (neonBoardText)
             {
@@ -184,7 +182,6 @@ public class SecurityRoomManager : MonoBehaviour
         }
     }
 
-    // Hàm hiển thị khi không có ai (trạng thái chờ)
     void UpdateNeonBoard_Idle()
     {
         if (neonBoardText == null) return;
@@ -198,5 +195,18 @@ public class SecurityRoomManager : MonoBehaviour
         }
         neonBoardText.text = $"REQ: {condStr} {targetValue} {modeStr}";
         neonBoardText.color = Color.yellow;
+    }
+
+    // Hàm phụ trợ vẽ tia thẳng
+    void DrawDebugRays(Color color)
+    {
+        foreach (var turret in turrets)
+        {
+            if (turret != null && turret.firePoint != null)
+            {
+                // Thay vì nối vào người chơi, ta vẽ tia Forward dài 10m
+                Debug.DrawRay(turret.firePoint.position, turret.firePoint.forward * 10f, color);
+            }
+        }
     }
 }
