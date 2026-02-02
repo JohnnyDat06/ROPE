@@ -4,23 +4,24 @@ using System.Collections.Generic;
 public class LevelManager : MonoBehaviour
 {
     [Header("Testing")]
-    public bool overrideQuotaForTesting = false; // TICK CÁI NÀY NẾU MUỐN TỰ CHỈNH QUOTA = 5
-    public int testQuotaValue = 5;
+    public bool overrideQuotaForTesting = false;
+    public int testQuotaValue = 130;
 
     [Header("Settings")]
     public int minItemsToSpawn = 10;
     public int maxItemsToSpawn = 15;
-    [Range(0f, 1f)] public float specialItemChance = 0.3f;
-    [Tooltip("Số lượng món đồ muốn DƯ RA cho người chơi (để game không quá khó)")]
+    [Range(0f, 1f)] public float specialItemChance = 0.3f; // 30% ra đồ đặc biệt
     public int bufferItemsCount = 5;
 
+    [Header("--- VỊ TRÍ ĐẶC BIỆT (FIRE ROOM) ---")]
+    [Tooltip("Kéo vị trí bàn đạp trong phòng lửa vào đây")]
+    public Transform fireRoomSpawnPoint;
+
     [Header("References")]
-    public List<Transform> allSpawnPoints;
-    public List<Transform> specialSpawnPoints;
+    public List<Transform> allSpawnPoints; // Các điểm spawn còn lại
     public List<ItemData> commonItems;
     public List<ItemData> specialItems;
 
-    // Kéo SellingZone vào đây để cập nhật số tiền Quota cho nó
     public SellingZone sellingZone;
 
     public int totalMapValue;
@@ -33,24 +34,59 @@ public class LevelManager : MonoBehaviour
 
     void SpawnLevelItems()
     {
+        // Copy danh sách điểm spawn để xử lý (tránh lỗi list gốc)
         List<Transform> availableSpawns = new List<Transform>(allSpawnPoints);
-        int spawnCount = Random.Range(minItemsToSpawn, maxItemsToSpawn + 1);
-        totalMapValue = 0;
 
-        // List tạm để tính giá trị trung bình
-        List<int> spawnedValues = new List<int>();
-
-        // 1. Spawn Đồ Đặc Biệt
-        if (Random.value <= specialItemChance && specialSpawnPoints.Count > 0 && specialItems.Count > 0)
+        // Loại bỏ điểm spawn phòng lửa ra khỏi danh sách chung (để không bị spawn chồng 2 món)
+        if (availableSpawns.Contains(fireRoomSpawnPoint))
         {
-            Transform spPoint = specialSpawnPoints[Random.Range(0, specialSpawnPoints.Count)];
-            ItemData spItem = specialItems[Random.Range(0, specialItems.Count)];
-            int val = SpawnItem(spItem, spPoint);
-            spawnedValues.Add(val);
-            spawnCount--;
+            availableSpawns.Remove(fireRoomSpawnPoint);
         }
 
-        // 2. Spawn Đồ Thường (Shuffle)
+        int spawnCount = Random.Range(minItemsToSpawn, maxItemsToSpawn + 1);
+        totalMapValue = 0;
+        List<int> spawnedValues = new List<int>();
+
+        // ================================================================
+        // BƯỚC 1: XỬ LÝ PHÒNG LỬA (BẮT BUỘC PHẢI CÓ ITEM)
+        // ================================================================
+        if (fireRoomSpawnPoint != null)
+        {
+            ItemData fireRoomItem = null;
+
+            // Roll tỷ lệ ra đồ đặc biệt
+            bool isSpecial = Random.value <= specialItemChance;
+
+            if (isSpecial && specialItems.Count > 0)
+            {
+                // May mắn: Lấy đồ đặc biệt
+                fireRoomItem = specialItems[Random.Range(0, specialItems.Count)];
+                Debug.Log("<color=cyan>FIRE ROOM: Spawned SPECIAL Item!</color>");
+            }
+            else
+            {
+                // Xui: Lấy đồ thường thế mạng (Fallback)
+                if (commonItems.Count > 0)
+                {
+                    fireRoomItem = commonItems[Random.Range(0, commonItems.Count)];
+                    Debug.Log("<color=orange>FIRE ROOM: Spawned COMMON Item (Fallback)</color>");
+                }
+            }
+
+            // Tiến hành Spawn ngay tại bàn đạp
+            if (fireRoomItem != null)
+            {
+                int val = SpawnItem(fireRoomItem, fireRoomSpawnPoint);
+                spawnedValues.Add(val);
+                spawnCount--; // Trừ đi 1 suất spawn vì đã dùng cho phòng lửa
+            }
+        }
+
+        // ================================================================
+        // BƯỚC 2: SPAWN CÁC MÓN CÒN LẠI RA MAP
+        // ================================================================
+
+        // Shuffle (Tráo bài) vị trí spawn
         for (int i = 0; i < availableSpawns.Count; i++)
         {
             Transform temp = availableSpawns[i];
@@ -62,48 +98,41 @@ public class LevelManager : MonoBehaviour
         for (int i = 0; i < spawnCount; i++)
         {
             if (i >= availableSpawns.Count) break;
+
+            // Lấy ngẫu nhiên đồ thường
             ItemData randomItem = commonItems[Random.Range(0, commonItems.Count)];
             int val = SpawnItem(randomItem, availableSpawns[i]);
             spawnedValues.Add(val);
         }
 
-        // --- FIX LOGIC TÍNH QUOTA ---
+        // ================================================================
+        // BƯỚC 3: TÍNH QUOTA
+        // ================================================================
         if (overrideQuotaForTesting)
         {
             currentQuota = testQuotaValue;
-            Debug.Log($"<color=cyan>TEST MODE: Quota set cứng là {currentQuota}</color>");
         }
         else
         {
-            // Tính giá trị trung bình của các món đồ đã spawn
             float averageValue = 0;
             if (spawnedValues.Count > 0) averageValue = (float)totalMapValue / spawnedValues.Count;
-
-            // Quota = Tổng tiền - (Giá trị trung bình * Số món muốn dư)
-            // Ví dụ: Map có 1000$, trung bình mỗi món 100$, muốn dư 5 món (500$) -> Quota = 500$
             int bufferValue = Mathf.RoundToInt(averageValue * bufferItemsCount);
-
-            // Đảm bảo Quota không bị âm hoặc quá thấp (tối thiểu 30% map)
             currentQuota = Mathf.Max(totalMapValue - bufferValue, Mathf.RoundToInt(totalMapValue * 0.3f));
 
-            Debug.Log($"Map Total: {totalMapValue} | Avg Item: {averageValue} | Buffer: {bufferItemsCount} items | -> FINAL QUOTA: {currentQuota}");
+            Debug.Log($"FINAL QUOTA: {currentQuota} (Total: {totalMapValue})");
         }
 
-        // Gửi số Quota sang cho SellingZone
-        if (sellingZone != null)
-        {
-            sellingZone.quotaMoney = currentQuota;
-        }
+        if (sellingZone != null) sellingZone.quotaMoney = currentQuota;
     }
 
     int SpawnItem(ItemData data, Transform location)
     {
-        GameObject obj = Instantiate(data.modelPrefab, location.position, Quaternion.identity);
+        GameObject obj = Instantiate(data.modelPrefab, location.position, location.rotation);
         ItemController ctrl = obj.GetComponent<ItemController>();
         if (ctrl == null) ctrl = obj.AddComponent<ItemController>();
 
         ctrl.data = data;
-        ctrl.InitializeValue(); // Random giá tiền
+        ctrl.InitializeValue();
 
         totalMapValue += ctrl.scrapValue;
         return ctrl.scrapValue;

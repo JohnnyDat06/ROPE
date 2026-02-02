@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Data_Bolt
   m_EditorClassIdentifier: 
   itemName: Old Engine
-  itemType: 0
+  itemType: 3
   weight: 0
   pickupDuration: 1
   modelPrefab: {fileID: 8103119203300451000, guid: 8fe14be38c9795f4fb0f8dab6a6d55e6, type: 3}
