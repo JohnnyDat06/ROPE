@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4000011050751358}
   - component: {fileID: 33000013661020098}
   - component: {fileID: 23000010334274326}
-  - component: {fileID: 64000010087940188}
+  - component: {fileID: 5385456510245433590}
   m_Layer: 0
   m_Name: Industrial_pipe_v1
   m_TagString: Untagged
@@ -87,8 +87,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64000010087940188
-MeshCollider:
+--- !u!65 &5385456510245433590
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -105,7 +105,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300002, guid: 5ffcfebba4a61b645bd4a65891ba6921, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 4.515526, y: 11.288906, z: 4.4023123}
+  m_Center: {x: 0, y: -0.03152609, z: 0}

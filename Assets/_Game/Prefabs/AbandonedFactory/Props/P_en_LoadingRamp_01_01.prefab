@@ -336,7 +336,7 @@ GameObject:
   - component: {fileID: 7092196701504550591}
   - component: {fileID: 7092196701503780507}
   - component: {fileID: 7092196701502780507}
-  - component: {fileID: 5440799647063004412}
+  - component: {fileID: 6349969508812542941}
   m_Layer: 0
   m_Name: sm_en_LoadingRamp_01_01_LOD0
   m_TagString: Untagged
@@ -412,7 +412,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5440799647063004412
+--- !u!64 &6349969508812542941
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -431,6 +431,6 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: 4971f23c104be0c4f96e8d949d2a5644, type: 3}
+  m_Mesh: {fileID: 4300000, guid: dfd7cc572c2cc254789fe00211c28c7f, type: 3}

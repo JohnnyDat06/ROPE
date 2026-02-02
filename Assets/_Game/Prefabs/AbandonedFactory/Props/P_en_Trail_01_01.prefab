@@ -250,6 +250,7 @@ GameObject:
   - component: {fileID: 7435758186043040012}
   - component: {fileID: 7435758186045907240}
   - component: {fileID: 7435758186044941288}
+  - component: {fileID: 867563032875378237}
   m_Layer: 0
   m_Name: sm_en_Trail_01_01_LOD0
   m_TagString: Untagged
@@ -325,6 +326,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &867563032875378237
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7435758186043014444}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 3ccefb447e635944992a909c50d5d962, type: 3}
 --- !u!1 &7435758186043014446
 GameObject:
   m_ObjectHideFlags: 0

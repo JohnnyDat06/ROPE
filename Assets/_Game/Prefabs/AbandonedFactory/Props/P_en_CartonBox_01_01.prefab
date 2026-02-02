@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 5075749181891740949}
   - component: {fileID: 5075749181890970929}
   - component: {fileID: 5075749181889841137}
-  - component: {fileID: 4015254463752785775}
+  - component: {fileID: 3312356272667244210}
   m_Layer: 0
   m_Name: sm_en_CartonBox_01_01_LOD0
   m_TagString: Untagged
@@ -154,8 +154,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4015254463752785775
-MeshCollider:
+--- !u!65 &3312356272667244210
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,10 +172,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: b4d8f5c1289a4994f8afed237256038b, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.38554993, y: 0.53711176, z: 0.50869983}
+  m_Center: {x: -0.04533753, y: 0.0005877309, z: 0.25126705}
 --- !u!1 &5075749181891844407
 GameObject:
   m_ObjectHideFlags: 0

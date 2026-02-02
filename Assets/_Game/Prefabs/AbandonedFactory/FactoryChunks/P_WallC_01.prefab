@@ -197,12 +197,7 @@ GameObject:
   - component: {fileID: 4718344383865450504}
   - component: {fileID: 4718344383868842028}
   - component: {fileID: 4718344383867876076}
-  - component: {fileID: 8376539439391281204}
-  - component: {fileID: 755421426444427028}
-  - component: {fileID: 5112805084360384893}
-  - component: {fileID: 3113317882055711879}
-  - component: {fileID: 2186176092974721803}
-  - component: {fileID: 8609201450850161041}
+  - component: {fileID: 7822385871300630985}
   m_Layer: 0
   m_Name: sm_WallC_01_LOD0
   m_TagString: Untagged
@@ -285,7 +280,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8376539439391281204
+--- !u!65 &7822385871300630985
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -304,113 +299,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.9431772, y: 0.8148596, z: 5.149375}
-  m_Center: {x: 3.3158355, y: 0.026218014, z: 2.585398}
---- !u!65 &755421426444427028
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4718344383865678888}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.9431772, y: 0.8148596, z: 5.149375}
-  m_Center: {x: -3.55, y: 0.026218014, z: 2.585398}
---- !u!65 &5112805084360384893
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4718344383865678888}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.9431772, y: 0.8148596, z: 5.149375}
-  m_Center: {x: -10.46, y: 0.026218014, z: 2.585398}
---- !u!65 &3113317882055711879
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4718344383865678888}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.94317627, y: 0.8148596, z: 6.5440216}
-  m_Center: {x: -17.33, y: 0.026218016, z: 3.2827215}
---- !u!65 &2186176092974721803
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4718344383865678888}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.7715797, y: 3.969612, z: 3.9652858}
-  m_Center: {x: 10.635408, y: -1.7541454, z: 1.9933531}
---- !u!65 &8609201450850161041
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4718344383865678888}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 26.922878, y: 0.5657716, z: 5.149375}
-  m_Center: {x: -3.609026, y: 0.046975322, z: 2.585398}
+  m_Size: {x: 29.256433, y: 4.10309, z: 7.481283}
+  m_Center: {x: -3.1287305, y: -1.5480343, z: 3.7513523}
 --- !u!1 &4718344383865678890
 GameObject:
   m_ObjectHideFlags: 0
