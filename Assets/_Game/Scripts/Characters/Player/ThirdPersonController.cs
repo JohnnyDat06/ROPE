@@ -109,7 +109,7 @@ namespace StarterAssets
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
-        private RaycastWeapon _raycastWeapon;
+        private ActiveWeapon _activeWeapon;
 
         private const float _threshold = 0.01f;
 
@@ -142,6 +142,7 @@ namespace StarterAssets
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
             _animationController = GetComponent<PlayerAnimationController>();
+            _activeWeapon = GetComponent<ActiveWeapon>();
 
 #if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
@@ -333,7 +334,7 @@ namespace StarterAssets
         {
             float targetRigWeight;
 
-            if (_input.shoot == true || _input.aim)
+            if (_activeWeapon.IsAiming())
             {
                 MoveSpeed = StrafeMoveSpeed;
                 StrafeMode = true;
@@ -342,8 +343,8 @@ namespace StarterAssets
             else
             {
                 MoveSpeed = 2f;
-                StrafeMode = true;
-                targetRigWeight = 1;
+                StrafeMode = false;
+                targetRigWeight = 0;
             }
 
             rigWeaponAim.weight = Mathf.Lerp(rigWeaponAim.weight, targetRigWeight, Time.deltaTime * AimRigTransitionSpeed);
