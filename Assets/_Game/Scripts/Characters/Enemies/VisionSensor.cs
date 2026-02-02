@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
-using Unity.Behavior; // Thư viện Unity Behavior mới
+using Unity.Behavior;
 
 [RequireComponent(typeof(BehaviorGraphAgent))]
 public class VisionSensor : MonoBehaviour
 {
 	[Header("Settings - Eyes")]
-	[Tooltip("Gán các object mắt vào đây (Tối đa 2, hoặc 1 cũng được). Nếu để trống sẽ dùng vị trí của chính object này.")]
+	[Tooltip("Gán các object mắt vào đây. Nếu để trống sẽ dùng vị trí của chính object này.")]
 	public Transform[] eyes;
 
 	[Tooltip("Góc nhìn (Cone Angle)")]
@@ -14,156 +14,190 @@ public class VisionSensor : MonoBehaviour
 	[Tooltip("Tầm xa (View Radius)")]
 	public float viewRadius = 15f;
 
+	[Tooltip("Tầm nhìn gần tuyệt đối (Mù cũng thấy nếu đứng sát sạt)")]
+	public float closeRange = 1.0f;
+
 	[Header("Settings - Layers")]
-	[Tooltip("Layer của Player")]
+	[Tooltip("Layer của Player (Bắt buộc phải set đúng Layer cho Player GameObject)")]
 	public LayerMask targetMask;
 
-	[Tooltip("Layer vật cản (Tường, Đất...). Mặc định đã bao gồm Default.")]
+	[Tooltip("Layer vật cản (Tường, Đất...). TUYỆT ĐỐI KHÔNG CHỌN LAYER CỦA QUÁI.")]
 	public LayerMask obstacleMask;
 
 	[Header("Blackboard Configuration")]
-	[Tooltip("Tên biến trong Blackboard dùng để lưu Player (Dạng GameObject/Transform)")]
-	public string playerVariableName = "PlayerTarget";
-
-	[Tooltip("Tên biến trong Blackboard dùng để lưu trạng thái phát hiện (Dạng Bool)")]
+	public string playerVariableName = "Player";
 	public string detectedVariableName = "IsDetected";
 
 	[Header("Debug")]
-	[SerializeField] private Transform _playerTarget; // Để xem ở Inspector cho dễ
-	[SerializeField] private bool _canSeePlayer; // Để xem debug
+	[SerializeField] private Transform _playerTarget;
+	[SerializeField] private bool _canSeePlayer;
 
 	// Cache component
 	private BehaviorGraphAgent _behaviorAgent;
+	private Collider _playerCollider; // Cache collider để lấy bounds
+
+	// Mask tổng hợp dùng để bắn Raycast (Bao gồm cả Tường và Player)
+	// Để đảm bảo tia bắn ra sẽ dừng lại ở vật cản ĐẦU TIÊN mà nó gặp (dù là Tường hay Player)
+	private int _combinedMask;
 
 	private void Start()
 	{
 		_behaviorAgent = GetComponent<BehaviorGraphAgent>();
 
-		// 1. Tự động tìm Player nếu chưa được gán thủ công
+		// Tự động tìm Player
 		if (_playerTarget == null)
 		{
 			GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
 			if (playerObj != null)
 			{
 				_playerTarget = playerObj.transform;
-			}
-			else
-			{
-				Debug.LogWarning("VisionSensor: Không tìm thấy object nào có Tag 'Player'!");
+				_playerCollider = playerObj.GetComponent<Collider>();
 			}
 		}
 
-		// 2. Gán Player vào Blackboard (Chỉ làm 1 lần lúc đầu)
+		// Gán Player vào Blackboard (1 lần)
 		if (_playerTarget != null)
 		{
-			// SetVariableValue là hàm chuẩn để script ngoài giao tiếp với Behavior Graph
 			_behaviorAgent.SetVariableValue(playerVariableName, _playerTarget.gameObject);
 		}
+		else
+		{
+			Debug.LogWarning("VisionSensor: Chưa tìm thấy Player! Hãy chắc chắn Player có Tag 'Player'.");
+		}
 
-		// Config mặc định cho Obstacle Mask nếu người dùng quên set
+		// Config mặc định cho Obstacle Mask
 		if (obstacleMask == 0)
 		{
 			obstacleMask = LayerMask.GetMask("Default");
 		}
+
+		_combinedMask = obstacleMask | targetMask;
 	}
 
 	private void Update()
 	{
-		// 3. Tính toán tầm nhìn mỗi frame
+		// Tính toán tầm nhìn
 		_canSeePlayer = CheckVision();
 
-		// 4. Ghi kết quả vào Blackboard
+		// Ghi vào Blackboard
 		_behaviorAgent.SetVariableValue(detectedVariableName, _canSeePlayer);
 	}
 
-	/// <summary>
-	/// Logic tính toán hình nón (Cone) và Raycast
-	/// </summary>
 	private bool CheckVision()
 	{
 		if (_playerTarget == null) return false;
 
-		// Nếu không gán mắt nào, dùng chính transform của quái
+		// Xử lý trường hợp không gán mắt
 		if (eyes == null || eyes.Length == 0)
 		{
-			if (IsTargetVisibleFromEye(transform)) return true;
+			return CheckEyesLogic(transform);
 		}
-		else
+
+		// Duyệt qua từng mắt
+		foreach (var eye in eyes)
 		{
-			// Duyệt qua từng mắt (Hỗ trợ 1 hoặc 2 mắt)
-			foreach (var eye in eyes)
-			{
-				if (eye != null && IsTargetVisibleFromEye(eye))
-				{
-					return true; // Chỉ cần 1 mắt thấy là coi như thấy
-				}
-			}
+			if (eye != null && CheckEyesLogic(eye)) return true;
 		}
 
 		return false;
 	}
 
-	private bool IsTargetVisibleFromEye(Transform eye)
+	private bool CheckEyesLogic(Transform eye)
 	{
-		Vector3 dirToTarget = (_playerTarget.position - eye.position);
-		float distanceToTarget = dirToTarget.magnitude;
+		Vector3 vectorToPlayer = _playerTarget.position - eye.position;
+		float distanceToPlayer = vectorToPlayer.magnitude;
 
-		// A. Kiểm tra Khoảng cách (Radius)
-		if (distanceToTarget > viewRadius) return false;
+		// 1. Kiểm tra Khoảng cách (Radius)
+		if (distanceToPlayer > viewRadius) return false;
 
-		// B. Kiểm tra Góc nhìn (Cone Angle)
-		// Vector3.Angle trả về góc giữa hướng mắt nhìn (Forward) và hướng tới mục tiêu
-		if (Vector3.Angle(eye.forward, dirToTarget) < viewAngle / 2)
+		// 2. Logic góc nhìn (Kết hợp logic cũ của bạn)
+		float halfAngle = viewAngle * 0.5f;
+		float angleToPlayer = Vector3.Angle(eye.forward, vectorToPlayer);
+
+		// Nếu ở quá gần (<1m) HOẶC góc nhìn thỏa mãn -> OK
+		bool angleOK = (distanceToPlayer <= closeRange) || (angleToPlayer <= halfAngle);
+
+		if (angleOK)
 		{
-			// C. Kiểm tra Vật cản (Raycast)
-			// Bắn tia từ mắt đến Player. Nếu chạm vào Obstacle thì trả về false.
-			if (!Physics.Raycast(eye.position, dirToTarget.normalized, distanceToTarget, obstacleMask))
+			// 3. Raycast kiểm tra vật cản (Check 3 điểm: Tâm, Đỉnh, Đáy)
+			if (_playerCollider != null)
 			{
-				// Không chạm vật cản -> Nhìn thấy
-				return true;
+				// Ưu tiên check Tâm trước (Center)
+				if (CheckLineOfSight(eye.position, _playerCollider.bounds.center)) return true;
+
+				// Check Đỉnh đầu (Top) - giúp thấy khi núp sau vật thấp
+				if (CheckLineOfSight(eye.position, _playerCollider.bounds.max)) return true;
+
+				// Check Chân (Bottom) - giúp thấy khi lòi chân ra
+				if (CheckLineOfSight(eye.position, _playerCollider.bounds.min)) return true;
+			}
+			else
+			{
+				// Fallback nếu Player không có Collider (chỉ check pivot)
+				// Nâng điểm check lên 1 chút (thường pivot ở chân) để tránh chạm đất
+				if (CheckLineOfSight(eye.position, _playerTarget.position + Vector3.up * 1.0f)) return true;
 			}
 		}
 
 		return false;
 	}
 
-	// Vẽ Debug trực quan trong Scene View
+	private bool CheckLineOfSight(Vector3 start, Vector3 end)
+	{
+		Vector3 direction = end - start;
+		float distance = direction.magnitude;
+
+		if (Physics.Raycast(start, direction.normalized, out RaycastHit hit, distance, _combinedMask, QueryTriggerInteraction.Ignore))
+		{
+			// LOGIC 1: Kiểm tra xem có trúng Player (hoặc bộ phận của Player) không?
+			// Dùng IsChildOf để đảm bảo nếu bắn trúng tay/chân/đầu (collider con) thì vẫn tính là trúng Player
+			if (hit.transform == _playerTarget || hit.transform.IsChildOf(_playerTarget))
+			{
+				return true; // Vật cản đầu tiên là Player -> NHÌN THẤY
+			}
+
+			// LOGIC 2: Nếu không phải Player, thì chắc chắn là vật cản môi trường (do Mask chỉ có Player + Obstacle)
+			// (Ví dụ: Trúng Tường, Đất...)
+			return false; // Vật cản đầu tiên là Tường -> KHÔNG THẤY
+		}
+
+		// Không trúng vật cản gì cả -> Đường thoáng -> Nhìn thấy
+		return true;
+	}
+
+	// Vẽ Debug
 	private void OnDrawGizmos()
 	{
-		if (eyes == null || eyes.Length == 0) return;
+		if (eyes == null) return;
+
+		Gizmos.color = _canSeePlayer ? Color.green : Color.red;
 
 		foreach (var eye in eyes)
 		{
 			if (eye == null) continue;
 
-			// Màu xanh nếu thấy, đỏ nếu không
-			Gizmos.color = _canSeePlayer ? Color.green : Color.red;
-
-			// Vẽ tầm xa
 			Gizmos.DrawWireSphere(eye.position, viewRadius);
 
-			// Vẽ 2 đường giới hạn góc nhìn (Hình nón 2D minh họa)
 			Vector3 viewAngleA = DirFromAngle(eye, -viewAngle / 2, false);
 			Vector3 viewAngleB = DirFromAngle(eye, viewAngle / 2, false);
 
 			Gizmos.DrawLine(eye.position, eye.position + viewAngleA * viewRadius);
 			Gizmos.DrawLine(eye.position, eye.position + viewAngleB * viewRadius);
 
-			if (_canSeePlayer && _playerTarget != null)
+			// Vẽ tia debug đến 3 điểm của Player nếu có thể
+			if (_playerTarget != null && _playerCollider != null)
 			{
-				Gizmos.color = Color.yellow;
-				Gizmos.DrawLine(eye.position, _playerTarget.position);
+				Gizmos.color = new Color(1, 1, 0, 0.3f); // Vàng mờ
+				Gizmos.DrawLine(eye.position, _playerCollider.bounds.center);
+				Gizmos.DrawLine(eye.position, _playerCollider.bounds.max);
+				Gizmos.DrawLine(eye.position, _playerCollider.bounds.min);
 			}
 		}
 	}
 
-	// Hàm phụ trợ để vẽ Gizmos góc
 	private Vector3 DirFromAngle(Transform eye, float angleInDegrees, bool angleIsGlobal)
 	{
-		if (!angleIsGlobal)
-		{
-			angleInDegrees += eye.eulerAngles.y;
-		}
+		if (!angleIsGlobal) angleInDegrees += eye.eulerAngles.y;
 		return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
 	}
 }
