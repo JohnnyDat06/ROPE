@@ -26,6 +26,7 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private TrailRenderer tracerEffect;
     [SerializeField] private LayerMask bulletLayerMask;
 
+    [SerializeField] public string weaponName;
     [SerializeField] public AnimationClip weaponAnimation;
 
     Ray ray;

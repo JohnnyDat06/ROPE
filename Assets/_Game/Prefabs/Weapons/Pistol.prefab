@@ -20322,6 +20322,7 @@ MonoBehaviour:
   bulletLayerMask:
     serializedVersion: 2
     m_Bits: 1
+  weaponName: Pistol
   weaponAnimation: {fileID: 7400000, guid: cf2fd80ed263fb04b9dafc4f4382ba69, type: 2}
 --- !u!1 &3413359886522291906
 GameObject:

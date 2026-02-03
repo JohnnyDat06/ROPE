@@ -19806,6 +19806,7 @@ MonoBehaviour:
   bulletLayerMask:
     serializedVersion: 2
     m_Bits: 1
+  weaponName: AKX
   weaponAnimation: {fileID: 7400000, guid: 4bfb967da82fd0641998e4bda0952a42, type: 2}
 --- !u!1 &4226982548989600585
 GameObject:
