@@ -15,6 +15,7 @@ namespace StarterAssets
 		public bool aim;
 		public bool shoot;
 		public bool reload;
+		public bool holster;
 
         [Header("Movement Settings")]
 		public bool analogMovement;
@@ -58,6 +59,13 @@ namespace StarterAssets
 		{
 			ReloadInput(value.isPressed);
 		}
+		public void OnHolster(InputValue value)
+		{
+            if (value.isPressed)
+            {
+                holster = true;
+            }
+        }
 #endif
 
 
@@ -91,6 +99,10 @@ namespace StarterAssets
 		public void ReloadInput(bool newShootState)
 		{
 			reload = newShootState;
+		}
+		public void HolsterInput(bool newHolsterState)
+		{
+			holster = newHolsterState;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)

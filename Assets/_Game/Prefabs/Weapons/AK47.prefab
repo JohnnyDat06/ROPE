@@ -19548,6 +19548,7 @@ MonoBehaviour:
   bulletLayerMask:
     serializedVersion: 2
     m_Bits: 1
+  weaponName: AK47
   weaponAnimation: {fileID: 7400000, guid: 4aac6a1ebc638ab42b14a1e38e0129db, type: 2}
 --- !u!1 &4378020415959941719
 GameObject:

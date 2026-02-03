@@ -263,7 +263,6 @@ namespace StarterAssets
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
-            // --- CẬP NHẬT ANIMATION ---
             _animationController.UpdateLocomotion(_animationBlend, inputMagnitude);
 
             // Gửi dữ liệu X/Y sang animation controller (nó sẽ tự xử lý việc làm mượt)
@@ -277,7 +276,6 @@ namespace StarterAssets
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
 
-                // Animation: Tắt trạng thái nhảy/rơi
                 _animationController.UpdateJump(false);
                 _animationController.UpdateFreeFall(false);
 
@@ -290,14 +288,11 @@ namespace StarterAssets
                 // Jump
                 if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
-                    // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
-                    // Animation: Bật trạng thái nhảy
                     _animationController.UpdateJump(true);
                 }
 
-                // jump timeout
                 if (_jumpTimeoutDelta >= 0.0f)
                 {
                     _jumpTimeoutDelta -= Time.deltaTime;
@@ -305,25 +300,18 @@ namespace StarterAssets
             }
             else
             {
-                // reset the jump timeout timer
                 _jumpTimeoutDelta = JumpTimeout;
 
-                // fall timeout
                 if (_fallTimeoutDelta >= 0.0f)
                 {
                     _fallTimeoutDelta -= Time.deltaTime;
                 }
                 else
                 {
-                    // Animation: Bật trạng thái rơi tự do
                     _animationController.UpdateFreeFall(true);
                 }
-
-                // if we are not grounded, do not jump
                 _input.jump = false;
             }
-
-            // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
             if (_verticalVelocity < _terminalVelocity)
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
