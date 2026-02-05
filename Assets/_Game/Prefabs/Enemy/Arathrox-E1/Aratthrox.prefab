@@ -175,7 +175,6 @@ GameObject:
   - component: {fileID: 6460818871355194517}
   - component: {fileID: 8031381165677867016}
   - component: {fileID: 2973196882313661414}
-  - component: {fileID: 1710790106967981510}
   m_Layer: 3
   m_Name: ArathroxObj
   m_TagString: Untagged
@@ -259,7 +258,7 @@ MonoBehaviour:
   _turnEndThreshold: 5
   _alignSpeed: 120
   _stopDistance: 0.5
-  _strafeChangeInterval: {x: 2, y: 4}
+  _strafeChangeInterval: {x: 1.5, y: 2.5}
   _allyLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -349,27 +348,6 @@ MonoBehaviour:
   _playerTarget: {fileID: 0}
   _canSeePlayer: 0
   _isPhysicallyVisible: 0
---- !u!65 &1710790106967981510
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 518434366457916247}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 0.812731, z: 1}
-  m_Center: {x: 0, y: 0.48110294, z: 0}
 --- !u!1 &637246557766980381
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,6 +824,59 @@ Transform:
   - {fileID: 3231793642806707692}
   m_Father: {fileID: 417731296934778007}
   m_LocalEulerAnglesHint: {x: 0.000000637063, y: -0.0000019257766, z: 19.812082}
+--- !u!1 &2202913406610029954
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4554247867163541421}
+  - component: {fileID: 5042350508761339864}
+  m_Layer: 3
+  m_Name: Hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4554247867163541421
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2202913406610029954}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.244969, y: 0, z: 0, w: 0.96953094}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 192825957834680753}
+  m_LocalEulerAnglesHint: {x: 28.36, y: 0, z: 0}
+--- !u!65 &5042350508761339864
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2202913406610029954}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.6206099, z: 1.97226}
+  m_Center: {x: 0, y: 0.88092107, z: -0.33818743}
 --- !u!1 &2444282191678109004
 GameObject:
   m_ObjectHideFlags: 0
@@ -1849,6 +1880,7 @@ Transform:
   - {fileID: 2043054143822461104}
   - {fileID: 8146866728336845444}
   - {fileID: 3684354185485603460}
+  - {fileID: 4554247867163541421}
   m_Father: {fileID: 4019035095076683500}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9097216070326889328

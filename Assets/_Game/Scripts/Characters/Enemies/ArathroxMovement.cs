@@ -129,6 +129,14 @@ public class ArathroxMovement : MonoBehaviour
 	/// </summary>
 	public void Stop()
 	{
+		// Validate agent state
+		if (_agent == null || !_agent.isActiveAndEnabled || !_agent.isOnNavMesh)
+		{
+			if (_animator != null) ResetAnimator();
+			return;
+		}
+
+		// Clear the current path
 		if (_agent.isOnNavMesh) _agent.ResetPath();
 		_hasTarget = false;
 		_agent.isStopped = true;

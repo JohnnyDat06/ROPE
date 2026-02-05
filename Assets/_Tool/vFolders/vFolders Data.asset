@@ -40,6 +40,11 @@ MonoBehaviour:
     - 3d8f7d786a9f1d4479bf6f35e7f51af5
     - e66294125b2d69b48bfd1bf980b4da53
     - 07961b568245ed641a0dbc6865e4236d
+    - 9ff60272ee8584045b10b1ecaf47d3fd
+    - 68fba7479f817e44ca5719c6c27d60cf
+    - 9b7d77b974c3be8429929fe994bd7307
+    - 814fc913785651744bd4eab8efc40e0b
+    - 2be81302015b07f43b484109bc6ba21d
     values:
     - colorIndex: 0
       iconNameOrGuid: Settings Icon
@@ -93,3 +98,13 @@ MonoBehaviour:
       iconNameOrGuid: Cubemap Icon
     - colorIndex: 0
       iconNameOrGuid: RawImage Icon
+    - colorIndex: 8
+      iconNameOrGuid: 
+    - colorIndex: 6
+      iconNameOrGuid: 
+    - colorIndex: 1
+      iconNameOrGuid: 
+    - colorIndex: 3
+      iconNameOrGuid: 
+    - colorIndex: 0
+      iconNameOrGuid: SceneAsset Icon
