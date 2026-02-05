@@ -1,0 +1,1916 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &77236525573758717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1243891574614446225}
+  m_Layer: 3
+  m_Name: Arathrox_LegFrontRight1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1243891574614446225
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77236525573758717}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7931759, y: -0.4681692, z: -0.38367933, w: -0.06693204}
+  m_LocalPosition: {x: -0.14881274, y: 0.11546722, z: 0.1559999}
+  m_LocalScale: {x: 1, y: 0.99999976, z: 0.9999998}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 942186286522589700}
+  m_Father: {fileID: 894280101081478742}
+  m_LocalEulerAnglesHint: {x: -27.890211, y: -137.62367, z: -128.32463}
+--- !u!1 &218534712244434247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1990058650129126162}
+  m_Layer: 3
+  m_Name: Arathrox_LegRearLeft3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1990058650129126162
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218534712244434247}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.00000078904424, y: -0.000000006965516, z: -0.40800226, w: 0.9129809}
+  m_LocalPosition: {x: -1.1010188, y: 0.000001373291, z: 0.0000003027916}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3011203269281647619}
+  m_Father: {fileID: 5899593357385555627}
+  m_LocalEulerAnglesHint: {x: -0.00008109909, y: 0.000032262215, z: -45.95096}
+--- !u!1 &263038605331430418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9074426675678236740}
+  m_Layer: 0
+  m_Name: Aratthrox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9074426675678236740
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263038605331430418}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.672, y: -9.131, z: -16.174}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4019035095076683500}
+  - {fileID: 8520188594983064326}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &379219318686977588
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8028929657694713752}
+  m_Layer: 3
+  m_Name: Arathrox_Neck2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8028929657694713752
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379219318686977588}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0000000017575779, y: -0.000000010019529, z: -0.17277716, w: 0.984961}
+  m_LocalPosition: {x: -0.19993442, y: 0, z: 0.000000011517459}
+  m_LocalScale: {x: 0.9999999, y: 0.9999999, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8968709755502897952}
+  m_Father: {fileID: 3231793642806707692}
+  m_LocalEulerAnglesHint: {x: 0.8085898, y: 0.14642553, z: -20.478367}
+--- !u!1 &420578991237637548
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3703515869452013158}
+  m_Layer: 3
+  m_Name: Arathrox_WeakPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3703515869452013158
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420578991237637548}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0000006722269, y: -0.00000082728013, z: -0.6306276, w: 0.7760856}
+  m_LocalPosition: {x: -0.17682526, y: -0.000001068115, z: -1.4210839e-15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8760552172823873478}
+  m_LocalEulerAnglesHint: {x: -0.000119566124, y: -0.00002499418, z: -78.19288}
+--- !u!1 &518434366457916247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4019035095076683500}
+  - component: {fileID: 337178130282064104}
+  - component: {fileID: 2154215530032900626}
+  - component: {fileID: 456563550929242987}
+  - component: {fileID: 6460818871355194517}
+  - component: {fileID: 8031381165677867016}
+  - component: {fileID: 2973196882313661414}
+  - component: {fileID: 1710790106967981510}
+  m_Layer: 3
+  m_Name: ArathroxObj
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4019035095076683500
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518434366457916247}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 192825957834680753}
+  m_Father: {fileID: 9074426675678236740}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &337178130282064104
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518434366457916247}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: f35de0567aa55894cb6c2cdcf03fe6d8, type: 3}
+  m_Controller: {fileID: 9100000, guid: caee5cd1fca81094cb3a0180f52d9bbf, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 1
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!195 &2154215530032900626
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518434366457916247}
+  m_Enabled: 1
+  m_AgentTypeID: -1372625422
+  m_Radius: 0.7
+  m_Speed: 1.5
+  m_Acceleration: 100
+  avoidancePriority: 40
+  m_AngularSpeed: 360
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 0
+  m_AutoBraking: 0
+  m_AutoRepath: 1
+  m_Height: 0.9
+  m_BaseOffset: -0.02
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &456563550929242987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518434366457916247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc496a70c3c83cd4880fc78c2447413e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _turnStartThreshold: 45
+  _turnEndThreshold: 5
+  _alignSpeed: 120
+  _stopDistance: 0.5
+  _strafeChangeInterval: {x: 2, y: 4}
+  _allyLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  _separationWeight: 2.5
+  _strafeCheckDistance: 3.5
+  _inputSmoothTime: 0.15
+--- !u!114 &6460818871355194517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518434366457916247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Graph: {fileID: 4832491119397321040, guid: 3c913a7496657174fbec4ce975bcb822, type: 2}
+  m_BlackboardVariableOverridesList:
+  - rid: 5274599884394070265
+  - rid: 5274599884394070266
+  m_OriginalGraph: {fileID: 4832491119397321040, guid: 7a81d0318c91b6d4fa1c576020f0a654, type: 2}
+  m_IsInitialised: 0
+  m_IsStarted: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 5274599884394070265
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 518434366457916247}
+    - rid: 5274599884394070266
+      type: {class: 'SharedBlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 9809840845285281324
+          m_Value1: 1343753732860302891
+        Name: Player
+        m_Value: {fileID: 0}
+        m_SharedVariablesRuntimeAsset: {fileID: 7039999240894099722, guid: 3c913a7496657174fbec4ce975bcb822, type: 2}
+--- !u!114 &8031381165677867016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518434366457916247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba1f16826ee3f854698bb5a836df99fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waypoints:
+  - {fileID: 154246043034114644}
+  isRandom: 1
+--- !u!114 &2973196882313661414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518434366457916247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0edb16ea6b714784f9947c9e6e97e831, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eyes:
+  - {fileID: 7412078429931787267}
+  viewAngle: 110
+  viewRadius: 12
+  closeRange: 4
+  detectionHoldTime: 3
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 128
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1
+  playerVariableName: Player
+  detectedVariableName: IsDetected
+  _playerTarget: {fileID: 0}
+  _canSeePlayer: 0
+  _isPhysicallyVisible: 0
+--- !u!65 &1710790106967981510
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518434366457916247}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.812731, z: 1}
+  m_Center: {x: 0, y: 0.48110294, z: 0}
+--- !u!1 &637246557766980381
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5267313614913385892}
+  m_Layer: 3
+  m_Name: Arathrox_LegRearRight2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5267313614913385892
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 637246557766980381}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.000000025813394, y: 0.0000000044259645, z: 0.5514931, w: 0.83417946}
+  m_LocalPosition: {x: -0.8442886, y: 0.00000045776366, z: 0.000000038146972}
+  m_LocalScale: {x: 1.0000001, y: 0.9999999, z: 0.99999994}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2295682300856213545}
+  m_Father: {fileID: 1435944834072240477}
+  m_LocalEulerAnglesHint: {x: -0.00000067486644, y: 0.00000032037994, z: 64.6049}
+--- !u!1 &773402753334742710
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 254933806329253797}
+  m_Layer: 3
+  m_Name: Arathrox_Tail6
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &254933806329253797
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773402753334742710}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0000009475705, y: -0.00000010772571, z: 0.11295858, w: 0.9935997}
+  m_LocalPosition: {x: -0.14517656, y: -2.8421708e-15, z: 0.0000000017422078}
+  m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7960403375537742268}
+  m_Father: {fileID: 5234015073861097614}
+  m_LocalEulerAnglesHint: {x: -0.0029866423, y: 0.013962007, z: 14.824131}
+--- !u!1 &896840335795987928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3130060561167079228}
+  m_Layer: 3
+  m_Name: Arathrox_Tail2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3130060561167079228
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896840335795987928}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000009205343, y: 0.000000012878113, z: 0.138549, w: 0.99035555}
+  m_LocalPosition: {x: -0.1956179, y: -0.00000016391277, z: 0.000000013195877}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5819885680156226851}
+  m_Father: {fileID: 3902299173039853554}
+  m_LocalEulerAnglesHint: {x: 0.015139461, y: 0.0041932114, z: 15.4812565}
+--- !u!1 &933938029661108470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7412078429931787267}
+  m_Layer: 3
+  m_Name: _Eye
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7412078429931787267
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933938029661108470}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.56098557, y: -0.4304593, z: 0.4304593, w: 0.56098557}
+  m_LocalPosition: {x: -0.124, y: 0.273, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7170433781482190007}
+  m_Father: {fileID: 8968709755502897952}
+  m_LocalEulerAnglesHint: {x: -15, y: -90, z: 90}
+--- !u!1 &1162966195673781424
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8458879038486010177}
+  m_Layer: 3
+  m_Name: Arathrox_LegFrontRight3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8458879038486010177
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162966195673781424}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.0000006945855, y: -0.00000027395947, z: -0.36459097, w: 0.9311678}
+  m_LocalPosition: {x: -0.85068065, y: 0, z: 0.000000095367426}
+  m_LocalScale: {x: 1.0000002, y: 1, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8767119139562971341}
+  m_Father: {fileID: 942186286522589700}
+  m_LocalEulerAnglesHint: {x: 0.000053924225, y: -0.00006176729, z: -46.715122}
+--- !u!1 &1310067213028318063
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8968709755502897952}
+  m_Layer: 3
+  m_Name: Arathrox_Head
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8968709755502897952
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310067213028318063}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0000000068609776, y: -0.00000003842099, z: -0.17579298, w: 0.98442715}
+  m_LocalPosition: {x: -0.15883942, y: 0, z: 0}
+  m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5349061798304485521}
+  - {fileID: 6377327429732551579}
+  - {fileID: 3624116053627648792}
+  - {fileID: 503998176507918487}
+  - {fileID: 7412078429931787267}
+  m_Father: {fileID: 8028929657694713752}
+  m_LocalEulerAnglesHint: {x: 0.773662, y: 0.05888436, z: -19.833775}
+--- !u!1 &1379950998011714847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8767119139562971341}
+  m_Layer: 3
+  m_Name: Arathrox_LegFrontRight4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8767119139562971341
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379950998011714847}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000023935837, y: 0.00000015839149, z: -0.2885624, w: 0.9574611}
+  m_LocalPosition: {x: -0.47654846, y: 0.00000030517577, z: 0.00000019550323}
+  m_LocalScale: {x: 0.9999997, y: 1.0000002, z: 0.99999976}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8458879038486010177}
+  m_LocalEulerAnglesHint: {x: 0.00003546476, y: 0.000012331288, z: -35.488274}
+--- !u!1 &1568743118132060825
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3624116053627648792}
+  m_Layer: 3
+  m_Name: Arathrox_JawRight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3624116053627648792
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1568743118132060825}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.02011482, y: 0.15886176, z: -0.10202415, w: 0.98180926}
+  m_LocalPosition: {x: -0.34528938, y: -0.021098556, z: 0.11099998}
+  m_LocalScale: {x: 0.9999998, y: 0.99999994, z: 1.0000002}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8968709755502897952}
+  m_LocalEulerAnglesHint: {x: -1.3749772, y: -8.617589, z: -10.158156}
+--- !u!1 &1613801146648060508
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3902299173039853554}
+  m_Layer: 3
+  m_Name: Arathrox_Tail1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3902299173039853554
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613801146648060508}
+  serializedVersion: 2
+  m_LocalRotation: {x: -3.7316238e-17, y: -7.81428e-17, z: 0.9427946, w: -0.33337417}
+  m_LocalPosition: {x: -0.000000012427424, y: 0.000000095367426, z: -0.000000076293944}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3130060561167079228}
+  m_Father: {fileID: 417731296934778007}
+  m_LocalEulerAnglesHint: {x: -0.0060479855, y: -0.004921265, z: -140.86462}
+--- !u!1 &1659683309926932066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6377327429732551579}
+  m_Layer: 3
+  m_Name: Arathrox_JawLower
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6377327429732551579
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659683309926932066}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7065614, y: 0.027768476, z: 0.027768476, w: 0.7065614}
+  m_LocalPosition: {x: -0.3348983, y: -0.12678269, z: 0.000000038146972}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8968709755502897952}
+  m_LocalEulerAnglesHint: {x: 65.22724, y: -90.02984, z: -91.020226}
+--- !u!1 &1998517265954232660
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7170433781482190007}
+  - component: {fileID: 7220639631393283543}
+  - component: {fileID: 595464065714474906}
+  m_Layer: 3
+  m_Name: Spot Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7170433781482190007
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998517265954232660}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7412078429931787267}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!108 &7220639631393283543
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998517265954232660}
+  m_Enabled: 1
+  serializedVersion: 11
+  m_Type: 0
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
+--- !u!114 &595464065714474906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998517265954232660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+--- !u!1 &2181155880539773078
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 894280101081478742}
+  m_Layer: 3
+  m_Name: Arathrox_Thorax
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &894280101081478742
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2181155880539773078}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000003178751, y: -0.000000017189313, z: 0.18184207, w: 0.9833278}
+  m_LocalPosition: {x: -0.28435615, y: 0.0000012969971, z: -0.000000032311398}
+  m_LocalScale: {x: 1, y: 0.99999994, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8446741072580839799}
+  - {fileID: 1243891574614446225}
+  - {fileID: 3231793642806707692}
+  m_Father: {fileID: 417731296934778007}
+  m_LocalEulerAnglesHint: {x: 0.000000637063, y: -0.0000019257766, z: 19.812082}
+--- !u!1 &2444282191678109004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1435944834072240477}
+  m_Layer: 3
+  m_Name: Arathrox_LegRearRight1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1435944834072240477
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2444282191678109004}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.036283962, y: 0.9274801, z: -0.12287023, w: 0.35123658}
+  m_LocalPosition: {x: -0.121563524, y: 0.0010741424, z: 0.13099998}
+  m_LocalScale: {x: 0.99999994, y: 1, z: 0.99999994}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5267313614913385892}
+  m_Father: {fileID: 417731296934778007}
+  m_LocalEulerAnglesHint: {x: 9.223255, y: 139.6447, z: -7.9697146}
+--- !u!1 &2755685330057513495
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 154246043034114644}
+  m_Layer: 0
+  m_Name: wp (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &154246043034114644
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2755685330057513495}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8520188594983064326}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3119546982136468112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3011203269281647619}
+  m_Layer: 3
+  m_Name: Arathrox_LegRearLeft4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3011203269281647619
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3119546982136468112}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0000012660753, y: -0.000000083818286, z: -0.26872224, w: 0.96321774}
+  m_LocalPosition: {x: -0.4106115, y: 0.00000015258789, z: 0.0000000834465}
+  m_LocalScale: {x: 0.9999999, y: 1, z: 0.99999994}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1990058650129126162}
+  m_LocalEulerAnglesHint: {x: -0.00014755306, y: 0.000026720214, z: -30.066338}
+--- !u!1 &3195514105706201955
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3684354185485603460}
+  - component: {fileID: 2116677255913664300}
+  m_Layer: 3
+  m_Name: SK_ArathroxWeakPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3684354185485603460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3195514105706201955}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 192825957834680753}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!137 &2116677255913664300
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3195514105706201955}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 3
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 4da85668405ffaf48a4c67d9899f1629, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 4
+  m_UpdateWhenOffscreen: 1
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: -4162086742044983740, guid: f35de0567aa55894cb6c2cdcf03fe6d8, type: 3}
+  m_Bones:
+  - {fileID: 3703515869452013158}
+  - {fileID: 8984239542840273228}
+  - {fileID: 3582595654030786947}
+  - {fileID: 8760552172823873478}
+  - {fileID: 3624116053627648792}
+  - {fileID: 503998176507918487}
+  - {fileID: 8446741072580839799}
+  - {fileID: 6753153780792231652}
+  - {fileID: 1331215197442595750}
+  - {fileID: 8760581753387730383}
+  - {fileID: 1243891574614446225}
+  - {fileID: 942186286522589700}
+  - {fileID: 8458879038486010177}
+  - {fileID: 8767119139562971341}
+  - {fileID: 3973989245521064118}
+  - {fileID: 5899593357385555627}
+  - {fileID: 1990058650129126162}
+  - {fileID: 6377327429732551579}
+  - {fileID: 1435944834072240477}
+  - {fileID: 5267313614913385892}
+  - {fileID: 5349061798304485521}
+  - {fileID: 417731296934778007}
+  - {fileID: 3011203269281647619}
+  - {fileID: 7960403375537742268}
+  - {fileID: 254933806329253797}
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 417731296934778007}
+  m_AABB:
+    m_Center: {x: -0.15492901, y: 0.9432962, z: -0.00000028312206}
+    m_Extent: {x: 0.2586709, y: 0.20809034, z: 0.20501997}
+  m_DirtyAABB: 0
+--- !u!1 &3244844442604730293
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8760581753387730383}
+  m_Layer: 3
+  m_Name: Arathrox_LegFrontLeft4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8760581753387730383
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3244844442604730293}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0000010565973, y: 0.00000018639119, z: 0.2885623, w: 0.9574611}
+  m_LocalPosition: {x: -0.4765489, y: 0.00000015258789, z: 0.00000012874602}
+  m_LocalScale: {x: 0.99999994, y: 0.9999999, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331215197442595750}
+  m_LocalEulerAnglesHint: {x: -0.00011932861, y: -0.00001614618, z: 35.406403}
+--- !u!1 &3856350222387067091
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6753153780792231652}
+  m_Layer: 3
+  m_Name: Arathrox_LegFrontLeft2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6753153780792231652
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3856350222387067091}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.000000013714334, y: -0.00000002430654, z: 0.57153463, w: 0.8205779}
+  m_LocalPosition: {x: -0.73715806, y: -0.000000076293944, z: -0.00000006198883}
+  m_LocalScale: {x: 1, y: 1, z: 0.99999994}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1331215197442595750}
+  m_Father: {fileID: 8446741072580839799}
+  m_LocalEulerAnglesHint: {x: -0.0000014856491, y: 0.0000021338326, z: 73.5986}
+--- !u!1 &3984443440573783065
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8760552172823873478}
+  m_Layer: 3
+  m_Name: Arathrox_Tail8
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8760552172823873478
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3984443440573783065}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.00000028388592, y: -0.0000011359826, z: 0.17365074, w: 0.9848073}
+  m_LocalPosition: {x: -0.20519693, y: -5.6843415e-15, z: 0.0000000020791047}
+  m_LocalScale: {x: 0.9999999, y: 0.9999999, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3582595654030786947}
+  - {fileID: 3703515869452013158}
+  m_Father: {fileID: 7960403375537742268}
+  m_LocalEulerAnglesHint: {x: 0.009307682, y: 0.015190953, z: 20.667242}
+--- !u!1 &4287043976278547324
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2207751936257284005}
+  m_Layer: 3
+  m_Name: Arathrox_LegRearRight4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2207751936257284005
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4287043976278547324}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.0000009780255, y: -0.0000000044013917, z: 0.26872236, w: 0.9632177}
+  m_LocalPosition: {x: -0.41061172, y: -0.00000045776366, z: -0.000000026226044}
+  m_LocalScale: {x: 0.99999976, y: 0.9999999, z: 1.0000002}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2295682300856213545}
+  m_LocalEulerAnglesHint: {x: 0.00011084199, y: 0.000027599943, z: 30.148434}
+--- !u!1 &4323854736982112964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5819885680156226851}
+  m_Layer: 3
+  m_Name: Arathrox_Tail3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5819885680156226851
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4323854736982112964}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.16556329, w: 0.9861992}
+  m_LocalPosition: {x: -0.17421219, y: 9.094947e-15, z: 0.0000000024218665}
+  m_LocalScale: {x: 0.9999999, y: 0.9999999, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8279094890943664802}
+  m_Father: {fileID: 3130060561167079228}
+  m_LocalEulerAnglesHint: {x: -0.0032759418, y: 0.0005849328, z: 19.38779}
+--- !u!1 &4393175716224391785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8446741072580839799}
+  m_Layer: 3
+  m_Name: Arathrox_LegFrontLeft1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8446741072580839799
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4393175716224391785}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.067090064, y: -0.38382524, z: -0.46798754, w: 0.79319906}
+  m_LocalPosition: {x: -0.14881283, y: 0.115467295, z: -0.1561872}
+  m_LocalScale: {x: 0.9999999, y: 0.9999999, z: 0.9999999}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6753153780792231652}
+  m_Father: {fileID: 894280101081478742}
+  m_LocalEulerAnglesHint: {x: -27.813242, y: -43.67496, z: -52.549194}
+--- !u!1 &4782962289053424477
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3582595654030786947}
+  m_Layer: 3
+  m_Name: Arathrox_Tail9
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3582595654030786947
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4782962289053424477}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0000014285171, y: -0.000000075513555, z: 0.052787792, w: 0.9986057}
+  m_LocalPosition: {x: -0.17682527, y: -0.000001068115, z: 0.0000000016833367}
+  m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8984239542840273228}
+  m_Father: {fileID: 8760552172823873478}
+  m_LocalEulerAnglesHint: {x: -0.004766007, y: 0.0044674627, z: 8.304348}
+--- !u!1 &5402429157619061961
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5234015073861097614}
+  m_Layer: 3
+  m_Name: Arathrox_Tail5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5234015073861097614
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5402429157619061961}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.16469865, w: 0.9863439}
+  m_LocalPosition: {x: -0.14753449, y: -0.0000003051758, z: 0.0000000018720403}
+  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 254933806329253797}
+  m_Father: {fileID: 8279094890943664802}
+  m_LocalEulerAnglesHint: {x: -0.005175142, y: 0.00812642, z: 20.542946}
+--- !u!1 &5684263590338421169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 503998176507918487}
+  m_Layer: 3
+  m_Name: Arathrox_JawUpper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &503998176507918487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5684263590338421169}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.6827891, y: 0.18384533, z: -0.1838453, w: 0.682789}
+  m_LocalPosition: {x: -0.31842226, y: 0.110301055, z: 0}
+  m_LocalScale: {x: 0.9999999, y: 1, z: 0.9999999}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8968709755502897952}
+  m_LocalEulerAnglesHint: {x: -89.13452, y: 89.17268, z: -90.165764}
+--- !u!1 &5798909653027618314
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8279094890943664802}
+  m_Layer: 3
+  m_Name: Arathrox_Tail4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8279094890943664802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5798909653027618314}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.13148391, w: 0.9913183}
+  m_LocalPosition: {x: -0.16326965, y: 0.000000038146972, z: 0.0000000021459163}
+  m_LocalScale: {x: 1.0000002, y: 1.0000002, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5234015073861097614}
+  m_Father: {fileID: 5819885680156226851}
+  m_LocalEulerAnglesHint: {x: -0.0036794045, y: 0.0044520963, z: 16.159681}
+--- !u!1 &6127722657365976581
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8984239542840273228}
+  m_Layer: 3
+  m_Name: Arathrox_Tail10
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8984239542840273228
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6127722657365976581}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.0000010277984, y: 0.000000025885036, z: 0.025176963, w: 0.999683}
+  m_LocalPosition: {x: -0.18520713, y: -0.00000015258789, z: 0.0000000017538108}
+  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3582595654030786947}
+  m_LocalEulerAnglesHint: {x: -0.01345896, y: -0.0048161997, z: 2.1884391}
+--- !u!1 &6485606703622417150
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 417731296934778007}
+  m_Layer: 3
+  m_Name: Arathrox_Hips
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &417731296934778007
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485606703622417150}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5706044, y: 0.41762516, z: 0.5706044, w: 0.41762486}
+  m_LocalPosition: {x: -0.000000012427424, y: 0.28430626, z: 1.1893392}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 3973989245521064118}
+  - {fileID: 1435944834072240477}
+  - {fileID: 3902299173039853554}
+  - {fileID: 894280101081478742}
+  m_Father: {fileID: 2043054143822461104}
+  m_LocalEulerAnglesHint: {x: 0.03925822, y: 89.20333, z: 109.038666}
+--- !u!1 &6835587891705747541
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8520188594983064326}
+  m_Layer: 0
+  m_Name: Waypoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8520188594983064326
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6835587891705747541}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 154246043034114644}
+  m_Father: {fileID: 9074426675678236740}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6953437924752430708
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7960403375537742268}
+  m_Layer: 3
+  m_Name: Arathrox_Tail7
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7960403375537742268
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6953437924752430708}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0000008141884, y: 0.00000027579313, z: 0.2584328, w: 0.9660293}
+  m_LocalPosition: {x: -0.1321518, y: -2.9558577e-14, z: 0.0000000015454205}
+  m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8760552172823873478}
+  m_Father: {fileID: 254933806329253797}
+  m_LocalEulerAnglesHint: {x: 0.0007795036, y: 0.013391157, z: 31.297281}
+--- !u!1 &7011861720186416247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 942186286522589700}
+  m_Layer: 3
+  m_Name: Arathrox_LegFrontRight2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &942186286522589700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7011861720186416247}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000009170673, y: -0.000000006387396, z: -0.5715346, w: 0.82057804}
+  m_LocalPosition: {x: -0.7371579, y: -0.00000022888183, z: -0.000000047683713}
+  m_LocalScale: {x: 1.0000001, y: 1.0000002, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8458879038486010177}
+  m_Father: {fileID: 1243891574614446225}
+  m_LocalEulerAnglesHint: {x: 0.0000009097945, y: -0.0000031252782, z: -73.76929}
+--- !u!1 &7366820941756680864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3231793642806707692}
+  m_Layer: 3
+  m_Name: Arathrox_Neck1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3231793642806707692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7366820941756680864}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.12830885, w: 0.99173427}
+  m_LocalPosition: {x: -0.36709243, y: -0.000000076293944, z: 4.5838533e-12}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8028929657694713752}
+  m_Father: {fileID: 894280101081478742}
+  m_LocalEulerAnglesHint: {x: 0.5018703, y: 0.63533384, z: 17.77109}
+--- !u!1 &7416000770940340040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5899593357385555627}
+  m_Layer: 3
+  m_Name: Arathrox_LegRearLeft2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5899593357385555627
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7416000770940340040}
+  serializedVersion: 2
+  m_LocalRotation: {x: 8.5563334e-10, y: -0.0000000041941517, z: -0.5514933, w: 0.83417934}
+  m_LocalPosition: {x: -0.8442883, y: -0.00000015258789, z: 0.00000015497207}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1990058650129126162}
+  m_Father: {fileID: 3973989245521064118}
+  m_LocalEulerAnglesHint: {x: -0.0000009544078, y: 0.000000016386116, z: -64.41856}
+--- !u!1 &7501940511573071487
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2043054143822461104}
+  m_Layer: 3
+  m_Name: root
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2043054143822461104
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7501940511573071487}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 417731296934778007}
+  m_Father: {fileID: 192825957834680753}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!1 &7543775153469015533
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1331215197442595750}
+  m_Layer: 3
+  m_Name: Arathrox_LegFrontLeft3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1331215197442595750
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543775153469015533}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000018524016, y: 0.000000006252759, z: 0.36459103, w: 0.9311678}
+  m_LocalPosition: {x: -0.8506806, y: 0.00000030517577, z: 0.0000000047683715}
+  m_LocalScale: {x: 1.0000002, y: 1.0000001, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8760581753387730383}
+  m_Father: {fileID: 6753153780792231652}
+  m_LocalEulerAnglesHint: {x: -0.00000042457614, y: -0.0000005257639, z: 46.54884}
+--- !u!1 &7749777052566041406
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3973989245521064118}
+  m_Layer: 3
+  m_Name: Arathrox_LegRearLeft1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3973989245521064118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7749777052566041406}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.3514225, y: -0.12278827, z: 0.9274265, w: -0.036129512}
+  m_LocalPosition: {x: -0.12156345, y: 0.0010741424, z: -0.13128486}
+  m_LocalScale: {x: 1, y: 0.99999994, z: 0.99999994}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5899593357385555627}
+  m_Father: {fileID: 417731296934778007}
+  m_LocalEulerAnglesHint: {x: 10.03697, y: 41.03201, z: -170.7589}
+--- !u!1 &8355932088087864122
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8146866728336845444}
+  - component: {fileID: 6673432116861872573}
+  m_Layer: 3
+  m_Name: SK_ArathroxBody
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8146866728336845444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8355932088087864122}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 192825957834680753}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!137 &6673432116861872573
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8355932088087864122}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 3
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 4da85668405ffaf48a4c67d9899f1629, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 4
+  m_UpdateWhenOffscreen: 1
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: -8597426909210752286, guid: f35de0567aa55894cb6c2cdcf03fe6d8, type: 3}
+  m_Bones:
+  - {fileID: 8968709755502897952}
+  - {fileID: 503998176507918487}
+  - {fileID: 5349061798304485521}
+  - {fileID: 3624116053627648792}
+  - {fileID: 6377327429732551579}
+  - {fileID: 1243891574614446225}
+  - {fileID: 8446741072580839799}
+  - {fileID: 942186286522589700}
+  - {fileID: 6753153780792231652}
+  - {fileID: 894280101081478742}
+  - {fileID: 8760581753387730383}
+  - {fileID: 1331215197442595750}
+  - {fileID: 8458879038486010177}
+  - {fileID: 8767119139562971341}
+  - {fileID: 3973989245521064118}
+  - {fileID: 5899593357385555627}
+  - {fileID: 1990058650129126162}
+  - {fileID: 417731296934778007}
+  - {fileID: 1435944834072240477}
+  - {fileID: 5267313614913385892}
+  - {fileID: 3011203269281647619}
+  - {fileID: 8028929657694713752}
+  - {fileID: 3231793642806707692}
+  - {fileID: 3902299173039853554}
+  - {fileID: 3130060561167079228}
+  - {fileID: 5819885680156226851}
+  - {fileID: 8279094890943664802}
+  - {fileID: 5234015073861097614}
+  - {fileID: 254933806329253797}
+  - {fileID: 7960403375537742268}
+  - {fileID: 3703515869452013158}
+  - {fileID: 8760552172823873478}
+  - {fileID: 8984239542840273228}
+  - {fileID: 3582595654030786947}
+  - {fileID: 2295682300856213545}
+  - {fileID: 2207751936257284005}
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 417731296934778007}
+  m_AABB:
+    m_Center: {x: -0.47017422, y: -0.17642587, z: -0.00018364191}
+    m_Extent: {x: 1.4061908, y: 1.2388115, z: 1.307452}
+  m_DirtyAABB: 0
+--- !u!1 &9060859792213185107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 192825957834680753}
+  m_Layer: 3
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &192825957834680753
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9060859792213185107}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 2043054143822461104}
+  - {fileID: 8146866728336845444}
+  - {fileID: 3684354185485603460}
+  m_Father: {fileID: 4019035095076683500}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9097216070326889328
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2295682300856213545}
+  m_Layer: 3
+  m_Name: Arathrox_LegRearRight3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2295682300856213545
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9097216070326889328}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.0000010008633, y: 0.00000013946405, z: 0.40800235, w: 0.91298085}
+  m_LocalPosition: {x: -1.1010191, y: -0.0000012207031, z: 0.00000035762787}
+  m_LocalScale: {x: 1.0000001, y: 1.0000002, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2207751936257284005}
+  m_Father: {fileID: 5267313614913385892}
+  m_LocalEulerAnglesHint: {x: 0.00009619444, y: 0.00005444129, z: 46.11423}
+--- !u!1 &9098137737816085397
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5349061798304485521}
+  m_Layer: 3
+  m_Name: Arathrox_JawLeft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5349061798304485521
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9098137737816085397}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.98180926, y: -0.102024175, z: 0.15886174, w: 0.020114971}
+  m_LocalPosition: {x: -0.34528938, y: -0.02109848, z: -0.110739134}
+  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8968709755502897952}
+  m_LocalEulerAnglesHint: {x: -1.3376886, y: -171.37465, z: -166.83629}
