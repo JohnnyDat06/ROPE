@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class RaycastWeapon : MonoBehaviour
 {
+    public enum HolsterLocation
+    {
+        Back,
+        Hip,
+    }
+
     public class Bullet
     {
         public float time;
@@ -28,6 +34,8 @@ public class RaycastWeapon : MonoBehaviour
 
     [SerializeField] public string weaponName;
     [SerializeField] public AnimationClip weaponAnimation;
+
+    public HolsterLocation holsterLocation;
 
     Ray ray;
     RaycastHit hitInfo;

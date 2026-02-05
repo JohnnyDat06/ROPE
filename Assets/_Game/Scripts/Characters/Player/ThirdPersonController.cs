@@ -322,7 +322,7 @@ namespace StarterAssets
         {
             float targetRigWeight;
 
-            if (_activeWeapon.IsAiming())
+            if (_activeWeapon != null && !_activeWeapon.IsHolstered)
             {
                 MoveSpeed = StrafeMoveSpeed;
                 StrafeMode = true;
@@ -335,10 +335,11 @@ namespace StarterAssets
                 targetRigWeight = 0;
             }
 
+            // Lerp Rig Weight để chuyển đổi mượt mà giữa Aim và Normal
             rigWeaponAim.weight = Mathf.Lerp(rigWeaponAim.weight, targetRigWeight, Time.deltaTime * AimRigTransitionSpeed);
             rigBodyAim.weight = Mathf.Lerp(rigBodyAim.weight, targetRigWeight, Time.deltaTime * AimRigTransitionSpeed);
         }
-        
+
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
