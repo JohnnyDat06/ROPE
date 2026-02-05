@@ -20309,6 +20309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFiring: 0
+  isReloading: 0
   fireRate: 7
   bulletSpeed: 200
   bulletDrop: 25
@@ -20316,13 +20317,16 @@ MonoBehaviour:
   - {fileID: 6780076093783782018}
   - {fileID: 246045790738830578}
   - {fileID: 6208425469564123135}
-  hitEffect: {fileID: 1174657630828045192}
   raycastOrigin: {fileID: 3098578231012077927}
   raycastDestination: {fileID: 0}
   tracerEffect: {fileID: 588371605904856587, guid: 9f2c142e9c655a54a92d7113bd6c8949, type: 3}
   bulletLayerMask:
     serializedVersion: 2
     m_Bits: 1
+  ammoConfig: {fileID: 11400000, guid: d6a1b77f35d937c41952a3352b9f0273, type: 2}
+  audioConfig: {fileID: 11400000, guid: c5f0129c15cade949871cdce9af01513, type: 2}
+  damageConfig: {fileID: 11400000, guid: 638d7ddfe479cde4eac943f22ea85ec1, type: 2}
+  impactType: {fileID: 11400000, guid: 8481a15052a283f49baef75f502c4263, type: 2}
   weaponName: Pistol
   weaponAnimation: {fileID: 7400000, guid: cf2fd80ed263fb04b9dafc4f4382ba69, type: 2}
   holsterLocation: 1

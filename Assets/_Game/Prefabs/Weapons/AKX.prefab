@@ -19800,13 +19800,16 @@ MonoBehaviour:
   - {fileID: 6780076093783782018}
   - {fileID: 246045790738830578}
   - {fileID: 6208425469564123135}
-  hitEffect: {fileID: 1174657630828045192}
   raycastOrigin: {fileID: 3098578231012077927}
   raycastDestination: {fileID: 0}
   tracerEffect: {fileID: 588371605904856587, guid: 9f2c142e9c655a54a92d7113bd6c8949, type: 3}
   bulletLayerMask:
     serializedVersion: 2
     m_Bits: 1
+  ammoConfig: {fileID: 11400000, guid: e1023d11459919845a3c1407161e3ff1, type: 2}
+  audioConfig: {fileID: 11400000, guid: be33584e3218aa6479a15a6074666a11, type: 2}
+  damageConfig: {fileID: 11400000, guid: 150c3195169c1f14a8dc9143c323ab64, type: 2}
+  impactType: {fileID: 11400000, guid: 8481a15052a283f49baef75f502c4263, type: 2}
   weaponName: AKX
   weaponAnimation: {fileID: 7400000, guid: 4bfb967da82fd0641998e4bda0952a42, type: 2}
   holsterLocation: 0

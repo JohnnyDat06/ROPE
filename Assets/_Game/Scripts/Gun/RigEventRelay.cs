@@ -29,4 +29,12 @@ public class RigEventRelay : MonoBehaviour
             activeWeapon.OnWeaponHolster();
         }
     }
+
+    public void TriggerReload()
+    {
+        if (activeWeapon != null)
+        {
+            activeWeapon.OnWeaponReload();
+        }
+    }
 }

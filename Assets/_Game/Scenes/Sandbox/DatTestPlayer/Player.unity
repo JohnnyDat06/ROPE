@@ -2676,7 +2676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5577a538a3dff5443b02b3560259cf02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunSelector: {fileID: 1068967029}
+  activeWeapon: {fileID: 1251393072}
 --- !u!1 &485683656
 GameObject:
   m_ObjectHideFlags: 0
@@ -7785,14 +7785,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crossHairTarget: {fileID: 1001044581}
-  weaponLeftGrip: {fileID: 358195569}
-  weaponRightGrip: {fileID: 148463640}
   weaponParent: {fileID: 8869801}
   rigController: {fileID: 1173726199}
   backSocket: {fileID: 1685922251}
   hipSocket: {fileID: 1870036988}
   fireDelayTime: 0.8
-  playerCamera: {fileID: 1825968047}
 --- !u!1 &1291111943
 GameObject:
   m_ObjectHideFlags: 0
