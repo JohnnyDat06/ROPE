@@ -95,19 +95,40 @@ public class ArathroxMovement : MonoBehaviour
 	{
 		// Sync NavMeshAgent position with Root Motion from the Animator
 		Vector3 newPos = transform.position + _animator.deltaPosition;
-		
-		// Ensure the new position stays valid on the NavMesh
-		if (NavMesh.SamplePosition(newPos, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+
+		// Ensure we are working with a valid agent on the NavMesh
+		if (_agent != null && _agent.isOnNavMesh)
 		{
-			// Smoothly interpolate the Y height to match the mesh
-			newPos.y = Mathf.Lerp(transform.position.y, hit.position.y, 20f * Time.deltaTime);
+			// 1. Horizontal Constraint (Wall Check)
+			// Check if the move crosses a NavMesh boundary (wall or cliff).
+			// Agent.Raycast returns true if the line to newPos hits an edge.
+			if (_agent.Raycast(newPos, out NavMeshHit hit))
+			{
+				// We hit a wall. Clamp the position to the impact point to stop movement.
+				newPos.x = hit.position.x;
+				newPos.z = hit.position.z;
+
+				// Zero out smoothing velocity to prevent "pushing" into the wall
+				_currentSmoothInput = Vector3.zero;
+			}
+
+			// 2. Vertical Constraint (Ground Snap)
+			// Sample the height at the valid X,Z coordinates
+			if (NavMesh.SamplePosition(newPos, out NavMeshHit heightHit, 1.0f, NavMesh.AllAreas))
+			{
+				// Smoothly interpolate the Y height to match the mesh
+				newPos.y = Mathf.Lerp(transform.position.y, heightHit.position.y, 20f * Time.deltaTime);
+			}
 		}
 
 		transform.position = newPos;
 		transform.rotation *= _animator.deltaRotation;
 		
 		// Update the internal agent position to match the transform
-		_agent.nextPosition = transform.position;
+		if (_agent != null && _agent.isOnNavMesh)
+		{
+			_agent.nextPosition = transform.position;
+		}
 	}
 	#endregion
 
@@ -129,6 +150,14 @@ public class ArathroxMovement : MonoBehaviour
 	/// </summary>
 	public void Stop()
 	{
+		// Validate agent state
+		if (_agent == null || !_agent.isActiveAndEnabled || !_agent.isOnNavMesh)
+		{
+			if (_animator != null) ResetAnimator();
+			return;
+		}
+
+		// Clear the current path
 		if (_agent.isOnNavMesh) _agent.ResetPath();
 		_hasTarget = false;
 		_agent.isStopped = true;
@@ -207,9 +236,25 @@ public class ArathroxMovement : MonoBehaviour
 	{
 		float distance = Vector3.Distance(transform.position, targetPos);
 		
-		// Use a deadzone of +/- 1.5m to prevent oscillation when near the ideal range
+		// Move closer
 		if (distance > idealRange + 1.5f) return transform.forward;
-		if (distance < idealRange - 1.5f) return -transform.forward;
+		
+		// Move away (Back up)
+		if (distance < idealRange - 1.5f) 
+		{
+			// Fix: Check if backing up is safe (not hitting NavMesh edge)
+			// Cast a ray 1.5m backwards to see if we have space.
+			// _agent.Raycast returns true if the line touches a NavMesh boundary (wall/edge).
+			Vector3 backPos = transform.position - transform.forward * 1.5f;
+
+			if (_agent.isOnNavMesh && _agent.Raycast(backPos, out NavMeshHit hit))
+			{
+				// Edge detected behind us, stop backing up to prevent jitter
+				return Vector3.zero;
+			}
+
+			return -transform.forward;
+		}
 		
 		return Vector3.zero;
 	}
@@ -280,9 +325,9 @@ public class ArathroxMovement : MonoBehaviour
 
 			float rand = Random.value;
 			// Randomized behavior distribution:
-			if (rand < 0.2f) _currentStrafeDir = -1f; // 20% Chance Left
-			else if (rand < 0.4f) _currentStrafeDir = 1f;  // 20% Chance Right
-			else _currentStrafeDir = 0f;                     // 60% Chance Idle
+			if (rand < 0.3f) _currentStrafeDir = -1f; // 30% Chance Left
+			else if (rand < 0.6f) _currentStrafeDir = 1f;  // 30% Chance Right
+			else _currentStrafeDir = 0f;                     // 40% Chance Idle
 		}
 	}
 	#endregion
