@@ -236,9 +236,25 @@ public class ArathroxMovement : MonoBehaviour
 	{
 		float distance = Vector3.Distance(transform.position, targetPos);
 		
-		// Use a deadzone of +/- 1.5m to prevent oscillation when near the ideal range
+		// Move closer
 		if (distance > idealRange + 1.5f) return transform.forward;
-		if (distance < idealRange - 1.5f) return -transform.forward;
+		
+		// Move away (Back up)
+		if (distance < idealRange - 1.5f) 
+		{
+			// Fix: Check if backing up is safe (not hitting NavMesh edge)
+			// Cast a ray 1.5m backwards to see if we have space.
+			// _agent.Raycast returns true if the line touches a NavMesh boundary (wall/edge).
+			Vector3 backPos = transform.position - transform.forward * 1.5f;
+
+			if (_agent.isOnNavMesh && _agent.Raycast(backPos, out NavMeshHit hit))
+			{
+				// Edge detected behind us, stop backing up to prevent jitter
+				return Vector3.zero;
+			}
+
+			return -transform.forward;
+		}
 		
 		return Vector3.zero;
 	}

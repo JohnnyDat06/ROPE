@@ -1001,7 +1001,7 @@ MonoBehaviour:
   _turnEndThreshold: 5
   _alignSpeed: 120
   _stopDistance: 0.5
-  _strafeChangeInterval: {x: 2, y: 4}
+  _strafeChangeInterval: {x: 1.5, y: 2.5}
   _allyLayer:
     serializedVersion: 2
     m_Bits: 8
