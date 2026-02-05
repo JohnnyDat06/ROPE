@@ -12,10 +12,17 @@ public class ArathroxMovement : MonoBehaviour
 	[SerializeField] private float _stopDistance = 0.5f;
 
 	[Header("Combat Settings")]
-	[Tooltip("Thời gian đổi hướng strafe ngẫu nhiên (Min-Max)")]
-	[SerializeField] private Vector2 _strafeChangeInterval = new Vector2(2f, 4f);
-	[Tooltip("Layer của các quái vật khác (để né nhau)")]
+	[Tooltip("Min/Max time to change strafe direction")]
+	[SerializeField] private Vector2 _strafeChangeInterval = new Vector2(1.5f, 3f);
+
+	[Tooltip("Layer of allies to avoid")]
 	[SerializeField] private LayerMask _allyLayer;
+
+	[Tooltip("How strongly to push away from allies")]
+	[SerializeField] private float _separationWeight = 2.5f;
+
+	[Tooltip("Distance to check for obstacles before strafing")]
+	[SerializeField] private float _strafeCheckDistance = 1.5f;
 	#endregion
 
 	#region Internal State
@@ -26,8 +33,11 @@ public class ArathroxMovement : MonoBehaviour
 
 	// Combat Variables
 	private float _strafeTimer;
-	private float _currentStrafeDir; // -1 (Trái), 0 (Đứng), 1 (Phải)
-	private Collider[] _allyBuffer = new Collider[10]; // Buffer để tối ưu memory (NonAlloc)
+	private float _currentStrafeDir; // -1 (Left), 0 (Idle), 1 (Right)
+	private Collider[] _allyBuffer = new Collider[10]; // NonAlloc buffer
+
+	// Debugging
+	private bool _debugCombat = false; // Toggle this via Inspector/Code to see lines
 
 	// Animator Hashes
 	private readonly int _hashHorizontal = Animator.StringToHash("Horizontal");
@@ -42,14 +52,14 @@ public class ArathroxMovement : MonoBehaviour
 		_agent = GetComponent<NavMeshAgent>();
 		_animator = GetComponent<Animator>();
 
+		// Disable NavMesh updates to rely on Root Motion
 		_agent.updateRotation = false;
 		_agent.updatePosition = false;
 	}
 
 	private void Update()
 	{
-		// Nếu đang trong trạng thái Combat (được gọi từ Graph), bỏ qua logic di chuyển thông thường
-		// Logic di chuyển thông thường chỉ chạy khi có path
+		// Normal movement logic (Chase phase)
 		if (_hasTarget && !_agent.isStopped)
 		{
 			HandleNormalMovement();
@@ -58,10 +68,10 @@ public class ArathroxMovement : MonoBehaviour
 
 	private void OnAnimatorMove()
 	{
-		// Đồng bộ vị trí NavMesh theo Root Motion
+		// Sync NavMesh with Root Motion
 		Vector3 newPos = transform.position + _animator.deltaPosition;
 
-		// Snap xuống NavMesh để tránh bay lơ lửng
+		// Snap to NavMesh
 		if (NavMesh.SamplePosition(newPos, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
 		{
 			newPos.y = Mathf.Lerp(transform.position.y, hit.position.y, 20f * Time.deltaTime);
@@ -76,7 +86,6 @@ public class ArathroxMovement : MonoBehaviour
 
 	#region Public Methods (API)
 
-	// Gọi khi rượt đuổi bình thường
 	public void MoveTo(Vector3 position)
 	{
 		if (_agent.destination != position)
@@ -86,7 +95,6 @@ public class ArathroxMovement : MonoBehaviour
 		_agent.isStopped = false;
 	}
 
-	// Gọi khi muốn dừng hẳn
 	public void Stop()
 	{
 		if (_agent.isOnNavMesh) _agent.ResetPath();
@@ -97,64 +105,140 @@ public class ArathroxMovement : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Xử lý di chuyển chiến thuật (Giữ range, Strafe, Né đồng đội).
-	/// Hàm này được gọi liên tục từ Behavior Graph Action Node.
+	/// Handles tactical combat movement: Maintain range, Strafe, and Avoid allies.
+	/// Includes validation to prevent strafing into allies.
 	/// </summary>
 	public void HandleCombatMovement(Transform target, float idealRange, float separationDist)
 	{
-		_hasTarget = false; // Tắt mode dẫn đường thông thường
-		_agent.isStopped = true; // Ngắt NavMesh pathfinding
+		_hasTarget = false; // Disable normal pathfinding
+		_agent.isStopped = true;
 
-		// 1. Luôn xoay mặt về phía mục tiêu
+		// 1. Always face the target
 		RotateTowards(target.position);
 
-		// --- TÍNH TOÁN LỰC (STEERING FORCES) ---
+		// --- CALCULATE STEERING FORCES ---
 		Vector3 finalDirection = Vector3.zero;
 
-		// Force A: Maintain Range (Tiến/Lùi)
-		float distanceToTarget = Vector3.Distance(transform.position, target.position);
-		if (distanceToTarget > idealRange + 1f)
-			finalDirection += transform.forward; // Tiến lên
-		else if (distanceToTarget < idealRange - 1f)
-			finalDirection -= transform.forward; // Lùi lại
+		// A. Maintain Range Force
+		Vector3 rangeForce = CalculateRangeForce(target.position, idealRange);
 
-		// Force B: Separation (Né đồng đội)
-		int numColliders = Physics.OverlapSphereNonAlloc(transform.position, separationDist, _allyBuffer, _allyLayer);
-		Vector3 separationVector = Vector3.zero;
-		for (int i = 0; i < numColliders; i++)
+		// B. Separation Force (Crucial for not overlapping)
+		Vector3 separationForce = CalculateSeparationForce(separationDist);
+
+		// C. Strafe Force (With validation)
+		UpdateStrafeTimer();
+		// Check if strafing is safe. If Separation force is too high, cancel strafe to prioritize avoidance.
+		bool isCrowded = separationForce.magnitude > 0.5f;
+		Vector3 strafeForce = isCrowded ? Vector3.zero : CalculateValidatedStrafeForce();
+
+		// --- COMBINE FORCES ---
+		// If crowded, prioritize separation heavily
+		if (isCrowded)
 		{
-			if (_allyBuffer[i].gameObject == gameObject) continue; // Bỏ qua chính mình
-
-			Vector3 awayFromAlly = transform.position - _allyBuffer[i].transform.position;
-			// Càng gần đẩy càng mạnh (Inverse Square Law đơn giản hóa)
-			separationVector += awayFromAlly.normalized / (awayFromAlly.magnitude + 0.1f);
+			// Mostly separation, little range adjustment
+			finalDirection = (separationForce * _separationWeight) + (rangeForce * 0.5f);
+			if (_debugCombat) Debug.Log($"[{name}] Crowded! Prioritizing Separation.");
 		}
-		finalDirection += separationVector * 1.5f; // Hệ số ưu tiên né (1.5)
+		else
+		{
+			// Balanced movement
+			finalDirection = rangeForce + (separationForce * _separationWeight) + strafeForce;
+		}
 
-		// Force C: Strafe (Di chuyển ngang ngẫu nhiên)
-		UpdateStrafeLogic();
-		finalDirection += transform.right * _currentStrafeDir;
-
-		// --- GỬI VÀO ANIMATOR ---
-		// Chuyển vector tổng hợp từ World Space -> Local Space để Animator hiểu (Horizontal/Vertical)
+		// --- APPLY TO ANIMATOR ---
 		Vector3 localInput = transform.InverseTransformDirection(finalDirection.normalized);
 
-		// Kích hoạt Blend Tree
 		_animator.SetBool(_hashIsMoving, true);
-		_animator.SetFloat(_hashHorizontal, localInput.x, 0.2f, Time.deltaTime); // Strafe
-		_animator.SetFloat(_hashVertical, localInput.z, 0.2f, Time.deltaTime);   // Tiến/Lùi
+		_animator.SetFloat(_hashHorizontal, localInput.x, 0.2f, Time.deltaTime);
+		_animator.SetFloat(_hashVertical, localInput.z, 0.2f, Time.deltaTime);
 
-		// Debug visual
-		Debug.DrawRay(transform.position, separationVector * 2, Color.red); // Lực né
-		Debug.DrawRay(transform.position, transform.right * _currentStrafeDir, Color.blue); // Lực Strafe
+		// Visual Debugging
+		if (_debugCombat || Application.isEditor)
+		{
+			Debug.DrawRay(transform.position + Vector3.up, separationForce * 3, Color.red); // Avoidance
+			Debug.DrawRay(transform.position + Vector3.up * 1.1f, strafeForce * 2, Color.blue); // Strafe
+		}
 	}
 	#endregion
 
-	#region Internal Logic
+	#region Helper Logic (Steering Behaviors)
 
+	private Vector3 CalculateRangeForce(Vector3 targetPos, float idealRange)
+	{
+		float distance = Vector3.Distance(transform.position, targetPos);
+
+		// Deadzone of 1 unit to prevent jittering
+		if (distance > idealRange + 1f) return transform.forward; // Move Closer
+		if (distance < idealRange - 1f) return -transform.forward; // Back away
+
+		return Vector3.zero; // Hold position
+	}
+
+	private Vector3 CalculateSeparationForce(float radius)
+	{
+		int count = Physics.OverlapSphereNonAlloc(transform.position, radius, _allyBuffer, _allyLayer);
+		Vector3 separationVector = Vector3.zero;
+
+		for (int i = 0; i < count; i++)
+		{
+			if (_allyBuffer[i].gameObject == gameObject) continue;
+
+			Vector3 toAlly = _allyBuffer[i].transform.position - transform.position;
+			float dist = toAlly.magnitude;
+
+			// Calculate repulsion strength (Inverse Square Law: Closer = Stronger push)
+			// Added 0.01f to avoid division by zero
+			float strength = 1.0f / (dist * dist + 0.01f);
+
+			// Push away direction
+			separationVector -= toAlly.normalized * strength;
+		}
+
+		// Normalize only if meaningful to keep direction logic
+		if (separationVector.sqrMagnitude > 1f) separationVector.Normalize();
+
+		return separationVector;
+	}
+
+	private Vector3 CalculateValidatedStrafeForce()
+	{
+		if (_currentStrafeDir == 0) return Vector3.zero;
+
+		Vector3 desiredDir = transform.right * _currentStrafeDir;
+
+		// --- VALIDATION: Raycast to check if side is clear ---
+		// Ray start slightly up to hit body colliders (not feet)
+		Vector3 rayStart = transform.position + Vector3.up * 0.5f;
+
+		if (Physics.Raycast(rayStart, desiredDir, out RaycastHit hit, _strafeCheckDistance, _allyLayer))
+		{
+			if (_debugCombat) Debug.Log($"[{name}] Strafe Blocked by {hit.collider.name}. Stopping Strafe.");
+			return Vector3.zero; // Path blocked, stop strafing
+		}
+
+		return desiredDir;
+	}
+
+	private void UpdateStrafeTimer()
+	{
+		_strafeTimer -= Time.deltaTime;
+		if (_strafeTimer <= 0)
+		{
+			_strafeTimer = Random.Range(_strafeChangeInterval.x, _strafeChangeInterval.y);
+
+			// Randomize: 30% Left, 30% Right, 40% Idle
+			float rand = Random.value;
+			if (rand < 0.3f) _currentStrafeDir = -1f;
+			else if (rand < 0.6f) _currentStrafeDir = 1f;
+			else _currentStrafeDir = 0f;
+		}
+	}
+	#endregion
+
+	#region Internal Logic (Normal Movement)
+	// ... (Giữ nguyên phần HandleNormalMovement cũ của bạn) ...
 	private void HandleNormalMovement()
 	{
-		// (Giữ nguyên logic cũ của bạn, đã tối ưu lại gọn hơn)
 		if (!_agent.pathPending && _agent.remainingDistance <= _stopDistance)
 		{
 			Stop();
@@ -168,7 +252,6 @@ public class ArathroxMovement : MonoBehaviour
 		float signedAngle = Vector3.SignedAngle(transform.forward, targetDir, Vector3.up);
 		float absAngle = Mathf.Abs(signedAngle);
 
-		// Turn In Place Logic
 		if (!_isTurningInPlace && absAngle > _turnStartThreshold) _isTurningInPlace = true;
 		else if (_isTurningInPlace && absAngle < _turnEndThreshold) _isTurningInPlace = false;
 
@@ -184,7 +267,6 @@ public class ArathroxMovement : MonoBehaviour
 			_animator.SetFloat(_hashTurn, 0, 0.2f, Time.deltaTime);
 			RotateTowards(_agent.steeringTarget);
 
-			// Locomotion
 			Vector3 localVel = transform.InverseTransformDirection(_agent.desiredVelocity);
 			float speedFactor = Mathf.Max(_agent.speed, 1f);
 			_animator.SetFloat(_hashHorizontal, localVel.x / speedFactor, 0.1f, Time.deltaTime);
@@ -200,22 +282,6 @@ public class ArathroxMovement : MonoBehaviour
 		{
 			Quaternion targetRot = Quaternion.LookRotation(dir);
 			transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, _alignSpeed * Time.deltaTime);
-		}
-	}
-
-	private void UpdateStrafeLogic()
-	{
-		_strafeTimer -= Time.deltaTime;
-		if (_strafeTimer <= 0)
-		{
-			_strafeTimer = Random.Range(_strafeChangeInterval.x, _strafeChangeInterval.y);
-
-			// Random chiến thuật: 
-			// 30% đi trái, 30% đi phải, 40% đứng yên bắn (chỉ né đồng đội)
-			float rand = Random.value;
-			if (rand < 0.3f) _currentStrafeDir = -1f;
-			else if (rand < 0.6f) _currentStrafeDir = 1f;
-			else _currentStrafeDir = 0f;
 		}
 	}
 
