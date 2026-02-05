@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b975c0fe957863429a112b346b5377c, type: 3}
-  m_Name: GlockDamgeConfigSO 1
+  m_Name: AK47DamgeConfigSO
   m_EditorClassIdentifier: 
   damageCurve:
     m_Mode: 0
@@ -64,4 +64,4 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_ConstantMin: 0
-    m_ConstantMax: 5
+    m_ConstantMax: 25

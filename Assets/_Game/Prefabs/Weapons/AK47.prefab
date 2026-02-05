@@ -19535,6 +19535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFiring: 0
+  isReloading: 0
   fireRate: 10
   bulletSpeed: 350
   bulletDrop: 15
@@ -19542,13 +19543,16 @@ MonoBehaviour:
   - {fileID: 6780076093783782018}
   - {fileID: 246045790738830578}
   - {fileID: 6208425469564123135}
-  hitEffect: {fileID: 1174657630828045192}
   raycastOrigin: {fileID: 3098578231012077927}
   raycastDestination: {fileID: 0}
   tracerEffect: {fileID: 588371605904856587, guid: 9f2c142e9c655a54a92d7113bd6c8949, type: 3}
   bulletLayerMask:
     serializedVersion: 2
     m_Bits: 1
+  ammoConfig: {fileID: 11400000, guid: b818aa57adf530940987181693b955f9, type: 2}
+  audioConfig: {fileID: 0}
+  damageConfig: {fileID: 11400000, guid: 393bdbc4ab505e64c8bcc95c7df94922, type: 2}
+  impactType: {fileID: 11400000, guid: 8481a15052a283f49baef75f502c4263, type: 2}
   weaponName: AK47
   weaponAnimation: {fileID: 7400000, guid: 4aac6a1ebc638ab42b14a1e38e0129db, type: 2}
   holsterLocation: 0
