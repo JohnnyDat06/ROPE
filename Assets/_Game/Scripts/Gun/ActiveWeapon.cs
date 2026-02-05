@@ -22,6 +22,8 @@ public class ActiveWeapon : MonoBehaviour
     [Header("Settings")]
     public float fireDelayTime = 0.5f;
 
+    public Cinemachine.CinemachineFreeLook playerCamera;
+    private ThirdPersonController _controller;
     private RaycastWeapon weapon;
     private StarterAssetsInputs _input;
     private float _nextFireTime = 0f;
@@ -34,6 +36,7 @@ public class ActiveWeapon : MonoBehaviour
         rigController.animatePhysics = true;
         rigController.updateMode = AnimatorUpdateMode.Normal;
 
+        _controller = GetComponent<ThirdPersonController>();
         _input = GetComponent<StarterAssetsInputs>();
         RaycastWeapon existingWeapon = GetComponentInChildren<RaycastWeapon>();
         if (existingWeapon)
@@ -87,6 +90,12 @@ public class ActiveWeapon : MonoBehaviour
 
         weapon = newWeapon;
         weapon.raycastDestination = crossHairTarget;
+
+        if (weapon.recoil != null && _controller != null)
+        {
+            weapon.recoil.playerController = _controller;
+        }
+        weapon.recoil.rigCotroller = rigController;
 
         weapon.transform.SetParent(weaponParent);
         weapon.transform.localPosition = Vector3.zero;

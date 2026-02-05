@@ -36,12 +36,18 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] public AnimationClip weaponAnimation;
 
     public HolsterLocation holsterLocation;
+    public WeaponRecoil recoil;
 
     Ray ray;
     RaycastHit hitInfo;
     float accumulatedTime;
     float maxLifeTime = 3f;
     List<Bullet> bullets = new List<Bullet>();
+
+    private void Awake()
+    {
+        recoil = GetComponent<WeaponRecoil>();
+    }
 
     Vector3 GetPosition(Bullet bullet)
     {
@@ -138,6 +144,8 @@ public class RaycastWeapon : MonoBehaviour
         Vector3 velocity = (raycastDestination.position - raycastOrigin.position).normalized * bulletSpeed;
         var bullet = CreateBullet(raycastOrigin.position, velocity);
         bullets.Add(bullet);
+
+        recoil.GenerateRecoil(weaponName);
 
     }
 
