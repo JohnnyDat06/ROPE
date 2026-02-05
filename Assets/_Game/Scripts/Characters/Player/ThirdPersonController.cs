@@ -370,6 +370,11 @@ namespace StarterAssets
         {
             // _rotateOnMove logic giờ nằm trong điều kiện StrafeMode
         }
+        public void AddRecoil(float verticalRecoil, float horizontalRecoil)
+        {
+            _cinemachineTargetPitch -= verticalRecoil;
+            _cinemachineTargetYaw += horizontalRecoil * Random.Range(-1f, 1f);
+        }
 
         private bool _rotateOnMove = true;
 
