@@ -264,7 +264,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   _separationWeight: 2.5
-  _strafeCheckDistance: 2
+  _strafeCheckDistance: 3.5
+  _inputSmoothTime: 0.15
 --- !u!114 &6460818871355194517
 MonoBehaviour:
   m_ObjectHideFlags: 0
