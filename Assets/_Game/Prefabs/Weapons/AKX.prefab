@@ -19793,6 +19793,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFiring: 0
+  isReloading: 0
   fireRate: 20
   bulletSpeed: 600
   bulletDrop: 2
