@@ -83,7 +83,7 @@ namespace DatScript
 
             currentHealth -= damageAmount;
 
-            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);            
 
             if (currentHealth <= 0)
             {
@@ -98,6 +98,13 @@ namespace DatScript
                     Cursor.visible = true;
                 }
                 Invoke(nameof(Die), 3.5f);
+            }
+            else
+            {
+                animator.Play("Player_Hit");
+                playerInput.shoot = false;
+                playerInput.move = Vector2.zero;
+                playerInput.sprint = false;
             }
         }
 
