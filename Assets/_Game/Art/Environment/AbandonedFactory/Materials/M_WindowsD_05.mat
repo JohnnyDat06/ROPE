@@ -201,7 +201,7 @@ Material:
     - EmissiveContrast: 40
     - EmissiveInvert: 0
     - Emissivecontrast: 40
-    - MaskBrightness: 3
+    - MaskBrightness: 18.87
     - MaskContrast: 1.6
     - Vector1_2E02C893: 1
     - _AORemapMax: 1

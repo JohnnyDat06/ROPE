@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 1881734805517963444}
   - component: {fileID: 1881734805517193360}
   - component: {fileID: 1881734805516063312}
-  - component: {fileID: 7030446474442207719}
+  - component: {fileID: 3307787433829566897}
   m_Layer: 0
   m_Name: sm_en_pipe_01_04_LOD0
   m_TagString: Untagged
@@ -154,8 +154,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7030446474442207719
-MeshCollider:
+--- !u!65 &3307787433829566897
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,10 +172,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: 14b835d2d0cf5f7438a0ab1376aa9e89, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.5885754, y: 5.000791, z: 0.5728466}
+  m_Center: {x: -0.015769772, y: -2.4996057, z: 0.013164576}
 --- !u!1 &1881734805518060694
 GameObject:
   m_ObjectHideFlags: 0

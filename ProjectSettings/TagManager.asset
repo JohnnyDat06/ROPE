@@ -16,10 +16,17 @@ TagManager:
   - UI
   - Weapon
   - Player
+
   - Pickup
   - 
   - 
   - 
+
+  - InventoryRender
+  - Interactable
+  - groundLayer
+  - Trigger
+
   - 
   - 
   - 

@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 7654448912540644810}
   - component: {fileID: 7654448912541447662}
   - component: {fileID: 7654448912542545710}
-  - component: {fileID: 3160380034390020862}
+  - component: {fileID: 5444304110493866601}
   m_Layer: 0
   m_Name: sm_en_GroundConcrete_01_03_LOD0
   m_TagString: Untagged
@@ -345,8 +345,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3160380034390020862
-MeshCollider:
+--- !u!65 &5444304110493866601
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -363,10 +363,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: d7652406585c9294eb10b72fe9952d6f, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.81425375, y: 2.9957588, z: 0.1230642}
+  m_Center: {x: -0.00000007450627, y: 0.000000059605306, z: 0.000105593375}
 --- !u!1 &7654448912540609006
 GameObject:
   m_ObjectHideFlags: 0

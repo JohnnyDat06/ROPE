@@ -68,7 +68,7 @@ GameObject:
   - component: {fileID: 6535109449178066884}
   - component: {fileID: 6535109449180966880}
   - component: {fileID: 6535109449179966752}
-  - component: {fileID: 6175463583341164571}
+  - component: {fileID: 93043989615203094}
   m_Layer: 0
   m_Name: sm_en_ConcretePlates_01_LOD0
   m_TagString: Untagged
@@ -144,7 +144,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6175463583341164571
+--- !u!65 &93043989615203094
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -163,8 +163,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.5, y: 1.5000004, z: 0.1}
-  m_Center: {x: 0, y: 0, z: -0.05}
+  m_Size: {x: 1.5, y: 1.5000004, z: 2.4121844e-16}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6535109449177707494
 GameObject:
   m_ObjectHideFlags: 0

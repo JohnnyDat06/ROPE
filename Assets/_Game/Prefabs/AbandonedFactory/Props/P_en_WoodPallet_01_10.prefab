@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8530049776988731552}
   - component: {fileID: 8530049776990058628}
   - component: {fileID: 8530049776991156804}
-  - component: {fileID: 7006343838546675229}
+  - component: {fileID: 8825988032612658357}
   m_Layer: 0
   m_Name: sm_en_WoodPallet_01_10_LOD0
   m_TagString: Untagged
@@ -87,8 +87,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7006343838546675229
-MeshCollider:
+--- !u!65 &8825988032612658357
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -105,10 +105,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: 6679fc5368caad142b23d39d19249a24, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.14169744, y: 1.1923985, z: 0.038527243}
+  m_Center: {x: 0.011810448, y: -0.0049531166, z: 0.009268025}
 --- !u!1 &8530049776989217922
 GameObject:
   m_ObjectHideFlags: 0
