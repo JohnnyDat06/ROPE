@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volume: 0.5
   fireClips:
-  - {fileID: 8300000, guid: a78ee26f80ff8024ea4ee5b193388ff0, type: 3}
-  - {fileID: 8300000, guid: ba6a2bc5db1f756499a4415aa656f8d0, type: 3}
-  - {fileID: 8300000, guid: dcf1be229b33d084a97d6bfc37de8b83, type: 3}
-  - {fileID: 8300000, guid: ca7269da3b1a3834881a5e08961c47f2, type: 3}
-  - {fileID: 8300000, guid: ba3efa989ea92504393199ed8d4d33ff, type: 3}
-  - {fileID: 8300000, guid: 3a03467cb7b65074f9262896309b868f, type: 3}
-  - {fileID: 8300000, guid: bf926a24b8d5c844095dbc55c12e4197, type: 3}
-  - {fileID: 8300000, guid: 5175ac42ee8ab64439bd31095d00b60d, type: 3}
-  - {fileID: 8300000, guid: a7137054d86248b4cbafd4c3e777a46f, type: 3}
-  - {fileID: 8300000, guid: a2ad3cc351cc59c44a31f8e3304b6b6e, type: 3}
-  emptyClip: {fileID: 8300000, guid: 7d0f8479a92ef3a4bb4f84d107802c21, type: 3}
-  reloadClip: {fileID: 8300000, guid: 81669481475761c4088de92995418a40, type: 3}
-  lastBulletClip: {fileID: 8300000, guid: 916dc50aca37e6f40b2f90a1ecbea25e, type: 3}
+  - {fileID: 8300000, guid: 1f1a69b6539c2ab4083f8fd6cfaaef8c, type: 3}
+  - {fileID: 8300000, guid: 2721acf27e3e4c6479c1642f4229295f, type: 3}
+  - {fileID: 8300000, guid: bbfbf29709ebec74f8d59ed19364fbd7, type: 3}
+  - {fileID: 8300000, guid: 9fc243be146d3414a990c32a2c7e4b9a, type: 3}
+  - {fileID: 8300000, guid: dc0ce0e48d469904490e4b4847f6f1d6, type: 3}
+  emptyClip: {fileID: 8300000, guid: 4c7af5e5bedbeb842a7d35f297bb934c, type: 3}
+  reloadClip: {fileID: 8300000, guid: e8abcdb09581d404fbb4528218c22147, type: 3}
+  lastBulletClip: {fileID: 8300000, guid: dc0ce0e48d469904490e4b4847f6f1d6, type: 3}
