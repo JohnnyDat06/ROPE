@@ -139,6 +139,7 @@ public class RaycastWeapon : MonoBehaviour
         isReloading = false;
     }
 
+
     Vector3 GetPosition(Bullet bullet)
     { 
         Vector3 gravity = Vector3.down * bulletDrop;
