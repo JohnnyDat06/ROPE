@@ -282,12 +282,21 @@ MonoBehaviour:
   m_BlackboardVariableOverridesList:
   - rid: 5274599884394070265
   - rid: 5274599884394070266
+  - rid: 4469459943284540298
   m_OriginalGraph: {fileID: 4832491119397321040, guid: 7a81d0318c91b6d4fa1c576020f0a654, type: 2}
   m_IsInitialised: 0
   m_IsStarted: 0
   references:
     version: 2
     RefIds:
+    - rid: 4469459943284540298
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Animator, UnityEngine.AnimationModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 5695552105439194885
+          m_Value1: 4781141550761278230
+        Name: ArathroxAnimator
+        m_Value: {fileID: 337178130282064104}
     - rid: 5274599884394070265
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:

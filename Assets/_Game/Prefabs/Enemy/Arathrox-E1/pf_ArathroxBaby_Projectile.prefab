@@ -29748,6 +29748,7 @@ GameObject:
   - component: {fileID: 2133965302510251167}
   - component: {fileID: 5668467957904486422}
   - component: {fileID: 3694836484716981359}
+  - component: {fileID: 473307661700472}
   m_Layer: 0
   m_Name: pf_ArathroxBaby_Projectile
   m_TagString: Untagged
@@ -29765,7 +29766,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -39.284, y: -6.358, z: 92.468}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2672065512540673497}
@@ -29820,6 +29821,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &473307661700472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4997902976380148563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a732b1dcb461ae4da753b4dd2ae8cb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 20
+  _damage: 15
+  _maxLifetime: 5
+  _projectileVisuals: {fileID: 6633686837706546434}
+  _explosionVFX: {fileID: 8745210403763539779}
 --- !u!1 &5378803229283486026
 GameObject:
   m_ObjectHideFlags: 0
@@ -64186,7 +64204,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5328819154754464814}
