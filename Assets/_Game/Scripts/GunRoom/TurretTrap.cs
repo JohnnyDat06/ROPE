@@ -9,12 +9,10 @@ public class TurretTrap : MonoBehaviour
     public Transform hiddenGun;
     [Tooltip("Trục Z (Mũi tên xanh) của object này là hướng đạn bắn")]
     public Transform firePoint;
-    public ParticleSystem muzzleFlashVFX; // Lửa đầu nòng (khi bắn)
+    public ParticleSystem muzzleFlashVFX;
 
-    [Header("--- 2. Post-Fire Smoke (MỚI: Hiệu ứng Khói sau khi bắn) ---")]
-    [Tooltip("Kéo Asset Particle System khói vào đây")]
+    [Header("--- 2. Post-Fire Smoke ---")]
     public ParticleSystem smokeVFX;
-    [Tooltip("Thời gian chờ khói bốc lên trước khi thu súng (Giây). Ví dụ: 2s")]
     public float smokeDelayDuration = 2.0f;
 
     [Header("--- 3. Audio Settings ---")]
@@ -55,24 +53,12 @@ public class TurretTrap : MonoBehaviour
         _audioSource.playOnAwake = false;
         _audioSource.loop = false;
 
-        // Tắt VFX lửa lúc đầu
-        if (muzzleFlashVFX)
-        {
-            var main = muzzleFlashVFX.main;
-            main.playOnAwake = false;
-            muzzleFlashVFX.Stop();
-        }
-
-        // Tắt VFX khói lúc đầu
-        if (smokeVFX)
-        {
-            var main = smokeVFX.main;
-            main.playOnAwake = false;
-            smokeVFX.Stop();
-        }
+        if (muzzleFlashVFX) { var m = muzzleFlashVFX.main; m.playOnAwake = false; muzzleFlashVFX.Stop(); }
+        if (smokeVFX) { var m = smokeVFX.main; m.playOnAwake = false; smokeVFX.Stop(); }
     }
 
-    public void ActivateTrap(Transform playerTarget)
+    // --- SỬA ĐỔI QUAN TRỌNG: Hàm ActivateTrap KHÔNG CÒN tham số (Transform playerTarget) ---
+    public void ActivateTrap()
     {
         _pendingDeactivate = false;
         if (_isTrapActive) return;
@@ -87,11 +73,7 @@ public class TurretTrap : MonoBehaviour
     public void DeactivateTrap()
     {
         _pendingDeactivate = true;
-
-        if (!_isLocked)
-        {
-            StopFiringImmediate();
-        }
+        if (!_isLocked) StopFiringImmediate();
 
         if (!_isLocked && _isTrapActive)
         {
@@ -100,10 +82,9 @@ public class TurretTrap : MonoBehaviour
         }
     }
 
-    // --- LOGIC MỞ VÀ BẮN ---
     private IEnumerator TrapSequenceRoutine()
     {
-        // 1. Animation Mở
+        // Animation Mở
         Vector3 slidePos = _initCoverPos + coverSlideVector;
         Vector3 popUpPos = slidePos + coverUpVector;
         Vector3 extendPos = _initGunPos + gunExtendVector;
@@ -112,10 +93,8 @@ public class TurretTrap : MonoBehaviour
         yield return StartCoroutine(MoveTransform(coverCube, slidePos, popUpPos, coverUpDuration));
         yield return StartCoroutine(MoveTransform(hiddenGun, _initGunPos, extendPos, gunExtendDuration));
 
-        // 2. Giai đoạn Bắn
+        // Bắn
         if (muzzleFlashVFX) muzzleFlashVFX.Play();
-
-        // Đảm bảo khói tắt khi đang bắn (để dành bắn xong mới bật)
         if (smokeVFX) smokeVFX.Stop();
 
         float timer = 0f;
@@ -128,10 +107,7 @@ public class TurretTrap : MonoBehaviour
 
         _isLocked = false;
 
-        if (_pendingDeactivate)
-        {
-            yield return StartCoroutine(CloseSequenceRoutine());
-        }
+        if (_pendingDeactivate) yield return StartCoroutine(CloseSequenceRoutine());
         else
         {
             while (!_pendingDeactivate)
@@ -143,26 +119,18 @@ public class TurretTrap : MonoBehaviour
         }
     }
 
-    // --- LOGIC ĐÓNG (CÓ XỬ LÝ KHÓI) ---
     private IEnumerator CloseSequenceRoutine()
     {
-        // 1. Ngừng bắn ngay lập tức
         StopFiringImmediate();
 
-        // 2. BẬT KHÓI VÀ CHỜ (Tính năng mới)
         if (smokeVFX)
         {
-            smokeVFX.Play(); // Bắt đầu phun khói
-
-            // Chờ cho khói bốc lên (Gun vẫn giữ nguyên vị trí, chưa thu về)
+            smokeVFX.Play();
             yield return new WaitForSeconds(smokeDelayDuration);
-
-            smokeVFX.Stop(); // Ngưng sinh khói mới (Khói cũ sẽ tự bay nốt và tan biến theo lifetime của Particle)
+            smokeVFX.Stop();
         }
 
-        // 3. Animation Thu súng (Chạy sau khi đã chờ khói xong)
         Vector3 slidePos = _initCoverPos + coverSlideVector;
-
         yield return StartCoroutine(MoveTransform(hiddenGun, hiddenGun.localPosition, _initGunPos, gunExtendDuration));
         yield return StartCoroutine(MoveTransform(coverCube, coverCube.localPosition, slidePos, coverUpDuration));
         yield return StartCoroutine(MoveTransform(coverCube, slidePos, _initCoverPos, coverSlideDuration));
@@ -201,19 +169,7 @@ public class TurretTrap : MonoBehaviour
 
         if (Physics.Raycast(firePoint.position, direction, out RaycastHit hit, 100f, hitLayers, QueryTriggerInteraction.Ignore))
         {
-            if (hit.collider.CompareTag("Player"))
-            {
-                Debug.DrawLine(firePoint.position, hit.point, Color.red, fireRate);
-                Debug.Log($"<color=red><b>[TRÚNG MỤC TIÊU]</b></color> Player!");
-            }
-            else
-            {
-                Debug.DrawLine(firePoint.position, hit.point, Color.yellow, fireRate);
-            }
-        }
-        else
-        {
-            Debug.DrawRay(firePoint.position, direction * 100f, Color.green, fireRate);
+            // Logic xử lý trúng đạn (nếu cần)
         }
     }
 

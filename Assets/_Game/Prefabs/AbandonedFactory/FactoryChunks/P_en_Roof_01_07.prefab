@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 786707908453499195}
   - component: {fileID: 786707908454301983}
   - component: {fileID: 786707908455400415}
-  - component: {fileID: 3292668487405090906}
+  - component: {fileID: 5943963323230601984}
   m_Layer: 0
   m_Name: sm_en_Roof_01_07_LOD0
   m_TagString: Untagged
@@ -173,7 +173,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3292668487405090906
+--- !u!64 &5943963323230601984
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -192,9 +192,9 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4300004, guid: a5f0042875cd3974f86673be38d77612, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 57600fce305e8b441b4d8d4daac94bce, type: 3}
 --- !u!1 &786707908453408031
 GameObject:
   m_ObjectHideFlags: 0

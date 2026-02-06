@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4095191110693218752}
   - component: {fileID: 4095191110689794532}
   - component: {fileID: 4095191110690925348}
-  - component: {fileID: 1380634375983996161}
+  - component: {fileID: 7721454376435094728}
   m_Layer: 0
   m_Name: sm_WallA_02_04_LOD0
   m_TagString: Untagged
@@ -95,7 +95,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1380634375983996161
+--- !u!64 &7721454376435094728
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,9 +114,9 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4300008, guid: e4b722b51d5cff24984c08827590df1f, type: 3}
+  m_Mesh: {fileID: 4300000, guid: e44cccb91bd383e4783afe50a392256f, type: 3}
 --- !u!1 &4095191110693123554
 GameObject:
   m_ObjectHideFlags: 0

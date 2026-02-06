@@ -19548,7 +19548,7 @@ MonoBehaviour:
   tracerEffect: {fileID: 588371605904856587, guid: 9f2c142e9c655a54a92d7113bd6c8949, type: 3}
   bulletLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 9
   ammoConfig: {fileID: 11400000, guid: b818aa57adf530940987181693b955f9, type: 2}
   audioConfig: {fileID: 11400000, guid: 70751c283d919304ab82b397339dccae, type: 2}
   damageConfig: {fileID: 11400000, guid: 393bdbc4ab505e64c8bcc95c7df94922, type: 2}
