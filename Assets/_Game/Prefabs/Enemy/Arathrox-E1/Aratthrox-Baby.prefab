@@ -715,6 +715,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5879231861653352869}
   - component: {fileID: 7420826872933780175}
+  - component: {fileID: 2897326229886805292}
+  - component: {fileID: 8377147500289818138}
+  - component: {fileID: 3605288829673320938}
   m_Layer: 3
   m_Name: Hitbox
   m_TagString: Untagged
@@ -758,6 +761,49 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.6206099, z: 1.97226}
   m_Center: {x: 0, y: 0.88092107, z: -0.33818743}
+--- !u!114 &2897326229886805292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200410945052870167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67bc17683d13844448ddafdb4d60e2cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 300
+  _curentHealth: 0
+--- !u!114 &8377147500289818138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200410945052870167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c3c30f19fb2624bb4cb1286e864f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyHealth: {fileID: 2897326229886805292}
+  animator: {fileID: 2886673220756956053}
+  agent: {fileID: 3809652137299540087}
+  behaviorAgent: {fileID: 7180495180037368337}
+--- !u!114 &3605288829673320938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200410945052870167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5f6a2045136161449783653d0eb3c8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathSystem: {fileID: 19800014, guid: 697a18e15f4964d478a1ee9e96817e96, type: 3}
 --- !u!1 &4306242423767656309
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,6 +1233,7 @@ MonoBehaviour:
   _roarRadius: 2
   _knockbackForce: 15
   _knockbackUpward: 1
+  _roarDamage: 5
 --- !u!1 &4832370680449345190
 GameObject:
   m_ObjectHideFlags: 0

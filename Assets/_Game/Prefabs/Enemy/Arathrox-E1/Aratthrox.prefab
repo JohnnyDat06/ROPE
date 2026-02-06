@@ -382,6 +382,7 @@ MonoBehaviour:
   _roarRadius: 2
   _knockbackForce: 15
   _knockbackUpward: 1
+  _roarDamage: 5
 --- !u!1 &637246557766980381
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,6 +932,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4554247867163541421}
   - component: {fileID: 5042350508761339864}
+  - component: {fileID: 4989225012246863425}
+  - component: {fileID: 2670987094442713484}
+  - component: {fileID: 1889632615935913733}
   m_Layer: 3
   m_Name: Hitbox
   m_TagString: Untagged
@@ -974,6 +978,49 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.6206099, z: 1.97226}
   m_Center: {x: 0, y: 0.88092107, z: -0.33818743}
+--- !u!114 &4989225012246863425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2202913406610029954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67bc17683d13844448ddafdb4d60e2cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 500
+  _curentHealth: 0
+--- !u!114 &2670987094442713484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2202913406610029954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c3c30f19fb2624bb4cb1286e864f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyHealth: {fileID: 4989225012246863425}
+  animator: {fileID: 337178130282064104}
+  agent: {fileID: 2154215530032900626}
+  behaviorAgent: {fileID: 6460818871355194517}
+--- !u!114 &1889632615935913733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2202913406610029954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5f6a2045136161449783653d0eb3c8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathSystem: {fileID: 19800014, guid: 697a18e15f4964d478a1ee9e96817e96, type: 3}
 --- !u!1 &2444282191678109004
 GameObject:
   m_ObjectHideFlags: 0
