@@ -127,25 +127,34 @@ public class ActiveWeapon : MonoBehaviour
         _wasHolstered = true;
     }
 
+    public RaycastWeapon GetCurrentWeapon() => weapon;
+
     public void OnWeaponHolster()
     {
         if (weapon != null)
         {
             Transform target = weapon.holsterLocation == RaycastWeapon.HolsterLocation.Back ? backSocket : hipSocket;
-            if (target) { weapon.transform.SetParent(target); weapon.transform.localPosition = Vector3.zero; weapon.transform.localRotation = Quaternion.identity; }
+            if (target)
+            {
+                weapon.transform.SetParent(target);
+                weapon.transform.localPosition = Vector3.zero; weapon.transform.localRotation = Quaternion.identity;
+            }
         }
     }
     public void OnWeaponEquip()
     {
-        if (weapon != null) { weapon.transform.SetParent(weaponParent); weapon.transform.localPosition = Vector3.zero; weapon.transform.localRotation = Quaternion.identity; }
+        if (weapon != null) 
+        { 
+            weapon.transform.SetParent(weaponParent);
+            weapon.transform.localPosition = Vector3.zero; weapon.transform.localRotation = Quaternion.identity;
+        }
     }
 
-    // Hàm này sẽ được gọi bởi Relay (hoặc trực tiếp nếu Animator nằm trên cùng object)
     public void OnWeaponReload()
     {
         if (weapon != null)
         {
-            weapon.RefillAmmo(); // Cộng đạn vào băng và kết thúc trạng thái reloading
+            weapon.RefillAmmo();
         }
     }
 }
