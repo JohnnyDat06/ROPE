@@ -38,6 +38,20 @@ public class EnemyTestTakeDamage : MonoBehaviour
 		{
 			animator.SetTrigger("GetHit");
 		}
+
+		// Gọi Coroutine để dọn dẹp Trigger thừa
+		StartCoroutine(ClearTriggerNextFrame("GetHit"));
+	}
+
+	private System.Collections.IEnumerator ClearTriggerNextFrame(string triggerName)
+	{
+		// Đợi đến cuối frame hiện tại
+		yield return new WaitForEndOfFrame();
+
+		// Hủy bỏ (Tắt) Trigger đi. 
+		// Nếu Animator đã kịp dùng Trigger này để chuyển sang Hit rồi thì lệnh này vô hại.
+		// Nếu Animator chưa kịp dùng (bị kẹt ở State khác) thì lệnh này sẽ xóa trí nhớ của nó.
+		animator.ResetTrigger(triggerName);
 	}
 
 	private void Death_OnDeath(Vector3 position)
@@ -45,7 +59,7 @@ public class EnemyTestTakeDamage : MonoBehaviour
 		// 1. Animation Chết
 		if (animator != null)
 		{
-			animator.SetBool("IsDead", true);
+			animator.SetTrigger("Dead");
 		}
 
 		// 2. Tắt NavMeshAgent (Ngưng di chuyển vật lý/đẩy nhau)
