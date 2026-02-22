@@ -45,6 +45,7 @@ MonoBehaviour:
     - 9b7d77b974c3be8429929fe994bd7307
     - 814fc913785651744bd4eab8efc40e0b
     - 2be81302015b07f43b484109bc6ba21d
+    - 05be52b19a2d6b64c84ac8a7ae7ae390
     values:
     - colorIndex: 0
       iconNameOrGuid: Settings Icon
@@ -108,3 +109,5 @@ MonoBehaviour:
       iconNameOrGuid: 
     - colorIndex: 0
       iconNameOrGuid: SceneAsset Icon
+    - colorIndex: 0
+      iconNameOrGuid: TerrainData Icon
