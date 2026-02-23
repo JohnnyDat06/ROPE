@@ -8,27 +8,21 @@ public class PlayerInventorySystem : MonoBehaviour
     // 1. SETTINGS & REFERENCES
     // ========================================================================
     [Header("--- 1. Interaction Settings ---")]
-    [Tooltip("Khoảng cách có thể nhặt đồ")]
     public float interactDistance = 6.0f;
-    public LayerMask itemLayer; // Chỉ chọn layer "Interactable"
-    public Transform dropPoint; // Vị trí đồ rơi ra (trước mặt Camera)
+    public LayerMask itemLayer;
+    public Transform dropPoint;
 
     [Header("--- 2. Charge Throw (Ném Gồng Lực) ---")]
-    public float minThrowForce = 2.0f;   // Nhấp nhẹ: Rơi ngay dưới chân
-
-    // --- CẬP NHẬT: Tăng lực ném tối đa lên 25 (Ném cực mạnh) ---
+    public float minThrowForce = 2.0f;
     public float maxThrowForce = 25.0f;
-
-    [Tooltip("Thời gian gồng tối đa. Nếu giữ quá thời gian này sẽ tự bắn.")]
-    public float maxChargeTime = 3.0f; // Giảm xuống 3s cho gồng lẹ hơn
+    public float maxChargeTime = 3.0f;
 
     [Header("--- 3. Drop Physics (Rơi Đầm) ---")]
     public float dropLinearDamping = 1.0f;
     public float dropAngularDamping = 1.0f;
-    public float objectSpin = 5.0f; // Tăng độ xoay khi ném mạnh cho ngầu
+    public float objectSpin = 5.0f;
 
     [Header("--- 4. Inventory 3D Slots ---")]
-    [Tooltip("Kéo 4 Empty Object dưới lòng đất vào đây")]
     public Transform[] inventorySlots;
 
     [Header("--- 5. UI Display ---")]
@@ -40,7 +34,6 @@ public class PlayerInventorySystem : MonoBehaviour
     [Header("--- 6. UI References ---")]
     public Image progressCircle;
     public TextMeshProUGUI promptText;
-    [Tooltip("Kéo Text hiển thị tổng tiền vào đây")]
     public TextMeshProUGUI totalValueText;
 
     [Header("--- 7. External Systems ---")]
@@ -54,13 +47,10 @@ public class PlayerInventorySystem : MonoBehaviour
     private ItemController targetItem;
 
     private int currentSlotIndex = 0;
-
-    // Biến xử lý timer
     private float pickupTimer = 0f;
     private float throwChargeTimer = 0f;
     private bool isChargingThrow = false;
 
-    // Properties
     public float TotalWeight { get; private set; }
     public int TotalValue { get; private set; }
     public int TotalItemCount { get; private set; }
@@ -73,7 +63,6 @@ public class PlayerInventorySystem : MonoBehaviour
         playerCam = Camera.main;
         inventoryItems = new ItemController[inventorySlots.Length];
 
-        // Ẩn UI lúc đầu
         if (progressCircle) progressCircle.fillAmount = 0;
         if (promptText) promptText.gameObject.SetActive(false);
         if (totalValueText) totalValueText.text = "TOTAL: $0";
@@ -81,11 +70,11 @@ public class PlayerInventorySystem : MonoBehaviour
 
     void Update()
     {
-        HandleInteraction();    // Xử lý nhìn đồ
-        HandleInput();          // Xử lý phím bấm (Nhặt & Ném)
-        HandleSlotSelectionUI();// Hiệu ứng phóng to ô túi
-        RotateInventoryItems(); // Xoay đồ trong túi 3D
-        UpdateStats();          // Cập nhật thông số
+        HandleInteraction();
+        HandleInput();
+        HandleSlotSelectionUI();
+        RotateInventoryItems();
+        UpdateStats();
     }
 
     // ========================================================================
@@ -122,7 +111,7 @@ public class PlayerInventorySystem : MonoBehaviour
 
     void HandleInput()
     {
-        // --- A. CHỌN SLOT ---
+        // Chọn Slot
         if (Input.GetKeyDown(KeyCode.Alpha1)) currentSlotIndex = 0;
         if (Input.GetKeyDown(KeyCode.Alpha2)) currentSlotIndex = 1;
         if (Input.GetKeyDown(KeyCode.Alpha3)) currentSlotIndex = 2;
@@ -133,7 +122,7 @@ public class PlayerInventorySystem : MonoBehaviour
         if (scroll > 0) currentSlotIndex = (currentSlotIndex + 1) % inventorySlots.Length;
         if (scroll < 0) currentSlotIndex = (currentSlotIndex - 1 + inventorySlots.Length) % inventorySlots.Length;
 
-        // --- B. NHẶT ĐỒ ---
+        // Nhặt đồ
         if (Input.GetKey(KeyCode.E) && targetItem != null && !isChargingThrow)
         {
             int emptyIndex = GetEmptySlot();
@@ -162,7 +151,7 @@ public class PlayerInventorySystem : MonoBehaviour
             if (progressCircle) progressCircle.fillAmount = 0;
         }
 
-        // --- C. NÉM ĐỒ (Q) ---
+        // Ném đồ
         if (Input.GetKeyDown(KeyCode.Q))
         {
             if (inventoryItems[currentSlotIndex] != null)
@@ -178,7 +167,6 @@ public class PlayerInventorySystem : MonoBehaviour
             float chargePercent = Mathf.Clamp01(throwChargeTimer / maxChargeTime);
             if (progressCircle) progressCircle.fillAmount = chargePercent;
 
-            // Auto Throw sau khi gồng Max
             if (throwChargeTimer >= maxChargeTime)
             {
                 DropItem(currentSlotIndex, maxThrowForce);
@@ -191,7 +179,6 @@ public class PlayerInventorySystem : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Q) && isChargingThrow)
         {
-            // Tính toán lực ném dựa trên thời gian giữ
             float finalForce = Mathf.Lerp(minThrowForce, maxThrowForce, throwChargeTimer / maxChargeTime);
             DropItem(currentSlotIndex, finalForce);
             isChargingThrow = false;
@@ -207,38 +194,74 @@ public class PlayerInventorySystem : MonoBehaviour
     {
         inventoryItems[slotIndex] = item;
         item.transform.SetParent(inventorySlots[slotIndex]);
-        item.transform.localPosition = item.data.inventoryPositionOffset;
-        item.transform.localRotation = Quaternion.Euler(item.data.inventoryRotationOffset);
-        item.transform.localScale = Vector3.one * item.data.inventoryScale;
+
+        // Đặt vị trí và góc xoay về 0 trước để tính toán cho chuẩn
+        item.transform.localPosition = Vector3.zero;
+        item.transform.localRotation = Quaternion.identity;
+        item.transform.localScale = Vector3.one;
+
+        // --- TỰ ĐỘNG CĂN CHỈNH CAMERA UI ---
+        Renderer[] renderers = item.GetComponentsInChildren<Renderer>();
+        if (renderers.Length > 0)
+        {
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+
+            float maxDimension = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);
+            float targetSize = 1.4f;
+
+            if (maxDimension > 0.001f)
+            {
+                float autoScale = targetSize / maxDimension;
+                item.transform.localScale = Vector3.one * autoScale;
+            }
+
+            Bounds newBounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) newBounds.Encapsulate(renderers[i].bounds);
+
+            Vector3 offsetToCenter = inventorySlots[slotIndex].position - newBounds.center;
+            item.transform.position += offsetToCenter;
+        }
+
+        // Áp dụng Offset góc xoay từ ItemData để không bị ngược trong UI
+        item.transform.localRotation *= Quaternion.Euler(item.data.inventoryRotationOffset);
+        item.transform.localPosition += item.data.inventoryPositionOffset;
+
         item.SetState(true);
     }
 
-    // --- HÀM DROP THÔNG MINH (XẾP CHỒNG + NÉM MẠNH) ---
     void DropItem(int slotIndex, float forceToApply)
     {
         if (slotIndex < 0 || slotIndex >= inventoryItems.Length) return;
         ItemController item = inventoryItems[slotIndex];
         if (item == null) return;
 
-        // 1. Tách khỏi người chơi
         item.transform.SetParent(null);
 
-        // 2. Reset Scale & Rotation
-        // Nếu ném nhẹ (Nhấp Q) -> Dựng đứng item để dễ xếp chồng
+        // --- FIX LỖI KÍCH THƯỚC: Trả về scale gốc của map ---
+        item.transform.localScale = item.originalScale;
+
         bool isGentleDrop = (forceToApply <= minThrowForce * 1.5f);
 
-        item.transform.localScale = Vector3.one;
+        // --- FIX LỖI LỘN NGƯỢC ---
         if (isGentleDrop)
         {
-            item.transform.rotation = Quaternion.identity;
+            // Giữ nguyên trục X, Z để đồ đứng thẳng như map, chỉ xoay trục Y theo hướng Camera
+            Vector3 originalEuler = item.originalRotation.eulerAngles;
+            Vector3 camEuler = playerCam.transform.eulerAngles;
+            item.transform.rotation = Quaternion.Euler(originalEuler.x, camEuler.y, originalEuler.z);
+        }
+        else
+        {
+            // Ném mạnh thì cứ gán lại góc chuẩn rồi để Physics tự xoay
+            item.transform.rotation = item.originalRotation;
         }
 
-        // 3. Tính toán kích thước thật
+        // Tính toán độ cao để đặt đồ không xuyên sàn
         float itemHalfHeight = 0.25f;
         Collider col = item.GetComponent<Collider>();
         if (col != null) itemHalfHeight = col.bounds.extents.y;
 
-        // 4. SphereCast để tìm chỗ đặt an toàn (Chống xuyên vật thể)
         Vector3 finalPos = dropPoint.position;
         float checkRadius = 0.2f;
         float checkDistance = 1.5f;
@@ -255,30 +278,23 @@ public class PlayerInventorySystem : MonoBehaviour
         }
 
         item.transform.position = finalPos;
-
-        // 5. Bật lại vật lý
         item.SetState(false);
 
         Rigidbody rb = item.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            // --- QUAN TRỌNG: BẬT LẠI TRỌNG LỰC ---
             rb.useGravity = true;
-
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             rb.linearDamping = dropLinearDamping;
             rb.angularDamping = dropAngularDamping;
 
-            // --- LOGIC PHÂN LOẠI LỰC NÉM ---
             if (!isGentleDrop)
             {
-                // NÉM MẠNH: Thêm lực đẩy tới + Xoay mạnh
                 Vector3 throwDir = (playerCam.transform.forward + Vector3.up * 0.2f).normalized;
                 rb.AddForce(throwDir * forceToApply, ForceMode.Impulse);
                 rb.AddTorque(Random.insideUnitSphere * objectSpin, ForceMode.Impulse);
             }
-            // NÉM NHẸ: Không AddForce, chỉ rơi tự do tại chỗ (đã tính toán ở trên)
         }
 
         inventoryItems[slotIndex] = null;
@@ -308,7 +324,7 @@ public class PlayerInventorySystem : MonoBehaviour
     {
         for (int i = 0; i < inventoryItems.Length; i++)
         {
-            if (inventoryItems[i] != null) inventoryItems[i].transform.Rotate(Vector3.up * 30f * Time.deltaTime);
+            if (inventoryItems[i] != null) inventoryItems[i].transform.Rotate(Vector3.up * 30f * Time.deltaTime, Space.World);
         }
     }
 

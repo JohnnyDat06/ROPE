@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8334190060168025230}
   - component: {fileID: 7931298929074044601}
   - component: {fileID: 950814326810747809}
-  m_Layer: 9
+  m_Layer: 16
   m_Name: Chip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,6 +130,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 465c373a5177a104c80ef65f8d3b1b30, type: 2}
   scrapValue: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalRotation: {x: 0, y: 0, z: 0, w: 0}
+  highlightMaterial: {fileID: 0}
+  highlightDuration: 3
 --- !u!64 &950814326810747809
 MeshCollider:
   m_ObjectHideFlags: 0
