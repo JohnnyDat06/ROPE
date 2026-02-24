@@ -19794,8 +19794,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isFiring: 0
   isReloading: 0
-  fireRate: 20
-  bulletSpeed: 600
+  fireRate: 5
+  bulletSpeed: 400
   bulletDrop: 2
   muzzleFlash:
   - {fileID: 6780076093783782018}
