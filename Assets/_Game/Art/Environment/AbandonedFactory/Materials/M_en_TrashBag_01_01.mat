@@ -315,7 +315,7 @@ Material:
     - _RenderQueueType: 1
     - _RequireSplitLighting: 0
     - _SSRefractionProjectionModel: 0
-    - _Smoothness: 0.28
+    - _Smoothness: 0.497
     - _SmoothnessRemapMax: 0.1
     - _SmoothnessRemapMin: 0
     - _SmoothnessTextureChannel: 1
