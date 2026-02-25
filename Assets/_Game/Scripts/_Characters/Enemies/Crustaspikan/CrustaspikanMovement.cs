@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Movement logic for the giant boss "Crustaspikan".
@@ -34,62 +34,55 @@ public class CrustaspikanMovement : EnemyMovement
 	/// <param name="idealRange">The distance the boss wants to maintain before attacking.</param>
 	public void HandleHeavyCombatMovement(Transform target, float idealRange)
 	{
-		// Disable base NavMesh navigation during combat
 		if (_hasTarget)
 		{
 			_hasTarget = false;
 			_agent.isStopped = true;
 		}
 
-		// [FIX] Giant bosses especially need Turn In Place when flanked
-		if (TryTurnInPlace(target.position))
-		{
-			// Reset momentum to prevent sliding while turning
-			_currentSmoothInput = Vector3.zero;
-			_smoothDampVelocity = Vector3.zero;
-
-			// Set flag to true so after turning, it inherits new velocity smoothly
-			_isEnteringCombat = true;
-			return;
-		}
-
-		// [SEAMLESS BLENDING] Inherit velocity from the Animator when first entering combat state
-		// This prevents the boss from suddenly stopping when switching from Chase to Combat node.
+		// [FIX 1] Bỏ đoạn lấy _animator.GetFloat() ở đây.
+		// Vì biến _currentSmoothInput ĐÃ ĐƯỢC GIỮ LẠI từ hàm Stop() ở trên rồi!
 		if (_isEnteringCombat)
 		{
-			float currentVertical = _animator.GetFloat(_hashVertical);
-			// Assume we were moving forward. Seed the smoother with current animator momentum.
-			_currentSmoothInput = transform.forward * currentVertical;
 			_isEnteringCombat = false;
 		}
 
-		// 1. Rotate towards target (Slowly align to face the player)
-		RotateTowards(target.position);
+		// [FIX 2] Xử lý Turn In Place mượt mà
+		if (TryTurnInPlace(target.position))
+		{
+			// Thay vì giật về Vector3.zero lập tức, ta cho nó trượt từ từ về 0
+			// Boss sẽ lê chân chậm lại trong khi vặn người
+			_currentSmoothInput = Vector3.SmoothDamp(
+				_currentSmoothInput,
+				Vector3.zero,
+				ref _smoothDampVelocity,
+				_heavySmoothTime
+			);
+		}
+		else
+		{
+			RotateTowards(target.position);
 
-		// 2. Calculate Forces (Forward or Backward only, NO Strafing)
-		Vector3 targetDirection = CalculateRangeForce(target.position, idealRange);
+			Vector3 targetDirection = CalculateRangeForce(target.position, idealRange);
 
-		// 3. Heavy Smoothing (The Momentum Core)
-		// If targetDirection is Vector3.zero (reached destination), _currentSmoothInput will slowly decay to zero.
-		_currentSmoothInput = Vector3.SmoothDamp(
-			_currentSmoothInput,
-			targetDirection,
-			ref _smoothDampVelocity,
-			_heavySmoothTime
-		);
+			_currentSmoothInput = Vector3.SmoothDamp(
+				_currentSmoothInput,
+				targetDirection,
+				ref _smoothDampVelocity,
+				_heavySmoothTime
+			);
+		}
 
 		// --- APPLY TO ANIMATOR ---
-		// Convert world space input to local space
 		Vector3 localInput = transform.InverseTransformDirection(_currentSmoothInput);
 
-		// Check if we still have momentum
 		_animator.SetBool(_hashIsMoving, _currentSmoothInput.magnitude > 0.05f);
 
-		// Use _heavySmoothTime instead of 0.1f to enforce the heavy, sluggish animation transition
-		_animator.SetFloat(_hashHorizontal, localInput.x, _heavySmoothTime, Time.deltaTime);
-		_animator.SetFloat(_hashVertical, localInput.z, _heavySmoothTime, Time.deltaTime);
+		// [FIX 3] Bỏ Double Smoothing! 
+		// Vì _currentSmoothInput đã tự tính toán độ trượt, ta chỉ cần truyền thẳng vào Animator (Damp = 0)
+		_animator.SetFloat(_hashHorizontal, localInput.x, 0f, Time.deltaTime);
+		_animator.SetFloat(_hashVertical, localInput.z, 0f, Time.deltaTime);
 
-		// Debug visualization
 		if (Application.isEditor)
 		{
 			Debug.DrawRay(transform.position + Vector3.up * 2f, _currentSmoothInput * 3, Color.cyan);
@@ -141,9 +134,27 @@ public class CrustaspikanMovement : EnemyMovement
 		_isEnteringCombat = true; // Ready for next transition
 	}
 
+	/// <summary>
+	/// Ghi đè logic Turn In Place của lớp cha.
+	/// Boss khổng lồ sẽ VỪA phát Animation xoay, VỪA lê bước trượt tới trước (giảm tốc từ từ) thay vì khựng lại.
+	/// </summary>
+	protected override bool TryTurnInPlace(Vector3 targetPos)
+	{
+		// Tạm thời tắt tính năng Turn In Place mặc định của lớp cha 
+		// để tự xử lý quán tính mượt mà trong hàm HandleHeavyCombatMovement
+		return false;
+	}
+
+	// 2. Định nghĩa lại hành vi Stop
 	public override void Stop()
 	{
+		// Vẫn lưu lại đà di chuyển trước khi gọi base.Stop()
+		float currentV = _animator.GetFloat(_hashVertical);
+
 		base.Stop();
+
+		// Giữ lại quán tính để frame sau Boss trượt tiếp
+		_currentSmoothInput = transform.forward * currentV;
 		_isEnteringCombat = true;
 	}
 

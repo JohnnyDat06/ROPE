@@ -143,7 +143,7 @@ public class EnemyMovement : MonoBehaviour
 	/// Checks and performs Turn In Place if the angle deviation is too large.
 	/// Returns true if the enemy IS currently in a turning state.
 	/// </summary>
-	protected bool TryTurnInPlace(Vector3 targetPos)
+	protected virtual bool TryTurnInPlace(Vector3 targetPos)
 	{
 		// If the feature is disabled via Inspector -> Always return false
 		if (!_useTurnInPlace) return false;
