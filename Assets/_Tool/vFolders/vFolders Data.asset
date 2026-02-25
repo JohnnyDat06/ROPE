@@ -47,6 +47,13 @@ MonoBehaviour:
     - 2be81302015b07f43b484109bc6ba21d
     - 05be52b19a2d6b64c84ac8a7ae7ae390
     - 05869bdcc7ae64f4eafdadc4dff986ed
+    - 4f2b61398e770b04bb199654e55b3dda
+    - 460838877f9bb5443aebddfbdf88c265
+    - 5292be3eff1c0e14d8704e8013f2e7ae
+    - b549379920578f34387a6322d56cf9d9
+    - ff219df3c61e32341864ee78c8459751
+    - 363af966c0afc2c4b9fc9201e0f6f43a
+    - 81fc48f984fb283438f24093cfd1ee90
     values:
     - colorIndex: 0
       iconNameOrGuid: Settings Icon
@@ -114,3 +121,17 @@ MonoBehaviour:
       iconNameOrGuid: TerrainData Icon
     - colorIndex: 0
       iconNameOrGuid: AnimationClip Icon
+    - colorIndex: 0
+      iconNameOrGuid: AnimationClip Icon
+    - colorIndex: 0
+      iconNameOrGuid: Settings Icon
+    - colorIndex: 0
+      iconNameOrGuid: cs Script Icon
+    - colorIndex: 0
+      iconNameOrGuid: cs Script Icon
+    - colorIndex: 0
+      iconNameOrGuid: cs Script Icon
+    - colorIndex: 0
+      iconNameOrGuid: cs Script Icon
+    - colorIndex: 0
+      iconNameOrGuid: cs Script Icon
