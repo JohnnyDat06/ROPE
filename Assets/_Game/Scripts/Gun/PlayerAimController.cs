@@ -14,11 +14,13 @@ public class PlayerAimController : MonoBehaviour
 
     private StarterAssetsInputs _input;
     private ThirdPersonController _thirdPersonController;
+    private ActiveWeapon _activeWeapon;
 
     private void Awake()
     {
         _input = GetComponent<StarterAssetsInputs>();
         _thirdPersonController = GetComponent<ThirdPersonController>();
+        _activeWeapon = GetComponent<ActiveWeapon>();
     }
 
     private void Start()
@@ -34,7 +36,7 @@ public class PlayerAimController : MonoBehaviour
 
     private void HandleAim()
     {
-        if (_input.aim)
+        if (_input.aim && _activeWeapon != null && !_activeWeapon.IsHolstered)
         {
 
             if (aimVirtualCamera != null) aimVirtualCamera.Priority = 20;

@@ -9,16 +9,18 @@ public class HorrorLight : MonoBehaviour
 
     [Header("--- CÀI ĐẶT ÂM THANH ---")]
     public AudioSource audioSource;
-    public AudioClip flickerSound;
+    // SỬA ĐỔI: Chuyển thành mảng (Array) để chứa nhiều âm thanh
+    public AudioClip[] flickerSounds;
+
     [Range(0, 1)]
     public float soundVolume = 1.0f;
     public float maxSoundDuration = 1.0f;
 
     [Header("--- CẤU HÌNH CHU KỲ ---")]
-    public float burstDurationMin = 3.0f; // Tăng lên để chớp lâu hơn
+    public float burstDurationMin = 3.0f;
     public float burstDurationMax = 6.0f;
 
-    public float breakDurationMin = 2.0f; // Giảm xuống để ít nghỉ hơn
+    public float breakDurationMin = 2.0f;
     public float breakDurationMax = 4.0f;
 
     [Header("--- TỐC ĐỘ CHỚP ---")]
@@ -30,10 +32,9 @@ public class HorrorLight : MonoBehaviour
         if (myLight == null) myLight = GetComponent<Light>();
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
-        if (audioSource != null && flickerSound != null)
+        if (audioSource != null)
         {
-            audioSource.clip = flickerSound;
-            // SỬA QUAN TRỌNG: Bật Loop để tiếng rè rè kéo dài liên tục khi đèn sáng
+            // Bật Loop để tiếng rè rè kéo dài liên tục khi đèn sáng
             audioSource.loop = true;
             audioSource.playOnAwake = false;
         }
@@ -55,7 +56,7 @@ public class HorrorLight : MonoBehaviour
                 if (Random.value > 0.3f)
                 {
                     myLight.enabled = false;
-                    audioSource.Stop(); // Dùng Stop() thay vì ngắt Loop
+                    audioSource.Stop();
                     float offTime = Random.Range(0.05f, 0.2f);
                     yield return new WaitForSeconds(offTime);
                     burstTimer += offTime;
@@ -65,10 +66,15 @@ public class HorrorLight : MonoBehaviour
                 myLight.enabled = true;
                 myLight.intensity = Random.Range(100f, maxIntensity);
 
-                if (audioSource != null && flickerSound != null)
+                // SỬA ĐỔI: Kiểm tra xem mảng có âm thanh không
+                if (audioSource != null && flickerSounds != null && flickerSounds.Length > 0)
                 {
                     if (!audioSource.isPlaying) // Chỉ Play nếu chưa Play
                     {
+                        // CHỌN NGẪU NHIÊN 1 CLIP TỪ MẢNG
+                        int randomIndex = Random.Range(0, flickerSounds.Length);
+                        audioSource.clip = flickerSounds[randomIndex];
+
                         audioSource.volume = soundVolume;
                         audioSource.pitch = Random.Range(0.9f, 1.1f);
                         audioSource.Play();
@@ -77,7 +83,7 @@ public class HorrorLight : MonoBehaviour
 
                 float lightOnTime = Random.Range(minFlickerSpeed, maxFlickerSpeed);
 
-                // Đếm ngược để tắt tiếng nếu quá 1s (Dù đang Loop cũng bắt tắt)
+                // Đếm ngược để tắt tiếng nếu quá thời gian cho phép
                 float subTimer = 0f;
                 while (subTimer < lightOnTime)
                 {
