@@ -56,7 +56,17 @@ public class ArathroxMovement : EnemyMovement
 		_hasTarget = false;
 		_agent.isStopped = true;
 
-		// Ensure we are always facing the combat target
+		// [FIX] Force Turn In Place check first
+		// If the Player moves behind the enemy, it must stop and rotate instead of sliding
+		if (TryTurnInPlace(target.position))
+		{
+			// Reset movement momentum to prevent sliding while turning
+			_currentSmoothInput = Vector3.zero;
+			_smoothDampVelocity = Vector3.zero;
+			return; // Exit function, skip strafe calculations
+		}
+
+		// If angle is small (finished turning or Player is in front), smoothly rotate and begin combat
 		RotateTowards(target.position);
 
 		// --- CALCULATE RAW FORCES ---

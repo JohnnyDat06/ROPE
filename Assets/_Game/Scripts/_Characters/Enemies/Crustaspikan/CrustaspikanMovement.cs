@@ -41,6 +41,18 @@ public class CrustaspikanMovement : EnemyMovement
 			_agent.isStopped = true;
 		}
 
+		// [FIX] Giant bosses especially need Turn In Place when flanked
+		if (TryTurnInPlace(target.position))
+		{
+			// Reset momentum to prevent sliding while turning
+			_currentSmoothInput = Vector3.zero;
+			_smoothDampVelocity = Vector3.zero;
+
+			// Set flag to true so after turning, it inherits new velocity smoothly
+			_isEnteringCombat = true;
+			return;
+		}
+
 		// [SEAMLESS BLENDING] Inherit velocity from the Animator when first entering combat state
 		// This prevents the boss from suddenly stopping when switching from Chase to Combat node.
 		if (_isEnteringCombat)

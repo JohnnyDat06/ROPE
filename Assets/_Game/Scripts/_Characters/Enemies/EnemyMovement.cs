@@ -21,6 +21,9 @@ public class EnemyMovement : MonoBehaviour
 
 	[Tooltip("Distance threshold to stop the agent when reaching a destination.")]
 	[SerializeField] protected float _stopDistance = 0.5f;
+
+	[Tooltip("Enable/disable turn-in-place animation feature.")]
+	[SerializeField] protected bool _useTurnInPlace = true;
 	#endregion
 
 	#region Internal State
@@ -137,6 +140,40 @@ public class EnemyMovement : MonoBehaviour
 	#region Helper Logic (Internal Movement)
 
 	/// <summary>
+	/// Checks and performs Turn In Place if the angle deviation is too large.
+	/// Returns true if the enemy IS currently in a turning state.
+	/// </summary>
+	protected bool TryTurnInPlace(Vector3 targetPos)
+	{
+		// If the feature is disabled via Inspector -> Always return false
+		if (!_useTurnInPlace) return false;
+
+		Vector3 targetDir = (targetPos - transform.position).normalized;
+		targetDir.y = 0;
+		if (targetDir == Vector3.zero) return false;
+
+		float signedAngle = Vector3.SignedAngle(transform.forward, targetDir, Vector3.up);
+		float absAngle = Mathf.Abs(signedAngle);
+
+		// Hysteresis logic to prevent flickering
+		if (!_isTurningInPlace && absAngle > _turnStartThreshold) _isTurningInPlace = true;
+		else if (_isTurningInPlace && absAngle < _turnEndThreshold) _isTurningInPlace = false;
+
+		if (_isTurningInPlace)
+		{
+			_animator.SetBool(_hashIsMoving, false);
+			_animator.SetFloat(_hashTurn, Mathf.Sign(signedAngle), 0.1f, Time.deltaTime);
+			_animator.SetFloat(_hashHorizontal, 0);
+			_animator.SetFloat(_hashVertical, 0);
+			return true; // Currently turning
+		}
+
+		// Reset Turn parameter if not turning in place
+		_animator.SetFloat(_hashTurn, 0, 0.2f, Time.deltaTime);
+		return false;
+	}
+
+	/// <summary>
 	/// Processes movement logic when simply travelling to a NavMesh destination.
 	/// Handles turning in place versus moving forward based on angle.
 	/// </summary>
@@ -149,40 +186,19 @@ public class EnemyMovement : MonoBehaviour
 			return;
 		}
 
-		// Calculate direction to the next steering target
-		Vector3 targetDir = (_agent.steeringTarget - transform.position).normalized;
-		targetDir.y = 0;
-		if (targetDir == Vector3.zero) targetDir = transform.forward;
+		// Use shared function. If currently turning, exit early without moving forward
+		if (TryTurnInPlace(_agent.steeringTarget)) return;
 
-		float signedAngle = Vector3.SignedAngle(transform.forward, targetDir, Vector3.up);
-		float absAngle = Mathf.Abs(signedAngle);
+		// Move forward logic
+		_animator.SetBool(_hashIsMoving, true);
+		RotateTowards(_agent.steeringTarget);
 
-		// Hysteresis for turning in place state to prevent flickering
-		if (!_isTurningInPlace && absAngle > _turnStartThreshold) _isTurningInPlace = true;
-		else if (_isTurningInPlace && absAngle < _turnEndThreshold) _isTurningInPlace = false;
+		Vector3 localVel = transform.InverseTransformDirection(_agent.desiredVelocity);
+		float speedFactor = Mathf.Max(_agent.speed, 1f);
 
-		if (_isTurningInPlace)
-		{
-			// Rotate in place logic
-			_animator.SetBool(_hashIsMoving, false);
-			_animator.SetFloat(_hashTurn, Mathf.Sign(signedAngle), 0.1f, Time.deltaTime);
-			_animator.SetFloat(_hashHorizontal, 0);
-			_animator.SetFloat(_hashVertical, 0);
-		}
-		else
-		{
-			// Move forward logic
-			_animator.SetBool(_hashIsMoving, true);
-			_animator.SetFloat(_hashTurn, 0, 0.2f, Time.deltaTime);
-			RotateTowards(_agent.steeringTarget);
-
-			Vector3 localVel = transform.InverseTransformDirection(_agent.desiredVelocity);
-			float speedFactor = Mathf.Max(_agent.speed, 1f);
-
-			// Apply light smoothing to standard movement inputs
-			_animator.SetFloat(_hashHorizontal, localVel.x / speedFactor, 0.1f, Time.deltaTime);
-			_animator.SetFloat(_hashVertical, localVel.z / speedFactor, 0.1f, Time.deltaTime);
-		}
+		// Apply light smoothing to standard movement inputs
+		_animator.SetFloat(_hashHorizontal, localVel.x / speedFactor, 0.1f, Time.deltaTime);
+		_animator.SetFloat(_hashVertical, localVel.z / speedFactor, 0.1f, Time.deltaTime);
 	}
 
 	/// <summary>
