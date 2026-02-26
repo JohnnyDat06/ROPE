@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DatScript; // <-- THÊM DÒNG NÀY để gọi được PlayerHealth
 
 [RequireComponent(typeof(AudioSource))]
 public class TurretTrap : MonoBehaviour
@@ -33,6 +34,10 @@ public class TurretTrap : MonoBehaviour
     public Vector3 gunExtendVector = new Vector3(0f, 0f, 0.8f);
     public float gunExtendDuration = 0.4f;
 
+    [Header("--- 6. Damage Settings ---")]
+    [Tooltip("Lượng máu bị trừ mỗi khi trúng 1 viên đạn")]
+    public float damagePerShot = 5f; // <-- THÊM BIẾN NÀY
+
     // --- Private ---
     private Vector3 _initCoverPos;
     private Vector3 _initGunPos;
@@ -57,7 +62,6 @@ public class TurretTrap : MonoBehaviour
         if (smokeVFX) { var m = smokeVFX.main; m.playOnAwake = false; smokeVFX.Stop(); }
     }
 
-    // --- SỬA ĐỔI QUAN TRỌNG: Hàm ActivateTrap KHÔNG CÒN tham số (Transform playerTarget) ---
     public void ActivateTrap()
     {
         _pendingDeactivate = false;
@@ -84,7 +88,6 @@ public class TurretTrap : MonoBehaviour
 
     private IEnumerator TrapSequenceRoutine()
     {
-        // Animation Mở
         Vector3 slidePos = _initCoverPos + coverSlideVector;
         Vector3 popUpPos = slidePos + coverUpVector;
         Vector3 extendPos = _initGunPos + gunExtendVector;
@@ -93,7 +96,6 @@ public class TurretTrap : MonoBehaviour
         yield return StartCoroutine(MoveTransform(coverCube, slidePos, popUpPos, coverUpDuration));
         yield return StartCoroutine(MoveTransform(hiddenGun, _initGunPos, extendPos, gunExtendDuration));
 
-        // Bắn
         if (muzzleFlashVFX) muzzleFlashVFX.Play();
         if (smokeVFX) smokeVFX.Stop();
 
@@ -155,6 +157,7 @@ public class TurretTrap : MonoBehaviour
         }
     }
 
+    // --- LOGIC GÂY SÁT THƯƠNG NẰM Ở ĐÂY ---
     private void FireStraightShot()
     {
         if (_audioSource && fireSoundClip)
@@ -164,12 +167,20 @@ public class TurretTrap : MonoBehaviour
             _audioSource.PlayOneShot(fireSoundClip);
         }
 
-        // Bắn thẳng theo hướng FirePoint
         Vector3 direction = firePoint.forward;
 
         if (Physics.Raycast(firePoint.position, direction, out RaycastHit hit, 100f, hitLayers, QueryTriggerInteraction.Ignore))
         {
-            // Logic xử lý trúng đạn (nếu cần)
+            // 1. Kiểm tra xem tia đạn có đụng trúng Player không
+            if (hit.collider.CompareTag("Player"))
+            {
+                // 2. Gọi hàm trừ máu thông qua biến instance tĩnh (Singleton)
+                if (PlayerHealth.instance != null)
+                {
+                    PlayerHealth.instance.TakeDamage(damagePerShot);
+                    // (Tuỳ chọn) Bạn có thể sinh ra Particle System máu văng tại hit.point ở đây
+                }
+            }
         }
     }
 

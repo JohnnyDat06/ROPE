@@ -2,17 +2,8 @@
 
 public class TriggerRelay : MonoBehaviour
 {
-    [Header("Liên kết")]
-    [Tooltip("Kéo script PressurePlate từ object cha vào đây")]
-    [SerializeField] private PressurePlate plateLogic;
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (plateLogic) plateLogic.OnObjectEnter(other);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (plateLogic) plateLogic.OnObjectExit(other);
-    }
+    // Cố ý để trống.
+    // Hệ thống bẫy lửa mới đã chuyển sang dùng Radar (Physics.OverlapBox) 
+    // nên không cần dùng các hàm OnTriggerEnter/Exit ở đây nữa.
+    // Giữ lại file này để Unity không báo lỗi "Missing Script" trên các object cũ.
 }

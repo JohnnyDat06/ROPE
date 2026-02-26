@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 public class PressurePlate : MonoBehaviour
 {
-    [Header("Settings")]
+    [Header("Cài đặt di chuyển đĩa")]
     [SerializeField] private Transform visualModel;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float pressDepth = 0.15f;
 
-    [Header("Debug Info")]
-    // Kiểm tra xem có vật nào hợp lệ đang đè lên không
-    public bool IsPressed => objectsOnPlate.Count > 0;
+    [Header("Cài đặt Radar Quét Đồ Vật")]
+    [Tooltip("Kích thước vùng không gian hộp quét phía trên đĩa")]
+    [SerializeField] private Vector3 detectionBoxSize = new Vector3(1f, 0.5f, 1f);
+    [Tooltip("Điểm đặt tâm của vùng quét (kéo lên cao một chút so với mặt đĩa)")]
+    [SerializeField] private Vector3 detectionOffset = new Vector3(0, 0.25f, 0);
 
-    private List<Collider> objectsOnPlate = new List<Collider>();
+    [Header("Trạng thái (Debug)")]
+    public bool IsPressed = false;
+
     private Vector3 initialPos;
 
     void Start()
@@ -25,65 +28,31 @@ public class PressurePlate : MonoBehaviour
 
     void Update()
     {
-        // 1. Dọn dẹp danh sách (QUAN TRỌNG)
-        // Nếu món đồ bị người chơi nhặt -> Nó bị Disable hoặc Destroy -> Cần xóa khỏi list để bàn đạp nảy lên
-        ValidateObjectsOnPlate();
+        // Liên tục quét xem có gì đè lên không mỗi khung hình
+        CheckPlateWithRadar();
 
-        // 2. Xử lý chuyển động
+        // Cập nhật hoạt ảnh lún xuống/nảy lên
         HandleMovement();
     }
 
-    // --- LOGIC NHẬN DIỆN MỚI ---
-    public void OnObjectEnter(Collider other)
+    void CheckPlateWithRadar()
     {
-        // A. Kiểm tra Player
-        if (other.CompareTag("Player"))
+        IsPressed = false;
+        Vector3 center = transform.position + detectionOffset;
+
+        // Quét tạo ra một cái hộp ảo, lấy toàn bộ Collider lọt vào trong hộp
+        Collider[] hits = Physics.OverlapBox(center, detectionBoxSize / 2f, transform.rotation);
+
+        foreach (var hit in hits)
         {
-            AddObj(other);
-            return;
-        }
+            // Bỏ qua chính bản thân cái đĩa hoặc các vùng trigger vô hình
+            if (hit.gameObject == gameObject || hit.isTrigger) continue;
 
-        // B. Kiểm tra Item từ hệ thống Inventory (ĐỒNG BỘ VỚI INTERACTABLE)
-        // Thay vì check Tag, ta check xem nó có script ItemController không
-        if (other.TryGetComponent(out ItemController item))
-        {
-            AddObj(other);
-        }
-    }
-
-    public void OnObjectExit(Collider other)
-    {
-        RemoveObj(other);
-    }
-
-    // Các hàm phụ trợ để quản lý List an toàn hơn
-    void AddObj(Collider col)
-    {
-        if (!objectsOnPlate.Contains(col))
-        {
-            objectsOnPlate.Add(col);
-        }
-    }
-
-    void RemoveObj(Collider col)
-    {
-        if (objectsOnPlate.Contains(col))
-        {
-            objectsOnPlate.Remove(col);
-        }
-    }
-
-    void ValidateObjectsOnPlate()
-    {
-        // Duyệt ngược để xóa các phần tử null hoặc không còn active (đã bị nhặt)
-        for (int i = objectsOnPlate.Count - 1; i >= 0; i--)
-        {
-            Collider col = objectsOnPlate[i];
-
-            // Nếu vật thể bị hủy (null) hoặc bị tắt (SetActive false - do chui vào túi đồ)
-            if (col == null || !col.gameObject.activeInHierarchy || !col.enabled)
+            // Nếu vật chạm vào là Player HOẶC là món đồ có chứa ItemController
+            if (hit.CompareTag("Player") || hit.GetComponent<ItemController>() != null)
             {
-                objectsOnPlate.RemoveAt(i);
+                IsPressed = true;
+                break; // Có 1 vật đè lên là đủ kích hoạt, thoát vòng lặp
             }
         }
     }
@@ -93,5 +62,13 @@ public class PressurePlate : MonoBehaviour
         if (visualModel == null) return;
         Vector3 destination = IsPressed ? (initialPos - new Vector3(0, pressDepth, 0)) : initialPos;
         visualModel.localPosition = Vector3.MoveTowards(visualModel.localPosition, destination, moveSpeed * Time.deltaTime);
+    }
+
+    // Hiển thị hộp quét màu xanh lá trong màn hình Editor để bạn dễ căn chỉnh
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = new Color(0, 1, 0, 0.4f);
+        Gizmos.matrix = Matrix4x4.TRS(transform.position + detectionOffset, transform.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, detectionBoxSize);
     }
 }
