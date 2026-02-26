@@ -14,8 +14,11 @@ public class WeatherManager : MonoBehaviour
     public LayerMask obstacleLayer;
     public float randomStrikeRadius = 20f;
 
-    [Tooltip("Thời gian giữa các lần sét đánh (Tăng lên để sét đánh thưa hơn)")]
+    [Tooltip("Thời gian giữa các lần kiểm tra sét đánh (Giây)")]
     public float lightningInterval = 8.0f;
+
+    [Tooltip("Tỷ lệ sét đánh ra môi trường (0.3 = 30% cơ hội mỗi nhịp). Giảm xuống để sét thưa hơn.")]
+    [Range(0f, 1f)] public float environmentStrikeChance = 0.3f;
 
     [Tooltip("Bán kính sát thương của sét môi trường (Xui xẻo đứng gần là chết)")]
     public float environmentStrikeDamageRadius = 2.0f;
@@ -24,7 +27,7 @@ public class WeatherManager : MonoBehaviour
     [Tooltip("Số lần xẹt điện TỐI THIỂU trước khi đánh")]
     public int minWarningTimes = 5;
 
-    [Tooltip("Số lần xẹt điện TỐI ĐA trước khi đánh (Chỉnh lên 10 hoặc hơn)")]
+    [Tooltip("Số lần xẹt điện TỐI ĐA trước khi đánh")]
     public int maxWarningTimes = 10;
 
     [Tooltip("Khoảng cách thời gian giữa mỗi tiếng xẹt (giây)")]
@@ -116,30 +119,27 @@ public class WeatherManager : MonoBehaviour
     {
         while (_isRaining)
         {
-            // Chờ một khoảng thời gian trước khi gọi tia sét tiếp theo
+            // Chờ một khoảng thời gian nhịp điệu sấm sét
             yield return new WaitForSeconds(Random.Range(lightningInterval * 0.8f, lightningInterval * 1.5f));
 
             bool struckPlayer = false;
 
             if (targetToFollow != null)
             {
-                // 1. Kiểm tra xem Player có đang cầm đồ sắt và ở ngoài trời không
+                // Kiểm tra xem Player có đang cầm đồ sắt và ở ngoài trời không
                 if (currentStrikeChance > 0 && !IsIndoors())
                 {
-                    // 2. GIEO XÚC XẮC NGAY TỪ ĐẦU!
-                    // Quyết định xem tia sét lần này có nhắm vào Player không.
+                    // Gieo xúc xắc xem tia sét lần này có nhắm vào Player không
                     if (Random.value <= currentStrikeChance)
                     {
-                        // --- ĐÃ BỊ KHÓA MỤC TIÊU --- Bắt đầu phát cảnh báo xẹt điện
                         int warningTimes = Random.Range(minWarningTimes, maxWarningTimes + 1);
                         bool warningCanceled = false;
 
                         for (int i = 0; i < warningTimes; i++)
                         {
-                            // Nếu đột ngột vứt đồ HOẶC chạy vào nhà trong lúc đang kêu xẹt xẹt
                             if (currentStrikeChance <= 0 || IsIndoors())
                             {
-                                warningCanceled = true; // Hủy án tử
+                                warningCanceled = true;
                                 Debug.Log("<color=green>Player đã vứt đồ sắt hoặc vào nhà! THOÁT NẠN.</color>");
                                 break;
                             }
@@ -152,8 +152,6 @@ public class WeatherManager : MonoBehaviour
                             yield return new WaitForSeconds(warningInterval);
                         }
 
-                        // 3. QUYẾT ĐỊNH XUỐNG TAY
-                        // Nếu cảnh báo đã kêu xong mà vẫn chưa vứt đồ sắt -> 100% CHẾT
                         if (!warningCanceled && !IsIndoors())
                         {
                             Debug.Log("<color=red>SÉT ĐÁNH TRÚNG PLAYER!</color>");
@@ -171,10 +169,14 @@ public class WeatherManager : MonoBehaviour
                 }
             }
 
-            // Nếu xúc xắc không rơi trúng Player, hoặc Player đã vứt đồ thoát nạn -> Đánh ra môi trường
+            // Nếu không đánh Player -> Kiểm tra xem có giáng sét xuống môi trường không
             if (!struckPlayer)
             {
-                SpawnRandomEnvironmentLightning();
+                // Thêm tỷ lệ (VD: 30%) để sét môi trường không bị đánh liên tục gây nhàm chán
+                if (Random.value <= environmentStrikeChance)
+                {
+                    SpawnRandomEnvironmentLightning();
+                }
             }
         }
     }
@@ -199,7 +201,6 @@ public class WeatherManager : MonoBehaviour
             Play3DSoundAtPosition(thunderStrikeSound, strikePos, thunderVolume * 0.9f);
         }
 
-        // --- KIỂM TRA SÁT THƯƠNG SÉT MÔI TRƯỜNG ---
         if (targetToFollow != null)
         {
             float distanceFromStrike = Vector3.Distance(targetToFollow.position, strikePos);
