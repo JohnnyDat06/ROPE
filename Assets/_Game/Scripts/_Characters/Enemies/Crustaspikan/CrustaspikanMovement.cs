@@ -47,18 +47,26 @@ public class CrustaspikanMovement : EnemyMovement
 			_isEnteringCombat = false;
 		}
 
-		// [FIX 2] Xử lý Turn In Place mượt mà
+		// [FIX HOÀN HẢO] 
+		// Gọi hàm TryTurnInPlace mà ta vừa ghi đè. Nó sẽ tự động lo việc vừa vặn người vừa phanh!
 		if (TryTurnInPlace(target.position))
 		{
-			// Thay vì giật về Vector3.zero lập tức, ta cho nó trượt từ từ về 0
-			// Boss sẽ lê chân chậm lại trong khi vặn người
-			_currentSmoothInput = Vector3.SmoothDamp(
-				_currentSmoothInput,
-				Vector3.zero,
-				ref _smoothDampVelocity,
-				_heavySmoothTime
-			);
+			_isEnteringCombat = true;
+			return; // Đang bận xoay và phanh, không xử lý tiến lùi nữa
 		}
+
+		//// [FIX 2] Xử lý Turn In Place mượt mà
+		//if (TryTurnInPlace(target.position))
+		//{
+		//	// Thay vì giật về Vector3.zero lập tức, ta cho nó trượt từ từ về 0
+		//	// Boss sẽ lê chân chậm lại trong khi vặn người
+		//	_currentSmoothInput = Vector3.SmoothDamp(
+		//		_currentSmoothInput,
+		//		Vector3.zero,
+		//		ref _smoothDampVelocity,
+		//		_heavySmoothTime
+		//	);
+		//}
 		else
 		{
 			RotateTowards(target.position);
@@ -138,10 +146,49 @@ public class CrustaspikanMovement : EnemyMovement
 	/// Ghi đè logic Turn In Place của lớp cha.
 	/// Boss khổng lồ sẽ VỪA phát Animation xoay, VỪA lê bước trượt tới trước (giảm tốc từ từ) thay vì khựng lại.
 	/// </summary>
+	/// <summary>
+	/// Ghi đè logic Turn In Place của lớp cha.
+	/// Boss khổng lồ sẽ VỪA phát Animation xoay, VỪA lê bước trượt tới trước (giảm tốc từ từ) thay vì khựng lại.
+	/// </summary>
 	protected override bool TryTurnInPlace(Vector3 targetPos)
 	{
-		// Tạm thời tắt tính năng Turn In Place mặc định của lớp cha 
-		// để tự xử lý quán tính mượt mà trong hàm HandleHeavyCombatMovement
+		if (!_useTurnInPlace) return false;
+
+		Vector3 targetDir = (targetPos - transform.position).normalized;
+		targetDir.y = 0;
+		if (targetDir == Vector3.zero) return false;
+
+		float signedAngle = Vector3.SignedAngle(transform.forward, targetDir, Vector3.up);
+		float absAngle = Mathf.Abs(signedAngle);
+
+		if (!_isTurningInPlace && absAngle > _turnStartThreshold) _isTurningInPlace = true;
+		else if (_isTurningInPlace && absAngle < _turnEndThreshold) _isTurningInPlace = false;
+
+		if (_isTurningInPlace)
+		{
+			// 1. Kích hoạt Animation vặn người (Turn)
+			_animator.SetBool(_hashIsMoving, false);
+			_animator.SetFloat(_hashTurn, Mathf.Sign(signedAngle), 0.1f, Time.deltaTime);
+
+			// 2. [BÍ QUYẾT TẠO QUÁN TÍNH CHO BOSS]
+			// KHÔNG ép Vertical về 0 lập tức như lớp cha.
+			// Dùng SmoothDamp kéo vận tốc hiện tại từ từ về 0.
+			_currentSmoothInput = Vector3.SmoothDamp(
+				_currentSmoothInput,
+				Vector3.zero, // Đích đến là dừng lại
+				ref _smoothDampVelocity,
+				_heavySmoothTime // Dùng độ nặng (momentum) của Boss
+			);
+
+			// 3. Truyền vận tốc đang giảm dần này vào Animator
+			Vector3 localInput = transform.InverseTransformDirection(_currentSmoothInput);
+			_animator.SetFloat(_hashHorizontal, localInput.x, 0f, Time.deltaTime); // Damp = 0 vì đã SmoothDamp ở trên
+			_animator.SetFloat(_hashVertical, localInput.z, 0f, Time.deltaTime);
+
+			return true; // Đang trong quá trình xoay
+		}
+
+		_animator.SetFloat(_hashTurn, 0, 0.2f, Time.deltaTime);
 		return false;
 	}
 
