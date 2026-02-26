@@ -4,24 +4,29 @@ using System.Collections.Generic;
 
 public class FireTrapController : MonoBehaviour
 {
-    [Header("Dependencies")]
+    [Header("Liên kết Logic")]
     [SerializeField] private PressurePlate pressurePlate;
-    [SerializeField] private List<ParticleSystem> fireParticles = new List<ParticleSystem>();
     [SerializeField] private ScreenHeatEffect heatEffect;
 
-    [Header("Audio Settings")]
+    [Header("Hệ thống Lửa & Sát thương")]
+    [Tooltip("Kéo các Particle System lửa vào đây")]
+    [SerializeField] private List<ParticleSystem> fireParticles = new List<ParticleSystem>();
+    [Tooltip("Kéo các Box Collider (Is Trigger) dùng để gây sát thương vào đây")]
+    [SerializeField] private List<Collider> damageColliders = new List<Collider>();
+
+    [Header("Cài đặt Âm thanh")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip fireLoopSound;
     [SerializeField] private AudioClip fireRetractSound;
     [Range(0f, 1f)][SerializeField] private float maxVolume = 0.8f;
 
-    [Header("Fire Settings")]
+    [Header("Cài đặt Lửa")]
     [SerializeField] private float fireExpandSpeed = 5f;
     [SerializeField] private float fireRetractSpeed = -8f;
 
     private bool isTrapActive = false;
 
-    void Start()
+    IEnumerator Start()
     {
         if (audioSource != null)
         {
@@ -31,14 +36,20 @@ public class FireTrapController : MonoBehaviour
             audioSource.volume = 0f;
         }
 
-        // Đảm bảo module Velocity được bật
         foreach (var fire in fireParticles)
         {
             var velModule = fire.velocityOverLifetime;
             velModule.enabled = true;
         }
 
-        // Kiểm tra trạng thái đầu game
+        // Tắt toàn bộ vùng sát thương ngay từ đầu game để đảm bảo an toàn
+        foreach (var col in damageColliders)
+        {
+            if (col != null) col.enabled = false;
+        }
+
+        // Đợi một chút để vật lý ổn định rồi mới kiểm tra trạng thái đĩa
+        yield return new WaitForSeconds(0.1f);
         CheckTrapState();
     }
 
@@ -49,7 +60,7 @@ public class FireTrapController : MonoBehaviour
 
     void CheckTrapState()
     {
-        // Logic: Đè lên đĩa (IsPressed) -> Tắt lửa. Không đè -> Bật lửa.
+        // Nếu đĩa KHÔNG bị đè (IsPressed = false) -> Kích hoạt bẫy lửa
         bool shouldActive = !pressurePlate.IsPressed;
 
         if (shouldActive && !isTrapActive) ActivateTrap();
@@ -60,6 +71,12 @@ public class FireTrapController : MonoBehaviour
     {
         isTrapActive = true;
         if (heatEffect) heatEffect.SetHeat(true);
+
+        // Bật vùng gây sát thương cùng lúc với lửa cháy
+        foreach (var col in damageColliders)
+        {
+            if (col != null) col.enabled = true;
+        }
 
         foreach (var fire in fireParticles)
         {
@@ -73,7 +90,7 @@ public class FireTrapController : MonoBehaviour
             audioSource.clip = fireLoopSound;
             audioSource.loop = true;
             audioSource.Play();
-            StopAllCoroutines(); // Reset các fade cũ
+            StopAllCoroutines();
             StartCoroutine(FadeAudio(audioSource, maxVolume, 0.5f));
         }
     }
@@ -82,6 +99,12 @@ public class FireTrapController : MonoBehaviour
     {
         isTrapActive = false;
         if (heatEffect) heatEffect.SetHeat(false);
+
+        // Tắt vùng gây sát thương ngay khi lửa rút lại
+        foreach (var col in damageColliders)
+        {
+            if (col != null) col.enabled = false;
+        }
 
         if (audioSource != null)
         {

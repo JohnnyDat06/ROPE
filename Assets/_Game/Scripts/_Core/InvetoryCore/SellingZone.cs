@@ -27,6 +27,17 @@ public class SellingZone : MonoBehaviour
     [Tooltip("Chỉ chọn Layer của sàn nhà (Ground/Default). Đừng chọn Trigger!")]
     public LayerMask groundLayer;
 
+    // ==========================================
+    // --- MỚI THÊM: AUDIO SETTINGS ---
+    // ==========================================
+    [Header("--- Audio Settings ---")]
+    public AudioSource audioSource;
+    public AudioClip rewardDropSound; // File âm thanh 12-13s
+    [Range(0f, 1f)] public float airborneVolume = 1.0f; // Âm lượng lúc đang rơi
+    [Range(0f, 1f)] public float landedVolume = 0.3f;   // Âm lượng lúc chạm đất (nhỏ lại)
+    public float fadeDuration = 1.5f; // Mất bao lâu để âm thanh từ to chuyển sang nhỏ (giúp nghe tự nhiên hơn)
+    // ==========================================
+
     [Header("--- References ---")]
     public Transform rugCenter;
     public TMP_Text infoText;
@@ -37,9 +48,8 @@ public class SellingZone : MonoBehaviour
     private bool isSelling = false;
     private bool isLaunching = false;
 
-    // --- BIẾN MỚI CHO LOGIC BẠN YÊU CẦU ---
-    private bool hasSpawnedKeyCard = false; // Kiểm soát chỉ spawn 1 lần
-    private bool isQuotaRevealed = false;   // Kiểm soát lộ diện số tiền vĩnh viễn
+    private bool hasSpawnedKeyCard = false;
+    private bool isQuotaRevealed = false;
 
     private void Start()
     {
@@ -105,10 +115,7 @@ public class SellingZone : MonoBehaviour
 
         int total = CalculateTotalValue();
 
-        // --- LOGIC MỚI: LỘ DIỆN VĨNH VIỄN ---
-        // Chỉ cần 1 lần total > 0 là bật cờ luôn
         if (total > 0) isQuotaRevealed = true;
-        // ------------------------------------
 
         UpdateUI(total);
 
@@ -195,16 +202,26 @@ public class SellingZone : MonoBehaviour
         itemsOnRug.Clear();
         if (infoText) infoText.text = $"SOLD: {finalMoney}$";
 
-        // >>> GIAI ĐOẠN 4: SPAWN KEY CARD (CHỈ 1 LẦN) <<<
-        if (keyCardPrefab != null && !hasSpawnedKeyCard) // Check cờ
+        // >>> GIAI ĐOẠN 4: SPAWN KEY CARD <<<
+        if (keyCardPrefab != null && !hasSpawnedKeyCard)
         {
-            hasSpawnedKeyCard = true; // Đánh dấu đã spawn
+            hasSpawnedKeyCard = true;
 
             Vector3 spawnPos = (rewardSpawnPoint != null) ? rewardSpawnPoint.position : (rugCenter.position + Vector3.up * 3.5f);
             if (rewardSpawnPoint != null && spawnPos.y < rugCenter.position.y + 1f) spawnPos.y += 3.5f;
 
             GameObject card = Instantiate(keyCardPrefab, spawnPos, Quaternion.Euler(-90, 0, 0));
             Rigidbody cardRb = card.GetComponent<Rigidbody>();
+
+            // --- MỚI THÊM: PHÁT ÂM THANH KHI BẮT ĐẦU RƠI ---
+            if (audioSource != null && rewardDropSound != null)
+            {
+                audioSource.clip = rewardDropSound;
+                audioSource.volume = airborneVolume; // Đặt âm lượng to
+                audioSource.Play();
+            }
+            // -----------------------------------------------
+
             if (cardRb)
             {
                 cardRb.useGravity = true;
@@ -238,6 +255,11 @@ public class SellingZone : MonoBehaviour
         if (card == null) yield break;
 
         // KHI CHẠM ĐẤT
+
+        // --- MỚI THÊM: GIẢM ÂM LƯỢNG MƯỢT MÀ XUỐNG KHI CHẠM ĐẤT ---
+        StartCoroutine(FadeVolume(landedVolume, fadeDuration));
+        // ---------------------------------------------------------
+
         rb.angularVelocity = Vector3.zero;
         rb.linearVelocity = Vector3.zero;
         Quaternion startRot = card.transform.rotation;
@@ -255,17 +277,34 @@ public class SellingZone : MonoBehaviour
         if (card != null && rb != null)
         {
             card.transform.rotation = targetRot;
-
-            // --- FIX YÊU CẦU: KHÔNG KHÓA KINEMATIC ---
-            rb.isKinematic = false; // Vẫn giữ vật lý
-                                    // -----------------------------------------
-
-            // Reset vận tốc lần cuối để nó nằm im, không bị trượt đi do quán tính
+            rb.isKinematic = false;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-            rb.linearDamping = 1f; // Trả về damping bình thường
+            rb.linearDamping = 1f;
         }
     }
+
+    // ==========================================
+    // --- MỚI THÊM: HÀM FADE ÂM LƯỢNG ---
+    // ==========================================
+    private IEnumerator FadeVolume(float targetVolume, float duration)
+    {
+        if (audioSource == null) yield break;
+
+        float startVolume = audioSource.volume;
+        float time = 0;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            // Chuyển đổi mượt mà từ âm lượng hiện tại về âm lượng chạm đất
+            audioSource.volume = Mathf.Lerp(startVolume, targetVolume, time / duration);
+            yield return null;
+        }
+
+        audioSource.volume = targetVolume;
+    }
+    // ==========================================
 
     void UpdateUI(int current)
     {
@@ -273,10 +312,7 @@ public class SellingZone : MonoBehaviour
         if (isSelling) return;
 
         string color = current >= quotaMoney ? "green" : "red";
-
-        // --- LOGIC MỚI: DÙNG CỜ isQuotaRevealed ---
         string displayQuota = (isQuotaRevealed) ? quotaMoney.ToString() : "???";
-        // ------------------------------------------
 
         infoText.text = $"TOTAL: <color={color}>{current}</color> / {displayQuota}$";
     }
