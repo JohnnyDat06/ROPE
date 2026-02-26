@@ -10,8 +10,9 @@ public class FireTrapController : MonoBehaviour
     [SerializeField] private ScreenHeatEffect heatEffect;
 
     [Header("Damage Setup")]
-    [Tooltip("Kéo Box Collider (IsTrigger) vùng lửa vào đây")]
-    [SerializeField] private Collider damageCollider; // Chuyển sang dùng thẳng Collider
+    [Tooltip("Kéo TẤT CẢ các Box Collider (IsTrigger) của các vùng lửa vào danh sách này")]
+    // 1. Chuyển từ Collider đơn sang một List<Collider>
+    [SerializeField] private List<Collider> damageColliders = new List<Collider>();
 
     [Header("Audio Settings")]
     [SerializeField] private AudioSource audioSource;
@@ -41,8 +42,11 @@ public class FireTrapController : MonoBehaviour
             velModule.enabled = true;
         }
 
-        // Tắt Box Collider (sát thương) lúc mới vào game nếu bẫy chưa kích hoạt
-        if (damageCollider != null) damageCollider.enabled = false;
+        // 2. Tắt toàn bộ Collider sát thương lúc mới vào game nếu bẫy chưa kích hoạt
+        foreach (var col in damageColliders)
+        {
+            if (col != null) col.enabled = false;
+        }
 
         CheckTrapState();
     }
@@ -66,8 +70,11 @@ public class FireTrapController : MonoBehaviour
         isTrapActive = true;
         if (heatEffect) heatEffect.SetHeat(true);
 
-        // BẬT SÁT THƯƠNG: Bật Box Collider lên để bắt đầu quét OnTriggerStay
-        if (damageCollider != null) damageCollider.enabled = true;
+        // 3. BẬT SÁT THƯƠNG: Duyệt qua danh sách và bật tất cả Box Collider lên
+        foreach (var col in damageColliders)
+        {
+            if (col != null) col.enabled = true;
+        }
 
         foreach (var fire in fireParticles)
         {
@@ -91,8 +98,11 @@ public class FireTrapController : MonoBehaviour
         isTrapActive = false;
         if (heatEffect) heatEffect.SetHeat(false);
 
-        // TẮT SÁT THƯƠNG: Tắt Box Collider đi để ngừng quét OnTriggerStay
-        if (damageCollider != null) damageCollider.enabled = false;
+        // 4. TẮT SÁT THƯƠNG: Duyệt qua danh sách và tắt tất cả Box Collider đi
+        foreach (var col in damageColliders)
+        {
+            if (col != null) col.enabled = false;
+        }
 
         if (audioSource != null)
         {
