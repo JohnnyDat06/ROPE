@@ -190,7 +190,7 @@ public class RaycastWeapon : MonoBehaviour
         {
             if (SurfaceManager.Instance != null)
             {
-                SurfaceManager.Instance.HandleImpact(hitInfo.transform.gameObject, hitInfo.point, hitInfo.normal, impactType, 0);
+                SurfaceManager.Instance.HandleImpact(hitInfo.transform.gameObject, hitInfo.point, hitInfo.normal, impactType, hitInfo.triangleIndex);
             }
 
             if (damageConfig != null && hitInfo.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
