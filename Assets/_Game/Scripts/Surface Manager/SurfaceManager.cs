@@ -132,7 +132,13 @@ namespace LlamAcademy.ImpactSystem
         {
             if (Renderer.TryGetComponent<MeshFilter>(out MeshFilter meshFilter))
             {
-                Mesh mesh = meshFilter.mesh;
+                Mesh mesh = meshFilter.sharedMesh;
+
+                if (mesh == null || !mesh.isReadable)
+                {
+                    // Mesh is not readable (e.g. combined/batched mesh), fall back to first material
+                    return Renderer.sharedMaterials.Length > 0 ? Renderer.sharedMaterials[0].mainTexture : null;
+                }
 
                 return GetTextureFromMesh(mesh, TriangleIndex, Renderer.sharedMaterials);
             }
@@ -140,6 +146,11 @@ namespace LlamAcademy.ImpactSystem
             {
                 SkinnedMeshRenderer smr = (SkinnedMeshRenderer)Renderer;
                 Mesh mesh = smr.sharedMesh;
+
+                if (mesh == null || !mesh.isReadable)
+                {
+                    return Renderer.sharedMaterials.Length > 0 ? Renderer.sharedMaterials[0].mainTexture : null;
+                }
 
                 return GetTextureFromMesh(mesh, TriangleIndex, Renderer.sharedMaterials);
             }
@@ -150,13 +161,25 @@ namespace LlamAcademy.ImpactSystem
 
         private Texture GetTextureFromMesh(Mesh Mesh, int TriangleIndex, Material[] Materials)
         {
+            if (Materials == null || Materials.Length == 0)
+                return null;
+
             if (Mesh.subMeshCount > 1)
             {
+                int[] triangles = Mesh.triangles;
+                int index = TriangleIndex * 3;
+
+                // Bounds check to avoid IndexOutOfRangeException
+                if (index + 2 >= triangles.Length)
+                {
+                    return Materials[0].mainTexture;
+                }
+
                 int[] hitTriangleIndices = new int[]
                 {
-                    Mesh.triangles[TriangleIndex * 3],
-                    Mesh.triangles[TriangleIndex * 3 + 1],
-                    Mesh.triangles[TriangleIndex * 3 + 2]
+                    triangles[index],
+                    triangles[index + 1],
+                    triangles[index + 2]
                 };
 
                 for (int i = 0; i < Mesh.subMeshCount; i++)
@@ -168,7 +191,9 @@ namespace LlamAcademy.ImpactSystem
                             && submeshTriangles[j + 1] == hitTriangleIndices[1]
                             && submeshTriangles[j + 2] == hitTriangleIndices[2])
                         {
-                            return Materials[i].mainTexture;
+                            if (i < Materials.Length)
+                                return Materials[i].mainTexture;
+                            break;
                         }
                     }
                 }

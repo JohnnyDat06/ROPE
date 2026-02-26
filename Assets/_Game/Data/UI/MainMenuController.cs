@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -40,6 +40,10 @@ public class MainMenuController : MonoBehaviour
             Debug.LogError("LỖI: Bạn chưa nhập tên Scene trong Inspector kìa!");
             return;
         }
+
+        // Khoá chuột khi vào game
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         // Load Scene theo cái tên bạn đã nhập ở ngoài Inspector
         SceneManager.LoadScene(nameOfGameScene);
