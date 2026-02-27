@@ -215,9 +215,9 @@ public class ArathroxMovement : EnemyMovement
 
 			float rand = Random.value;
 			// Randomized behavior distribution:
-			if (rand < 0.3f) _currentStrafeDir = -1f; // 30% Chance Left
-			else if (rand < 0.6f) _currentStrafeDir = 1f;  // 30% Chance Right
-			else _currentStrafeDir = 0f;                     // 40% Chance Idle
+			if (rand < 0.4f) _currentStrafeDir = -1f; // 40% Chance Left
+			else if (rand < 0.8f) _currentStrafeDir = 1f;  // 40% Chance Right
+			else _currentStrafeDir = 0f;                     // 20% Chance Idle
 		}
 	}
 	#endregion

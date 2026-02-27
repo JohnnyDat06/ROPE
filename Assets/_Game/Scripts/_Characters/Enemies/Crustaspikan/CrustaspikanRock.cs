@@ -9,8 +9,15 @@ public class CrustaspikanRock : MonoBehaviour
 	[SerializeField] private float _throwSpeed = 30f;
 	[Tooltip("Lực xoay (để cục đá lộn nhào trên không cho tự nhiên)")]
 	[SerializeField] private float _tumbleSpeed = 10f;
-	[SerializeField] private float _damage = 40f;
 	[SerializeField] private float _lifeTime = 5f; // Tự hủy sau 5s nếu bay mất
+
+	[Header("Damage Settings")]
+	[Tooltip("Sát thương LỚN khi cục đá đập trúng trực tiếp vào người")]
+	[SerializeField] private float _directDamage = 40f;
+	[Tooltip("Sát thương NHỎ khi đứng gần vụ nổ")]
+	[SerializeField] private float _aoeDamage = 15f;
+	[Tooltip("Bán kính của vụ nổ")]
+	[SerializeField] private float _aoeRadius = 3f;
 
 	[Header("Effects")]
 	[SerializeField] private GameObject _rockVisuals;
@@ -26,6 +33,9 @@ public class CrustaspikanRock : MonoBehaviour
 		// Khi nằm trên tay Boss, nó chưa bị rớt và là vật thể Kinematic
 		_rb.isKinematic = true;
 		_rb.useGravity = false;
+
+		// Tắt sẵn hiệu ứng nổ để tránh lỗi tự phát khi vừa sinh ra
+		if (_explosionVFX != null) _explosionVFX.SetActive(false);
 	}
 
 	/// <summary>
@@ -53,28 +63,32 @@ public class CrustaspikanRock : MonoBehaviour
 		// Nếu chưa được ném ra khỏi tay hoặc đã nổ rồi thì bỏ qua
 		if (!_isLaunched || _hasExploded) return;
 
-		// [CẬP NHẬT THEO ARATHROX] Bỏ qua va chạm với Enemy HOẶC các vùng Trigger vô hình
 		if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") || collision.collider.isTrigger) return;
 
-		// Xử lý trúng Player
+		Collider directHitCollider = null;
+
+		// 1. XỬ LÝ TRÚNG TRỰC TIẾP (DIRECT HIT)
 		if (collision.gameObject.CompareTag("Player"))
 		{
-			// [CẬP NHẬT THEO ARATHROX] Gọi hàm TakeDamage qua PlayerHealth
+			// Ghi nhớ lại Collider của Player này để không tính sát thương nổ lan cho nó nữa
+			directHitCollider = collision.collider;
+
 			PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
 			if (playerHealth != null)
 			{
-				playerHealth.TakeDamage(_damage);
-				Debug.Log($"[{name}] Rock hit Player! Dealt {_damage} damage.");
+				playerHealth.TakeDamage(_directDamage);
+				Debug.Log($"[{name}] Rock DIRECT hit Player! Dealt {_directDamage} damage.");
 			}
-
-			// Không return ở đây vì dù trúng người chơi, cục đá vẫn phải nát ra
 		}
 
-		// Trúng Player, trúng đất hay trúng tường đều nổ
-		Explode();
+		// 2. PHÁT NỔ VÀ TÍNH SÁT THƯƠNG LAN (AOE)
+		Explode(directHitCollider);
 	}
 
-	public void Explode()
+	/// <summary>
+	/// Kích hoạt nổ. Truyền vào excludeCollider nếu muốn một đối tượng không bị ăn sát thương nổ 2 lần.
+	/// </summary>
+	public void Explode(Collider excludeCollider = null)
 	{
 		_hasExploded = true;
 
@@ -89,23 +103,38 @@ public class CrustaspikanRock : MonoBehaviour
 		_rb.isKinematic = true;
 		GetComponent<Collider>().enabled = false;
 
-		Destroy(gameObject, 2f); // Chờ VFX chạy xong rồi xóa hẳn
+		// --- TÍNH TOÁN SÁT THƯƠNG LAN (AOE) ---
+		Collider[] hits = Physics.OverlapSphere(transform.position, _aoeRadius);
+		foreach (var hit in hits)
+		{
+			// Bỏ qua đối tượng đã ăn sát thương trực tiếp (hoặc các trigger vô hình)
+			if (hit == excludeCollider || hit.isTrigger) continue;
+
+			if (hit.CompareTag("Player"))
+			{
+				PlayerHealth playerHealth = hit.GetComponent<PlayerHealth>();
+				if (playerHealth != null)
+				{
+					playerHealth.TakeDamage(_aoeDamage);
+					Debug.Log($"[{name}] Rock AOE hit Player! Dealt {_aoeDamage} splash damage.");
+				}
+			}
+		}
+
+		Destroy(gameObject, 3.5f); // Chờ VFX chạy xong rồi xóa hẳn
 	}
 
 	/// <summary>
 	/// Ép cục đá nổ tung ngay lập tức (Dùng khi Boss bị choáng lúc đang cầm đá)
+	/// Không gây sát thương để tránh vô tình giết Player khi Boss bị stun
 	/// </summary>
 	public void ExplodeImmediate()
 	{
 		_hasExploded = true;
 
-		// Tắt hình ảnh cục đá (Mesh)
 		if (_rockVisuals != null) _rockVisuals.SetActive(false);
-
-		// Bật Particle Effect bụi đá/vỡ vụn
 		if (_explosionVFX != null) _explosionVFX.SetActive(true);
 
-		// Hủy bỏ mọi tác động vật lý để nó không rớt xuống
 		if (_rb != null)
 		{
 			_rb.linearVelocity = Vector3.zero;
@@ -115,7 +144,13 @@ public class CrustaspikanRock : MonoBehaviour
 		Collider col = GetComponent<Collider>();
 		if (col != null) col.enabled = false;
 
-		// Xóa game object sau 2s để chờ VFX chạy xong
 		Destroy(gameObject, 2f);
+	}
+
+	// Vẽ hình cầu màu đỏ trên Scene để bạn dễ dàng căn chỉnh bán kính nổ
+	private void OnDrawGizmosSelected()
+	{
+		Gizmos.color = new Color(1, 0, 0, 0.4f);
+		Gizmos.DrawWireSphere(transform.position, _aoeRadius);
 	}
 }
