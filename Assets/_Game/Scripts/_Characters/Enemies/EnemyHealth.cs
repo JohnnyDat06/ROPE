@@ -26,6 +26,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 		if (damageTaken != 0)
 		{
 			OnTakeDamage?.Invoke(damageTaken);
+			
+			if (AudioCombatManager.Instance != null)
+			{
+				AudioCombatManager.Instance.TriggerCombatMusic();
+			}	
 		}
 
 		if (curentHealth == 0 && damageTaken != 0)

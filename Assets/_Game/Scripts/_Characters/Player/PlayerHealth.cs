@@ -40,8 +40,8 @@ namespace DatScript
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.H)) TakeDamage(10f);
-            if (Input.GetKeyDown(KeyCode.J)) Heal(10f);
+            if (Input.GetKeyDown(KeyCode.N)) TakeDamage(10f);
+            if (Input.GetKeyDown(KeyCode.M)) Heal(10f);
 
             HandleHealthBarSmoothness();
         }
