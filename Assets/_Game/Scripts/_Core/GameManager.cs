@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿﻿using System;
+using UnityEngine;
+using UnityEngine.InputSystem.iOS;
 
 namespace DatScript
 {
@@ -10,6 +12,7 @@ namespace DatScript
         [Tooltip("Vị trí mặc định khi bắt đầu game")]
         [SerializeField] public Transform defaultSpawnPoint;
         [SerializeField] public GameObject gameOverPanel;
+        [SerializeField] private GameObject tutorialPanel;
 
         private Vector3 currentRespawnPosition;
         private GameObject player;
@@ -42,6 +45,18 @@ namespace DatScript
             }
         }
 
+        private void Update()
+        {
+            ToggleTutorialPanel();
+        }
+
+        private void ToggleTutorialPanel()
+        {
+            if (tutorialPanel == null) return;
+            if (Input.GetKeyDown(KeyCode.H))
+                tutorialPanel.SetActive(!tutorialPanel.activeSelf);
+        }
+        
         public void SetCheckpoint(Vector3 newPosition)
         {
             currentRespawnPosition = newPosition;
