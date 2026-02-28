@@ -718,6 +718,7 @@ GameObject:
   - component: {fileID: 2897326229886805292}
   - component: {fileID: 8377147500289818138}
   - component: {fileID: 3605288829673320938}
+  - component: {fileID: 6849934524845868539}
   m_Layer: 3
   m_Name: Hitbox
   m_TagString: Untagged
@@ -791,6 +792,8 @@ MonoBehaviour:
   animator: {fileID: 2886673220756956053}
   agent: {fileID: 3809652137299540087}
   behaviorAgent: {fileID: 7180495180037368337}
+  visionSensor: {fileID: 5011481683402178056}
+  getHitCooldown: 0.5
 --- !u!114 &3605288829673320938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -804,6 +807,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathSystem: {fileID: 19800014, guid: 697a18e15f4964d478a1ee9e96817e96, type: 3}
+--- !u!114 &6849934524845868539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200410945052870167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c974fe7b8748440b5b2a1e8991f7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  MainHealth: {fileID: 2897326229886805292}
+  DamageMultiplier: 2
+  WeakPointMaxHealth: 1
+  _currentWeakPointHealth: 0
+  WeakPoint: {fileID: 0}
+  OnWeakPointBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4306242423767656309
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,7 +870,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1199196983749377742}
   - component: {fileID: 2511753340066285557}
-  - component: {fileID: 4386699840677909319}
   m_Layer: 3
   m_Name: SK_ArathroxWeakPoint
   m_TagString: Untagged
@@ -950,27 +973,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.15492901, y: 0.9432962, z: -0.00000028312206}
     m_Extent: {x: 0.2586709, y: 0.20809034, z: 0.20501997}
   m_DirtyAABB: 0
---- !u!65 &4386699840677909319
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4323700871200656263}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.36, y: 0.36, z: 0.36}
-  m_Center: {x: -0.00000012684615, y: 2.0368009, z: 0.16383314}
 --- !u!1 &4365180701197646658
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,9 +1200,9 @@ MonoBehaviour:
   eyes:
   - {fileID: 3982059526827535446}
   viewAngle: 110
-  viewRadius: 10.5
+  viewRadius: 12
   closeRange: 4
-  detectionHoldTime: 3
+  detectionHoldTime: 5
   targetMask:
     serializedVersion: 2
     m_Bits: 128
@@ -1249,7 +1251,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.7
+  m_Volume: 0.6
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1258,7 +1260,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 10
+  MaxDistance: 20
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -2227,6 +2229,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 749979073564806048}
+  - component: {fileID: 6058453514114633665}
+  - component: {fileID: 8834634016651429858}
   m_Layer: 3
   m_Name: Arathrox_WeakPoint
   m_TagString: Untagged
@@ -2249,6 +2253,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6527841499813784583}
   m_LocalEulerAnglesHint: {x: -0.000119566124, y: -0.00002499418, z: -78.19288}
+--- !u!114 &6058453514114633665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8637070814175179299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c974fe7b8748440b5b2a1e8991f7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 2
+  MainHealth: {fileID: 2897326229886805292}
+  DamageMultiplier: 2
+  WeakPointMaxHealth: 1
+  _currentWeakPointHealth: 0
+  WeakPoint: {fileID: 4323700871200656263}
+  OnWeakPointBroken:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4323700871200656263}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &8834634016651429858
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8637070814175179299}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.4433808, y: 0.6288307, z: 0.37865618}
+  m_Center: {x: 0.008374909, y: -0.012944785, z: -0.005884413}
 --- !u!1 &8982423214529639833
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,15 +20,12 @@ public class CrustaspikanCombat : MonoBehaviour
 	[Header("Skill 1: Hand Attack (Tát gần)")]
 	[SerializeField] private float _handAttackMinRange = 5f;
 	[SerializeField] private float _handAttackMaxRange = 6f;
-
-	// [CẬP NHẬT] Đã xóa Collider, thay bằng Transform điểm trung tâm của tay và các thông số OverlapSphere
-	[SerializeField] private Transform _leftHandPoint;
-	[SerializeField] private Transform _rightHandPoint;
-	[SerializeField] private float _handAttackRadius = 1.5f;
 	[SerializeField] private float _handDamage = 30f;
-	[SerializeField] private float _handHitboxDuration = 0.5f; // Thời gian duy trì vùng sát thương mỗi lần quơ tay
-	[SerializeField] private LayerMask _targetLayer; // Chọn layer của Player
+	[SerializeField] private float _knockbackForce = 15f;
 
+	[Tooltip("Kéo Box/Sphere Collider tay vào đây. Nhớ BẬT ENABLE sẵn trên Inspector.")]
+	[SerializeField] private Collider _leftHandCollider;
+	[SerializeField] private Collider _rightHandCollider;
 	[SerializeField] private AudioClip _swipeSound;
 
 	[Header("Skill 2: Throw Rock (Ném đá)")]
@@ -39,7 +36,6 @@ public class CrustaspikanCombat : MonoBehaviour
 	[SerializeField] private AudioClip _grabRockSound;
 	[SerializeField] private float _grabSoundDelay = 0.3f;
 	[SerializeField] private AudioClip _throwRockSound;
-	[Tooltip("Thời gian gồng (giữ đá trên không) trước khi ném")]
 	[SerializeField] private float _holdRockDuration = 1.5f;
 	#endregion
 
@@ -49,15 +45,20 @@ public class CrustaspikanCombat : MonoBehaviour
 	private Coroutine _holdRockCoroutine;
 	private bool _isStunned = false;
 
-	// [CẬP NHẬT] State cho OverlapSphere
+	// [CẬP NHẬT] Biến cờ kiểm soát khung hình gây sát thương
 	private bool _hasDealtHandDamage = false;
-	private Coroutine _handDamageCoroutine;
+	private bool _isLeftHandActive = false;
+	private bool _isRightHandActive = false;
 
-	// Biến khóa trạng thái
 	public bool IsAttacking { get; private set; }
 	#endregion
 
-	#region Chống kẹt Animation (Clear Triggers)
+	private void Start()
+	{
+		// ĐÃ XÓA LỆNH TẮT COLLIDER. Bây giờ tay Boss lúc nào cũng có va chạm vật lý.
+	}
+
+	#region Chống kẹt Animation
 
 	public void CancelPendingAttacks()
 	{
@@ -109,71 +110,66 @@ public class CrustaspikanCombat : MonoBehaviour
 		IsAttacking = false; return false;
 	}
 
-	// [CẬP NHẬT] Thay thế logic bật/tắt Collider thành gọi Coroutine OverlapSphere
-	// Vẫn giữ tên hàm AnimEvent cũ để bạn không phải sửa lại Timeline Animation
+	// [CẬP NHẬT] Thay vì bật/tắt Collider, ta chỉ bật/tắt biến cờ (Logic Frame)
 	public void AnimEvent_EnableLeftHand()
 	{
-		StopHandDamageRoutine();
-		_handDamageCoroutine = StartCoroutine(HandHitboxRoutine(_leftHandPoint, _handHitboxDuration));
+		_hasDealtHandDamage = false;
+		_isLeftHandActive = true; // Bắt đầu tính sát thương tay trái
 	}
 
 	public void AnimEvent_EnableRightHand()
 	{
-		StopHandDamageRoutine();
-		_handDamageCoroutine = StartCoroutine(HandHitboxRoutine(_rightHandPoint, _handHitboxDuration));
-	}
-
-	public void AnimEvent_DisableLeftHand() => StopHandDamageRoutine();
-	public void AnimEvent_DisableRightHand() => StopHandDamageRoutine();
-
-	private void StopHandDamageRoutine()
-	{
-		if (_handDamageCoroutine != null)
-		{
-			StopCoroutine(_handDamageCoroutine);
-			_handDamageCoroutine = null;
-		}
-	}
-
-	/// <summary>
-	/// Coroutine quyét sát thương hình cầu liên tục trong khoảng thời gian (duration)
-	/// </summary>
-	private IEnumerator HandHitboxRoutine(Transform handPoint, float duration)
-	{
 		_hasDealtHandDamage = false;
-		float timer = 0f;
+		_isRightHandActive = true; // Bắt đầu tính sát thương tay phải
+	}
 
-		// Phòng hờ trường hợp chưa gán điểm tay trên Inspector
-		if (handPoint == null) yield break;
+	public void AnimEvent_DisableLeftHand() => _isLeftHandActive = false;
+	public void AnimEvent_DisableRightHand() => _isRightHandActive = false;
 
-		while (timer < duration)
+	#endregion
+
+	#region XỬ LÝ VA CHẠM CẬN CHIẾN (OnCollisionEnter)
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		// Nếu đang không ra đòn hoặc đã gây sát thương rồi -> Bỏ qua
+		if (!IsAttacking || _hasDealtHandDamage) return;
+
+		// Nếu đối tượng va chạm không phải là Player -> Bỏ qua
+		if (!collision.gameObject.CompareTag("Player")) return;
+
+		// Lấy Collider cụ thể đang va chạm với Player
+		Collider myColliderHit = collision.GetContact(0).thisCollider;
+
+		// [BÍ QUYẾT] Kiểm tra xem cái tay chạm vào có ĐANG ĐƯỢC BẬT CỜ SÁT THƯƠNG không
+		bool isHitByActiveLeft = (myColliderHit == _leftHandCollider && _isLeftHandActive);
+		bool isHitByActiveRight = (myColliderHit == _rightHandCollider && _isRightHandActive);
+
+		// Nếu quệt trúng tay nhưng lúc đó tay chưa tới Frame sát thương (hoặc quệt trúng bụng) -> Bỏ qua
+		if (!isHitByActiveLeft && !isHitByActiveRight) return;
+
+		// 1. GÂY SÁT THƯƠNG
+		PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+		if (playerHealth != null)
 		{
-			if (_hasDealtHandDamage || _isStunned) yield break;
-
-			Collider[] hits = Physics.OverlapSphere(handPoint.position, _handAttackRadius, _targetLayer);
-
-			foreach (var hit in hits)
-			{
-				if (hit.CompareTag("Player"))
-				{
-					// Gọi script máu của Player (Cần đổi 'PlayerHealth' thành tên script máu thực tế của bạn nếu khác)
-					PlayerHealth playerHealth = hit.GetComponent<PlayerHealth>();
-
-					if (playerHealth != null)
-					{
-						playerHealth.TakeDamage(_handDamage);
-						Debug.Log($"[{name}] Tát trúng Player! Gây {_handDamage} sát thương.");
-
-						// Đã trúng thì dừng quét để không gây sát thương 2 lần cho 1 cú đánh
-						_hasDealtHandDamage = true;
-						yield break;
-					}
-				}
-			}
-
-			timer += Time.deltaTime;
-			yield return null;
+			playerHealth.TakeDamage(_handDamage);
+			Debug.Log($"[{name}] Tát trúng Player! Gây {_handDamage} sát thương.");
 		}
+
+		// 2. LỰC ĐẨY VĂNG (KNOCKBACK NGANG)
+		Rigidbody playerRb = collision.gameObject.GetComponent<Rigidbody>();
+		if (playerRb != null)
+		{
+			Vector3 pushDirection = collision.transform.position - transform.position;
+			pushDirection.y = 0; // Triệt tiêu Y để tránh văng lên trời
+			pushDirection.Normalize();
+
+			// Khóa vận tốc hiện tại để lực văng luôn ổn định
+			playerRb.linearVelocity = new Vector3(0, playerRb.linearVelocity.y, 0);
+			playerRb.AddForce(pushDirection * _knockbackForce, ForceMode.Impulse);
+		}
+
+		_hasDealtHandDamage = true;
 	}
 
 	#endregion
@@ -235,12 +231,11 @@ public class CrustaspikanCombat : MonoBehaviour
 			_audioSource.PlayOneShot(_throwRockSound);
 
 		Vector3 targetPos = _currentTarget.position + Vector3.up * 1.5f;
-		Vector3 throwDirection = (targetPos - _currentHeldRock.transform.position).normalized;
 
 		CrustaspikanRock rockScript = _currentHeldRock.GetComponent<CrustaspikanRock>();
 		if (rockScript != null)
 		{
-			rockScript.Launch(throwDirection);
+			rockScript.Launch(targetPos);
 		}
 
 		_currentHeldRock = null;
@@ -275,8 +270,9 @@ public class CrustaspikanCombat : MonoBehaviour
 			_currentHeldRock = null;
 		}
 
-		// [CẬP NHẬT] Hủy coroutine gây sát thương tay nếu đang vung dở
-		StopHandDamageRoutine();
+		// [CẬP NHẬT] Đảm bảo reset cờ sát thương tay khi bị choáng
+		_isLeftHandActive = false;
+		_isRightHandActive = false;
 	}
 
 	public bool IsAnySkillReady(Transform target)
@@ -303,22 +299,15 @@ public class CrustaspikanCombat : MonoBehaviour
 	public void AnimEvent_EndAttack()
 	{
 		IsAttacking = false;
-		// [CẬP NHẬT] Hủy coroutine để đảm bảo tay không gây sát thương khi đã thu về
-		StopHandDamageRoutine();
+		// [CẬP NHẬT] Reset cờ an toàn khi thu tay về
+		_isLeftHandActive = false;
+		_isRightHandActive = false;
 	}
 
 	private IEnumerator PlaySoundDelayed(AudioClip clip, float delay)
 	{
 		yield return new WaitForSeconds(delay);
 		if (!_isStunned) _audioSource.PlayOneShot(clip);
-	}
-
-	// [MỚI] Vẽ khung cầu màu đỏ trên Scene để bạn dễ dàng căn chỉnh độ bự của đòn tát
-	private void OnDrawGizmosSelected()
-	{
-		Gizmos.color = Color.red;
-		if (_leftHandPoint != null) Gizmos.DrawWireSphere(_leftHandPoint.position, _handAttackRadius);
-		if (_rightHandPoint != null) Gizmos.DrawWireSphere(_rightHandPoint.position, _handAttackRadius);
 	}
 
 	#endregion
