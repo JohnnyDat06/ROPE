@@ -92,7 +92,7 @@ public class PlayerInventorySystem : MonoBehaviour
                 targetItem = item;
                 if (promptText)
                 {
-                    promptText.text = $"{item.data.itemName} <color=yellow>(${item.scrapValue})</color>\n<size=80%>[Hold E]</size>";
+                    promptText.text = $"{item.data.itemName} <color=yellow>(${item.scrapValue})</color>\n<size=80%>[Press E]</size>";
                     promptText.gameObject.SetActive(true);
                 }
                 return;
@@ -123,27 +123,25 @@ public class PlayerInventorySystem : MonoBehaviour
         if (scroll < 0) currentSlotIndex = (currentSlotIndex - 1 + inventorySlots.Length) % inventorySlots.Length;
 
         // Nhặt đồ
-        if (Input.GetKey(KeyCode.E) && targetItem != null && !isChargingThrow)
+        // Nhặt đồ (Nhấn E 1 lần là nhặt)
+        if (Input.GetKeyDown(KeyCode.E) && targetItem != null && !isChargingThrow)
         {
             int emptyIndex = GetEmptySlot();
             if (emptyIndex != -1)
             {
-                pickupTimer += Time.deltaTime;
-                float percent = pickupTimer / targetItem.data.pickupDuration;
-                if (progressCircle) progressCircle.fillAmount = percent;
+                // Nhặt thẳng vào vị trí trống
+                currentSlotIndex = emptyIndex;
+                PickupItem(targetItem, emptyIndex);
 
-                if (pickupTimer >= targetItem.data.pickupDuration)
-                {
-                    currentSlotIndex = emptyIndex;
-                    PickupItem(targetItem, emptyIndex);
-
-                    pickupTimer = 0;
-                    targetItem = null;
-                    if (progressCircle) progressCircle.fillAmount = 0;
-                    if (promptText) promptText.gameObject.SetActive(false);
-                }
+                // Reset lại các biến
+                targetItem = null;
+                if (progressCircle) progressCircle.fillAmount = 0; // Đảm bảo vòng tròn tàng hình
+                if (promptText) promptText.gameObject.SetActive(false);
             }
-            else if (promptText) promptText.text = "<color=red>FULL!</color>";
+            else if (promptText)
+            {
+                promptText.text = "<color=red>FULL!</color>";
+            }
         }
         else if (!isChargingThrow)
         {
@@ -343,8 +341,8 @@ public class PlayerInventorySystem : MonoBehaviour
                 v += item.scrapValue;
                 c++;
 
-                if (item.data.itemType == ItemType.IronSmall) lightningChance += 0.10f;
-                else if (item.data.itemType == ItemType.IronLarge) lightningChance += 0.15f;
+                if (item.data.itemType == ItemType.IronSmall) lightningChance += 0.01f;
+                else if (item.data.itemType == ItemType.IronLarge) lightningChance += 0.05f;
             }
         }
 

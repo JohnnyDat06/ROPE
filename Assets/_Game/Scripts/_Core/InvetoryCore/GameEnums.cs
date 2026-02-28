@@ -1,17 +1,15 @@
 ﻿public enum CheckMode
 {
-    Quantity,   // Số lượng món đồ
-    TotalValue  // Tổng giá trị tiền ($) - Thay thế cho Weight
+    Quantity,   
+    TotalValue  
 }
 
 public enum ConditionType
 {
-    Lower,   // Thấp hơn
-    Equal,   // Bằng
-    Higher   // Cao hơn
+    Lower,   
+    Equal,   
+    Higher  
 }
-
-// Giữ nguyên ItemType
 public enum ItemType
 {
     Small,
