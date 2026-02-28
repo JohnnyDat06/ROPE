@@ -119,17 +119,14 @@ public class WeatherManager : MonoBehaviour
     {
         while (_isRaining)
         {
-            // Chờ một khoảng thời gian nhịp điệu sấm sét
             yield return new WaitForSeconds(Random.Range(lightningInterval * 0.8f, lightningInterval * 1.5f));
 
             bool struckPlayer = false;
 
             if (targetToFollow != null)
             {
-                // Kiểm tra xem Player có đang cầm đồ sắt và ở ngoài trời không
                 if (currentStrikeChance > 0 && !IsIndoors())
                 {
-                    // Gieo xúc xắc xem tia sét lần này có nhắm vào Player không
                     if (Random.value <= currentStrikeChance)
                     {
                         int warningTimes = Random.Range(minWarningTimes, maxWarningTimes + 1);
@@ -169,10 +166,8 @@ public class WeatherManager : MonoBehaviour
                 }
             }
 
-            // Nếu không đánh Player -> Kiểm tra xem có giáng sét xuống môi trường không
             if (!struckPlayer)
             {
-                // Thêm tỷ lệ (VD: 30%) để sét môi trường không bị đánh liên tục gây nhàm chán
                 if (Random.value <= environmentStrikeChance)
                 {
                     SpawnRandomEnvironmentLightning();
