@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a9752b0c8e144801967e6897679604b, type: 3}
+  m_Name: vHierarchy Data
+  m_EditorClassIdentifier: 
+  sceneDatas_byGuid:
+    keys:
+    - 40efcdaf47832a840a0fcd72768535ea
+    values:
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-2-40efcdaf47832a840a0fcd72768535ea-1124607383-0
+        - globalObjectIdString: GlobalObjectId_V1-2-40efcdaf47832a840a0fcd72768535ea-1116437977-0
+        - globalObjectIdString: GlobalObjectId_V1-2-40efcdaf47832a840a0fcd72768535ea-268217157-0
+        - globalObjectIdString: GlobalObjectId_V1-2-40efcdaf47832a840a0fcd72768535ea-29843276-0
+        - globalObjectIdString: GlobalObjectId_V1-2-40efcdaf47832a840a0fcd72768535ea-118064783-0
+        - globalObjectIdString: GlobalObjectId_V1-2-40efcdaf47832a840a0fcd72768535ea-1096067910-0
+        - globalObjectIdString: GlobalObjectId_V1-2-40efcdaf47832a840a0fcd72768535ea-665326238-0
+        values:
+        - colorIndex: 2
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 3
+          iconNameOrGuid: AvatarMask On Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: EventSystem Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 6
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 8
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+  bookmarks: []
+  bookmarkedScenePaths: []
