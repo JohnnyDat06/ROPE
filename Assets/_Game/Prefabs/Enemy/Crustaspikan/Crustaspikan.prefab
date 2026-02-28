@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7035624507315640840}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Toe0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2280785697275229662}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Finger21
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6053655525154060402}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: 'SM_CrustaspikanWeakPointSplit (Missing Prefab with guid: 48e0533844a9b4a4e9c5023ba0eb6ac0)'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,8 @@ Transform:
   m_LocalPosition: {x: -0.898, y: 1.415, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2858291906248412924}
   m_Father: {fileID: 1936919073223422476}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 90}
 --- !u!1 &428790010212662000
@@ -102,7 +103,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7272041491732869124}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: _Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,7 +134,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7906235828465332817}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Finger2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +166,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6435008340781521916}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_JawUpperLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,6 +188,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 145895241503111494}
   m_LocalEulerAnglesHint: {x: 15.837706, y: -139.10016, z: -96.82073}
+--- !u!1 &747090626805650968
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 820016913148827124}
+  - component: {fileID: 5313685471392168305}
+  - component: {fileID: 8886690816112756573}
+  m_Layer: 3
+  m_Name: WeakPointCrit_hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &820016913148827124
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747090626805650968}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.5000003, y: 0.5, z: 0.49999976, w: 0.49999994}
+  m_LocalPosition: {x: -0.898, y: 1.472, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1936919073223422476}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5313685471392168305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747090626805650968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c974fe7b8748440b5b2a1e8991f7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 1
+  MainHealth: {fileID: 7396958237253864781}
+  DamageMultiplier: 3
+  WeakPointMaxHealth: 5
+  _currentWeakPointHealth: 0
+  WeakPoint: {fileID: 7257948710229461527}
+  OnWeakPointBroken:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!65 &8886690816112756573
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747090626805650968}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.3, y: 1.14, z: 0.48837808}
+  m_Center: {x: 0.00035900465, y: 0.0071571064, z: -0.23540235}
 --- !u!1 &753818391987644530
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,7 +272,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3150133438968888002}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_JawLowerRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,7 +303,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2508653646510519719}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Toe1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,7 +334,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7271021769756382294}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +366,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 636588371904458036}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Tail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -322,7 +398,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 352750890257850713}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Foot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,7 +432,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6286898539240249500}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Toe1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,6 +454,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4473749894665724958}
   m_LocalEulerAnglesHint: {x: 0.04529182, y: 0.13287114, z: -89.79592}
+--- !u!1 &1342471473309465061
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5977247898512268327}
+  - component: {fileID: 7217869272234783533}
+  - component: {fileID: 4603452417710242666}
+  m_Layer: 3
+  m_Name: Leg_L_hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5977247898512268327
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342471473309465061}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4762294492314685677}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7217869272234783533
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342471473309465061}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.8481538, y: 1.8938447, z: 1.3761585}
+  m_Center: {x: -0.13611878, y: 0.32838303, z: -0.122904755}
+--- !u!114 &4603452417710242666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342471473309465061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c974fe7b8748440b5b2a1e8991f7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  MainHealth: {fileID: 7396958237253864781}
+  DamageMultiplier: 2
+  WeakPointMaxHealth: 50
+  _currentWeakPointHealth: 0
+  WeakPoint: {fileID: 0}
+  OnWeakPointBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1350367333774764249
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,7 +539,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3828953055761877036}
   - component: {fileID: 553461196108829514}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SK_CrustaspikanSpitterLowerLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -497,7 +648,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1734564903970519755}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Finger01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -528,7 +679,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9025718924868327823}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_SpitterUpperRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -559,7 +710,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6679270619932486133}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Thigh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -591,7 +742,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3436458814025754058}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Finger1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -644,8 +795,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6583013987304631278}
-  - {fileID: 3806183504357539284}
-  - {fileID: 5284328947294626253}
   m_Father: {fileID: 5237058898227141499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2375800314390888450
@@ -657,7 +806,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3906776015665189823}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_SpitterLowerRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -688,7 +837,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8928242321622784950}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Finger01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -719,7 +868,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7156383198189082131}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Forearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -739,6 +888,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1.0000001, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7942495593750331846}
   - {fileID: 5589197146417267806}
   m_Father: {fileID: 7584731583128198136}
   m_LocalEulerAnglesHint: {x: 0.000005002143, y: -0.0000011045466, z: 77.548096}
@@ -752,7 +902,7 @@ GameObject:
   m_Component:
   - component: {fileID: 731670848896840975}
   - component: {fileID: 8998569004983371323}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SK_CrustaspikanSpitterLowerRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -861,7 +1011,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3617081529294836142}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Clavicle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -901,7 +1051,7 @@ GameObject:
   - component: {fileID: 4051396453097915907}
   - component: {fileID: 2848472837239421944}
   - component: {fileID: 6041352164003805295}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CrustaspikanObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1029,8 +1179,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypoints:
   - {fileID: 6583013987304631278}
-  - {fileID: 3806183504357539284}
-  - {fileID: 5284328947294626253}
   isRandom: 0
 --- !u!114 &1881477509506203676
 MonoBehaviour:
@@ -1076,7 +1224,7 @@ MonoBehaviour:
   _turnStartThreshold: 15
   _turnEndThreshold: 5
   _alignSpeed: 15
-  _stopDistance: 3
+  _stopDistance: 0
   _useTurnInPlace: 1
   _heavySmoothTime: 1.5
   _backupDistanceThreshold: 1.5
@@ -1099,14 +1247,10 @@ MonoBehaviour:
   _throwRockCooldown: 6
   _handAttackMinRange: 3
   _handAttackMaxRange: 8
-  _leftHandPoint: {fileID: 5589197146417267806}
-  _rightHandPoint: {fileID: 3034891542240585293}
-  _handAttackRadius: 1.5
   _handDamage: 30
-  _handHitboxDuration: 0.5
-  _targetLayer:
-    serializedVersion: 2
-    m_Bits: 128
+  _knockbackForce: 15
+  _leftHandCollider: {fileID: 6591330732178255873}
+  _rightHandCollider: {fileID: 2397487661866356472}
   _swipeSound: {fileID: 0}
   _throwMinRange: 17
   _throwMaxRange: 34
@@ -1138,9 +1282,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 4
-  MaxDistance: 30
+  MaxDistance: 40
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -1148,23 +1292,50 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -10.0039835
+      outSlope: -10.0039835
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.2
+      value: 0.5
+      inSlope: -2.5009959
+      outSlope: -2.5009959
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.4
+      value: 0.25
+      inSlope: -0.62524897
+      outSlope: -0.62524897
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8
+      value: 0.125
+      inSlope: -0.15631224
+      outSlope: -0.15631224
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.10003988
+      outSlope: -0.10003988
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -1222,7 +1393,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1772903822826798879}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_JawLowerLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1253,7 +1424,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7595287920398780088}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Tail2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1285,7 +1456,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7155716001245602487}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_SpitterUpperLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1316,7 +1487,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 867864937156473637}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Finger11
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1347,7 +1518,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 145895241503111494}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Spine2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1367,6 +1538,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1930782125288030068}
   - {fileID: 1232693458496970503}
   - {fileID: 1375194407040034047}
   - {fileID: 3617081529294836142}
@@ -1389,7 +1561,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4762294492314685677}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Calf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1409,6 +1581,7 @@ Transform:
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5977247898512268327}
   - {fileID: 352750890257850713}
   m_Father: {fileID: 6679270619932486133}
   m_LocalEulerAnglesHint: {x: -0.0000037718194, y: -0.00000059325043, z: 35.503582}
@@ -1422,7 +1595,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6531269835286505601}
   - component: {fileID: 4017201452325001155}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SK_CrustaspikanBodyWithWeakPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1561,7 +1734,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2320089147845816972}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Finger0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1593,7 +1766,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 15873267228065796}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1616,37 +1789,6 @@ Transform:
   - {fileID: 2685012195957697809}
   m_Father: {fileID: 1936919073223422476}
   m_LocalEulerAnglesHint: {x: -5.780181, y: -2.0738244, z: -9.86262}
---- !u!1 &4126245574282107113
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5284328947294626253}
-  m_Layer: 0
-  m_Name: wp (3)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5284328947294626253
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4126245574282107113}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.65, y: 0, z: 16.42}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 9160838307702276162}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4186060344621468442
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,7 +1798,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4473749894665724958}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Foot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1690,7 +1832,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5589197146417267806}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1724,7 +1866,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4110328040988916079}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: _RockPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1755,7 +1897,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4627074581265740149}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1809,37 +1951,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 9160838307702276162}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4509543384084160693
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3806183504357539284}
-  m_Layer: 0
-  m_Name: wp (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3806183504357539284
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4509543384084160693}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.63, y: 0, z: 18.07}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 9160838307702276162}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4651005461311834771
 GameObject:
   m_ObjectHideFlags: 0
@@ -1849,7 +1960,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1176786711503231298}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R UpperArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1881,7 +1992,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5067277470077671288}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_SpitterLowerLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1912,7 +2023,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2203629543414665990}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Thigh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1944,7 +2055,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1232693458496970503}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Clavicle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1976,7 +2087,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4385831447033543645}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Toe0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1998,6 +2109,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 352750890257850713}
   m_LocalEulerAnglesHint: {x: -1.1755117, y: -1.0259534, z: -84.69091}
+--- !u!1 &5670547682067418226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 414067290282113207}
+  - component: {fileID: 8504751212851730437}
+  - component: {fileID: 8960966161819380227}
+  m_Layer: 3
+  m_Name: Leg_R_hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &414067290282113207
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5670547682067418226}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7865357313367712716}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8504751212851730437
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5670547682067418226}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.8481538, y: 1.8938447, z: 1.3761585}
+  m_Center: {x: -0.13611878, y: 0.32838303, z: -0.122904755}
+--- !u!114 &8960966161819380227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5670547682067418226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c974fe7b8748440b5b2a1e8991f7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  MainHealth: {fileID: 7396958237253864781}
+  DamageMultiplier: 2
+  WeakPointMaxHealth: 50
+  _currentWeakPointHealth: 0
+  WeakPoint: {fileID: 0}
+  OnWeakPointBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5687898745389369994
 GameObject:
   m_ObjectHideFlags: 0
@@ -2007,7 +2193,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5282002721907035821}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Tail1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2030,6 +2216,81 @@ Transform:
   - {fileID: 7595287920398780088}
   m_Father: {fileID: 636588371904458036}
   m_LocalEulerAnglesHint: {x: -0.35129768, y: -5.1050234, z: -2.949932}
+--- !u!1 &5728368709932354852
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2858291906248412924}
+  - component: {fileID: 9007858551357040393}
+  - component: {fileID: 489688064290451192}
+  m_Layer: 3
+  m_Name: WeakPoint_hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2858291906248412924
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5728368709932354852}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6053655525154060402}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9007858551357040393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5728368709932354852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c974fe7b8748440b5b2a1e8991f7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 2
+  MainHealth: {fileID: 7396958237253864781}
+  DamageMultiplier: 2
+  WeakPointMaxHealth: 500
+  _currentWeakPointHealth: 0
+  WeakPoint: {fileID: 7257948710229461527}
+  OnWeakPointBroken:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!65 &489688064290451192
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5728368709932354852}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.4, y: 1.1450801, z: 0.87677956}
+  m_Center: {x: 0.0003589929, y: 0.0071570766, z: -0.041201573}
 --- !u!1 &5824141465878473500
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,7 +2300,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1375194407040034047}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Neck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2071,7 +2332,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8594879634401321962}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Finger11
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2103,7 +2364,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2223524903592271459}
   - component: {fileID: 7403187050893060687}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SK_CrustaspikanSpitterUpperRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2203,6 +2464,81 @@ SkinnedMeshRenderer:
     m_Center: {x: -4.6195707, y: 1.6257095, z: -0.53061867}
     m_Extent: {x: 0.48982286, y: 0.57664204, z: 0.44906747}
   m_DirtyAABB: 0
+--- !u!1 &5897684657857917808
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9107062805127579424}
+  - component: {fileID: 2397487661866356472}
+  - component: {fileID: 2174413171363000800}
+  m_Layer: 3
+  m_Name: Hand_R_hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9107062805127579424
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5897684657857917808}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5157743400992664370}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2397487661866356472
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5897684657857917808}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5.9813337, y: 2.0138016, z: 1.8178893}
+  m_Center: {x: -2.2325141, y: 0.19494422, z: 0.097954765}
+--- !u!114 &2174413171363000800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5897684657857917808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c974fe7b8748440b5b2a1e8991f7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  MainHealth: {fileID: 7396958237253864781}
+  DamageMultiplier: 2
+  WeakPointMaxHealth: 50
+  _currentWeakPointHealth: 0
+  WeakPoint: {fileID: 0}
+  OnWeakPointBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6008093611249508177
 GameObject:
   m_ObjectHideFlags: 0
@@ -2212,7 +2548,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7584731583128198136}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L UpperArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2244,7 +2580,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2685012195957697809}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Spine1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2276,7 +2612,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3910051140388750686}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Finger1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2309,7 +2645,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1958955283323250739}
   - component: {fileID: 3055672563310689731}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SK_CrustaspikanSpitterUpperLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2418,7 +2754,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1864513242456148227}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Tail5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2449,7 +2785,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1914230321357430563}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Toe2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2480,7 +2816,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3034891542240585293}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2530,7 +2866,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6704280502599156794}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 41.93, y: -9.18, z: 73.282715}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2548,7 +2884,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9217726932567368153}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Toe2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2579,7 +2915,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7865357313367712716}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Calf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2599,6 +2935,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1.0000001, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 414067290282113207}
   - {fileID: 4473749894665724958}
   m_Father: {fileID: 2203629543414665990}
   m_LocalEulerAnglesHint: {x: 0.0000020258933, y: -0.00000287881, z: 49.171307}
@@ -2612,13 +2949,14 @@ GameObject:
   m_Component:
   - component: {fileID: 4769455772453128730}
   - component: {fileID: 5645527797492773296}
-  m_Layer: 0
+  - component: {fileID: 6707830547513410899}
+  m_Layer: 3
   m_Name: SK_CrustaspikanWeakPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4769455772453128730
 Transform:
   m_ObjectHideFlags: 0
@@ -2726,6 +3064,24 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.97656643, y: 1.4155273, z: -0.000002026558}
     m_Extent: {x: 0.9328648, y: 0.77735806, z: 1.1238558}
   m_DirtyAABB: 0
+--- !u!114 &6707830547513410899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7257948710229461527}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  outlineWidth: 3
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &7394052730454220250
 GameObject:
   m_ObjectHideFlags: 0
@@ -2735,7 +3091,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5157743400992664370}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Forearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2755,6 +3111,7 @@ Transform:
   m_LocalScale: {x: 1, y: 0.99999994, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 9107062805127579424}
   - {fileID: 3034891542240585293}
   m_Father: {fileID: 1176786711503231298}
   m_LocalEulerAnglesHint: {x: -0.0000011565011, y: 0.0000021198834, z: 73.614555}
@@ -2767,7 +3124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4269812326776157225}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Tail4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2799,7 +3156,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3529517376356408576}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Finger21
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2830,7 +3187,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5412410854535176644}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ R Finger2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2862,7 +3219,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2173973756463626758}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2894,7 +3251,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1484387768994142966}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ L Finger0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2926,7 +3283,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1936919073223422476}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Pelvis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2946,6 +3303,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 820016913148827124}
   - {fileID: 6679270619932486133}
   - {fileID: 2203629543414665990}
   - {fileID: 15873267228065796}
@@ -2953,6 +3311,81 @@ Transform:
   - {fileID: 6053655525154060402}
   m_Father: {fileID: 7271021769756382294}
   m_LocalEulerAnglesHint: {x: -86.962166, y: 0.0016754663, z: 89.99835}
+--- !u!1 &8249681049512064106
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7942495593750331846}
+  - component: {fileID: 6591330732178255873}
+  - component: {fileID: 5568974282812380868}
+  m_Layer: 3
+  m_Name: Hand_L_hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7942495593750331846
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8249681049512064106}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7156383198189082131}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6591330732178255873
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8249681049512064106}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5.9813337, y: 2.0138016, z: 1.8178893}
+  m_Center: {x: -2.2325141, y: 0.19494422, z: 0.097954765}
+--- !u!114 &5568974282812380868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8249681049512064106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c974fe7b8748440b5b2a1e8991f7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  MainHealth: {fileID: 7396958237253864781}
+  DamageMultiplier: 2
+  WeakPointMaxHealth: 50
+  _currentWeakPointHealth: 0
+  WeakPoint: {fileID: 0}
+  OnWeakPointBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &8331286076833202879
 GameObject:
   m_ObjectHideFlags: 0
@@ -2962,7 +3395,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1106727098799448770}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_JawUpperRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2984,6 +3417,115 @@ Transform:
   m_Children: []
   m_Father: {fileID: 145895241503111494}
   m_LocalEulerAnglesHint: {x: -27.54362, y: 154.15205, z: -88.24141}
+--- !u!1 &8564739777973741085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1930782125288030068}
+  - component: {fileID: 7653513526433469909}
+  - component: {fileID: 6096546763774104003}
+  - component: {fileID: 5533071365490673446}
+  - component: {fileID: 7396958237253864781}
+  m_Layer: 3
+  m_Name: _BODY_Hitbox=======
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1930782125288030068
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8564739777973741085}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.05817386, w: 0.9983065}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 145895241503111494}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 6.67}
+--- !u!114 &7653513526433469909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8564739777973741085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c974fe7b8748440b5b2a1e8991f7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  MainHealth: {fileID: 7396958237253864781}
+  DamageMultiplier: 2
+  WeakPointMaxHealth: 1
+  _currentWeakPointHealth: 0
+  WeakPoint: {fileID: 0}
+  OnWeakPointBroken:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!65 &6096546763774104003
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8564739777973741085}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6.6710987, y: 2.7276053, z: 4.0986414}
+  m_Center: {x: 0.054538548, y: -0.7841044, z: -0.00000028167267}
+--- !u!114 &5533071365490673446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8564739777973741085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c3c30f19fb2624bb4cb1286e864f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyHealth: {fileID: 7396958237253864781}
+  animator: {fileID: 7767096104736266599}
+  agent: {fileID: 4851846672831176511}
+  behaviorAgent: {fileID: 510851153552880334}
+  visionSensor: {fileID: 1881477509506203676}
+  getHitCooldown: 10
+--- !u!114 &7396958237253864781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8564739777973741085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67bc17683d13844448ddafdb4d60e2cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 1000
+  _curentHealth: 0
 --- !u!1 &8868285556919193819
 GameObject:
   m_ObjectHideFlags: 0
@@ -2993,7 +3535,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4059557726979841499}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3031,7 +3573,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9202237066437098003}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Crustaspikan_ Tail3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

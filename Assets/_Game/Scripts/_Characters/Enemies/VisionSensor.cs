@@ -17,7 +17,7 @@ public class VisionSensor : MonoBehaviour
 	[Tooltip("Absolute close range detection (detects even if behind or blinded).")]
 	public float closeRange = 3.0f;
 
-	[Tooltip("Time (in seconds) to keep the 'Detected' state true after losing visual contact.")]
+	[Tooltip("Time (in seconds) to keep chasing the player AFTER losing visual contact.")]
 	public float detectionHoldTime = 3.0f;
 
 	[Header("Settings - Layers")]
@@ -39,13 +39,10 @@ public class VisionSensor : MonoBehaviour
 	// Cached components
 	private BehaviorGraphAgent _behaviorAgent;
 	private Collider _playerCollider;
-
-	// Combined mask for Raycasting (Includes both Obstacles and Player)
-	// Ensures the ray stops at the FIRST object hit (whether it is a Wall or the Player)
 	private int _combinedMask;
 
-	// Timer for detection memory
-	private float _lastTimeSeen = -100f;
+	// Core Memory Timer: The exact time when the monster will "forget" the player
+	private float _memoryEndTime = -100f;
 
 	private void Start()
 	{
@@ -62,7 +59,7 @@ public class VisionSensor : MonoBehaviour
 			}
 		}
 
-		// Set Player to Blackboard (Once at start)
+		// Initialize Blackboard Target
 		if (_playerTarget != null)
 		{
 			_behaviorAgent.SetVariableValue(playerVariableName, _playerTarget.gameObject);
@@ -73,53 +70,74 @@ public class VisionSensor : MonoBehaviour
 		}
 
 		// Default config for Obstacle Mask
-		if (obstacleMask == 0)
-		{
-			obstacleMask = LayerMask.GetMask("Default");
-		}
+		if (obstacleMask == 0) obstacleMask = LayerMask.GetMask("Default");
 
 		_combinedMask = obstacleMask | targetMask;
 	}
 
 	private void Update()
 	{
-		// 1. Perform physical vision check
+		// 1. Perform physical vision check (Raycast & Angle)
 		_isPhysicallyVisible = CheckVision();
 
-		// 2. Handle Detection Hold Time (Hysteresis)
+		// 2. Handle Detection Memory (Hysteresis)
 		if (_isPhysicallyVisible)
 		{
-			_lastTimeSeen = Time.time;
+			// Continuously push the memory expiration time further into the future
+			// as long as the monster can actively see the player.
+			_memoryEndTime = Time.time + detectionHoldTime;
 			_canSeePlayer = true;
 		}
 		else
 		{
-			// If the time since last seen is within the hold duration, keep detected as true
-			if (Time.time - _lastTimeSeen < detectionHoldTime)
-			{
-				_canSeePlayer = true;
-			}
-			else
-			{
-				_canSeePlayer = false;
-			}
+			// If physically blind, check if the memory timer is still running
+			_canSeePlayer = Time.time < _memoryEndTime;
 		}
 
-		// 3. Write result to Blackboard
-		_behaviorAgent.SetVariableValue(detectedVariableName, _canSeePlayer);
+		// 3. Write the final computed state to the Blackboard
+		if (_behaviorAgent != null)
+		{
+			_behaviorAgent.SetVariableValue(detectedVariableName, _canSeePlayer);
+		}
 	}
+
+	/// <summary>
+	/// Forces the enemy to enter the "Detected" state for a specific duration.
+	/// Call this when the enemy takes damage from behind.
+	/// </summary>
+	/// <param name="alertDuration">How long the alert lasts. If left at 0, it uses default detectionHoldTime.</param>
+	public void TriggerAlert(float alertDuration = 0f)
+	{
+		float duration = alertDuration > 0f ? alertDuration : detectionHoldTime;
+
+		// Extend the memory timer. We use Mathf.Max to ensure a new short alert 
+		// doesn't override an existing long memory if the enemy is already chasing.
+		_memoryEndTime = Mathf.Max(_memoryEndTime, Time.time + duration);
+
+		_canSeePlayer = true;
+
+		// Force write to Blackboard immediately so the Behavior Graph reacts this exact frame
+		if (_behaviorAgent != null)
+		{
+			_behaviorAgent.SetVariableValue(detectedVariableName, true);
+		}
+
+		Debug.Log($"[{gameObject.name}] VisionSensor: Alert triggered! Enemy will search for {duration} seconds.");
+	}
+
+	// =========================================================
+	// PHYSICAL VISION LOGIC
+	// =========================================================
 
 	private bool CheckVision()
 	{
 		if (_playerTarget == null) return false;
 
-		// Handle case where no eyes are assigned
 		if (eyes == null || eyes.Length == 0)
 		{
 			return CheckEyesLogic(transform);
 		}
 
-		// Iterate through all eyes
 		foreach (var eye in eyes)
 		{
 			if (eye != null && CheckEyesLogic(eye)) return true;
@@ -136,31 +154,23 @@ public class VisionSensor : MonoBehaviour
 		// 1. Check Radius
 		if (distanceToPlayer > viewRadius) return false;
 
-		// 2. Check View Angle
+		// 2. Check View Angle & Close Range
 		float halfAngle = viewAngle * 0.5f;
 		float angleToPlayer = Vector3.Angle(eye.forward, vectorToPlayer);
 
-		// Success if very close (<1m) OR within view angle
 		bool angleOK = (distanceToPlayer <= closeRange) || (angleToPlayer <= halfAngle);
 
 		if (angleOK)
 		{
-			// 3. Raycast Check (Check 3 points: Center, Top, Bottom)
+			// 3. Raycast Checks (Center, Top, Bottom)
 			if (_playerCollider != null)
 			{
-				// Prioritize Center check
 				if (CheckLineOfSight(eye.position, _playerCollider.bounds.center)) return true;
-
-				// Check Top (Head) - helps when hiding behind low obstacles
 				if (CheckLineOfSight(eye.position, _playerCollider.bounds.max)) return true;
-
-				// Check Bottom (Feet) - helps when only legs are visible
 				if (CheckLineOfSight(eye.position, _playerCollider.bounds.min)) return true;
 			}
 			else
 			{
-				// Fallback if Player has no Collider (check pivot + offset)
-				// Raise check point slightly to avoid hitting ground
 				if (CheckLineOfSight(eye.position, _playerTarget.position + Vector3.up * 1.0f)) return true;
 			}
 		}
@@ -173,36 +183,30 @@ public class VisionSensor : MonoBehaviour
 		Vector3 direction = end - start;
 		float distance = direction.magnitude;
 
-		// Raycast with CombinedMask
-		// QueryTriggerInteraction.Ignore to look through trigger volumes
 		if (Physics.Raycast(start, direction.normalized, out RaycastHit hit, distance, _combinedMask, QueryTriggerInteraction.Ignore))
 		{
-			// LOGIC 1: Check if it hit the Player (or a child of the Player)
-			if (hit.transform == _playerTarget || hit.transform.IsChildOf(_playerTarget))
-			{
-				return true; // First hit is Player -> VISIBLE
-			}
+			// If the ray hits the player (or their children), vision is clear
+			if (hit.transform == _playerTarget || hit.transform.IsChildOf(_playerTarget)) return true;
 
-			// LOGIC 2: If not Player, it must be an obstacle (since mask only has Player + Obstacle)
-			return false; // First hit is Wall/Obstacle -> BLOCKED
+			// Otherwise, it hit a wall
+			return false;
 		}
 
-		// No hit occurred -> Clear line of sight -> VISIBLE
-		return true;
+		return true; // No obstacles hit
 	}
 
-	// Draw Debug Gizmos
+	// =========================================================
+	// DEBUG GIZMOS
+	// =========================================================
+
 	private void OnDrawGizmos()
 	{
 		if (eyes == null) return;
 
-		// Green if visible, Yellow if hidden but in memory (hold time), Red if lost
-		if (_isPhysicallyVisible)
-			Gizmos.color = Color.green;
-		else if (_canSeePlayer)
-			Gizmos.color = Color.yellow;
-		else
-			Gizmos.color = Color.red;
+		// Green: Seeing right now | Yellow: Remembering (Hold Time) | Red: Lost target
+		if (_isPhysicallyVisible) Gizmos.color = Color.green;
+		else if (_canSeePlayer) Gizmos.color = Color.yellow;
+		else Gizmos.color = Color.red;
 
 		foreach (var eye in eyes)
 		{
@@ -216,13 +220,10 @@ public class VisionSensor : MonoBehaviour
 			Gizmos.DrawLine(eye.position, eye.position + viewAngleA * viewRadius);
 			Gizmos.DrawLine(eye.position, eye.position + viewAngleB * viewRadius);
 
-			// Draw debug lines to player bounds if applicable
 			if (_playerTarget != null && _playerCollider != null)
 			{
-				Gizmos.color = new Color(1, 1, 0, 0.3f); // Faint yellow
+				Gizmos.color = new Color(1, 1, 0, 0.3f);
 				Gizmos.DrawLine(eye.position, _playerCollider.bounds.center);
-				Gizmos.DrawLine(eye.position, _playerCollider.bounds.max);
-				Gizmos.DrawLine(eye.position, _playerCollider.bounds.min);
 			}
 		}
 	}

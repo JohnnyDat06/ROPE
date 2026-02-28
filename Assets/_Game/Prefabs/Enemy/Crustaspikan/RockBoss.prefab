@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1975594862200567386}
   - component: {fileID: 2533225785205239855}
   - component: {fileID: 6442629073161360272}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RockBoss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0599fbd653b6e924faed02723beb53c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _throwSpeed: 30
+  _flightTime: 1.2
+  _gravityMultiplier: 2.5
   _tumbleSpeed: 10
   _lifeTime: 7
   _directDamage: 40
@@ -117,7 +118,7 @@ GameObject:
   - component: {fileID: 1396513494067698260}
   - component: {fileID: 3598224825126632428}
   - component: {fileID: 1413996791862648266}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Rock6A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,13 +223,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4896306421344119320}
     m_Modifications:
+    - target: {fileID: 2200344654094254607, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3019871072313131592, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
       propertyPath: m_Name
       value: DustExplosion
       objectReference: {fileID: 0}
     - target: {fileID: 3019871072313131592, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3019871072313131592, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4557085024757115331, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4858107171820991656, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7064606891219001114, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8323340978217110870, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
       propertyPath: m_LocalScale.x
@@ -427,9 +448,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4896306421344119320}
     m_Modifications:
+    - target: {fileID: 2200344654094254607, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3019871072313131592, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
       propertyPath: m_Name
       value: ThrowRock
+      objectReference: {fileID: 0}
+    - target: {fileID: 3019871072313131592, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4557085024757115331, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4858107171820991656, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7064606891219001114, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8323340978217110870, guid: f1caf3fb3e1c7de41ab9714ed21c53de, type: 3}
       propertyPath: m_LocalScale.x
