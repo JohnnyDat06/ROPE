@@ -11,6 +11,11 @@ public class BossHealthUI : MonoBehaviour
 
     [Header("Boss References")]
     [SerializeField] private EnemyHitbox _bossHitbox;
+    [SerializeField] private GameObject phase1Enviroment;
+    [SerializeField] private GameObject phase2Enviroment;
+    
+    [Header("Phase Transition Settings")]
+    [SerializeField] private float healthPhase2 = 0.4f;
     
     [Header("Smooth Animation Settings")]
     [SerializeField] private float _mainLerpSpeed = 10f;
@@ -91,7 +96,31 @@ public class BossHealthUI : MonoBehaviour
             _isInitialized = false;
             StartCoroutine(HideUIWithDelay(1f));
         }
+        
+        TransitionPhase();
+        
         Debug.Log($"Boss Health: {_bossHitbox.MainHealth.curentHealth} / {_bossHitbox.MainHealth.maxHealth}");
+    }
+    
+    private void TransitionPhase()
+    {
+        float healthPercent = (float)_bossHitbox.MainHealth.curentHealth / _bossHitbox.MainHealth.maxHealth;
+        if (healthPercent <= healthPhase2)
+        {
+            if (phase1Enviroment != null && phase2Enviroment != null)
+            {
+                phase1Enviroment.SetActive(false);
+                phase2Enviroment.SetActive(true);
+            }
+        }
+        else
+        {
+            if (phase1Enviroment != null && phase2Enviroment != null)
+            {
+                phase1Enviroment.SetActive(true);
+                phase2Enviroment.SetActive(false);
+            }
+        }
     }
 
     private System.Collections.IEnumerator HideUIWithDelay(float delay)
