@@ -8,7 +8,6 @@ public class BossHealthUI : MonoBehaviour
     [SerializeField] private GameObject _bossHealthBarContainer;
     [SerializeField] private Slider _mainHealthSlider;
     [SerializeField] private Slider _smoothEaseSlider;
-    [SerializeField] private TextMeshProUGUI _bossNameText;
 
     [Header("Boss References")]
     [SerializeField] private EnemyHitbox _bossHitbox;
@@ -43,9 +42,6 @@ public class BossHealthUI : MonoBehaviour
 
             _bossHealthBarContainer.SetActive(true);
             _isInitialized = true;
-
-            if (_bossNameText != null)
-                _bossNameText.text = _bossHitbox.MainHealth.gameObject.name;
         }
         else
         {
@@ -95,6 +91,7 @@ public class BossHealthUI : MonoBehaviour
             _isInitialized = false;
             StartCoroutine(HideUIWithDelay(1f));
         }
+        Debug.Log($"Boss Health: {_bossHitbox.MainHealth.curentHealth} / {_bossHitbox.MainHealth.maxHealth}");
     }
 
     private System.Collections.IEnumerator HideUIWithDelay(float delay)

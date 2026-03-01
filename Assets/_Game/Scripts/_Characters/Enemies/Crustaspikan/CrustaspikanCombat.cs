@@ -42,6 +42,15 @@ public class CrustaspikanCombat : MonoBehaviour
 	[SerializeField] private float _grabSoundDelay = 0.3f;
 	[SerializeField] private AudioClip _throwRockSound;
 	[SerializeField] private float _holdRockDuration = 1.5f;
+	
+	[Header("Skill 3: Summon Minions (Triệu hồi)")]
+	[Tooltip("Kéo script EnemyHealth của Boss vào đây để đo máu")]
+	[SerializeField] private EnemyHealth _health;
+	[SerializeField] private GameObject[] _minionPrefabs;
+	[SerializeField] private int _minionCount = 3;
+	[SerializeField] private float _summonRadius = 5f;
+	[SerializeField] private AudioClip _summonSound;
+	[SerializeField] private float _summonSoundDelay = 0.2f;
 	#endregion
 
 	#region Internal State
@@ -53,6 +62,9 @@ public class CrustaspikanCombat : MonoBehaviour
 	private bool _hasDealtHandDamage = false;
 	private bool _isLeftHandActive = false;
 	private bool _isRightHandActive = false;
+	
+	private bool _hasSummonedAt60 = false;
+	private bool _hasSummonedAt40 = false;
 
 	public bool IsAttacking { get; private set; }
 
@@ -126,6 +138,7 @@ public class CrustaspikanCombat : MonoBehaviour
 		_animator.ResetTrigger("AttackRightHand");
 		_animator.ResetTrigger("AttackLeftHand");
 		_animator.ResetTrigger("UnearthRock");
+		_animator.ResetTrigger("Summon");
 		_animator.SetBool("ThrowRock", false);
 		IsAttacking = false;
 		_isTrackingTarget = false; // Reset tracking
@@ -298,6 +311,61 @@ public class CrustaspikanCombat : MonoBehaviour
 		_currentHeldRock = null;
 	}
 	#endregion
+	
+	#region Skill 3: Summon Minions (Triệu hồi)
+	
+	// Kiểm tra xem Boss có đang đến ngưỡng gọi đệ không
+	public bool CheckSummonCondition()
+	{
+		if (_health == null) return false;
+		float healthPercent = (float)_health.curentHealth / _health.maxHealth;
+
+		// Kiểm tra ngưỡng 60% trước. Nếu máu tụt một phát xuống 30% thì nó sẽ gọi đợt 60% trước, 
+		// sau đó đánh xong sẽ tiếp tục gọi đợt 40% ở turn tiếp theo (chống skip phase)
+		if (healthPercent <= 0.6f && !_hasSummonedAt60) return true;
+		if (healthPercent <= 0.4f && !_hasSummonedAt40) return true;
+
+		return false;
+	}
+
+	public bool ExecuteSummon()
+	{
+		if (IsBusyTurning() || !CheckSummonCondition()) { CancelPendingAttacks(); return false; }
+		IsAttacking = true;
+		_isStunned = false;
+		_isTrackingTarget = false; // Triệu hồi thì đứng im gầm lên, không xoay theo Player
+
+		float healthPercent = (float)_health.curentHealth / _health.maxHealth;
+		if (healthPercent <= 0.6f && !_hasSummonedAt60) _hasSummonedAt60 = true;
+		else if (healthPercent <= 0.4f && !_hasSummonedAt40) _hasSummonedAt40 = true;
+
+		_animator.SetTrigger("Summon"); // Kích hoạt Animation Gầm/Triệu hồi
+		
+		if (_audioSource && _summonSound)
+			StartCoroutine(PlaySoundDelayed(_summonSound, _summonSoundDelay));
+
+		return true;
+	}
+
+	// [MỚI] GẮN VÀO ANIMATION EVENT: Gọi ở Frame Boss gầm/đập đất
+	public void AnimEvent_SpawnMinions()
+	{
+		if (_minionPrefabs == null || _minionPrefabs.Length == 0 || _isStunned) return;
+
+		for (int i = 0; i < _minionCount; i++)
+		{
+			Vector2 randomCircle = Random.insideUnitCircle * _summonRadius;
+			Vector3 randomPos = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
+			if (UnityEngine.AI.NavMesh.SamplePosition(randomPos, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+			{
+				int randomIndex = Random.Range(0, _minionPrefabs.Length);
+				GameObject minion = Instantiate(_minionPrefabs[randomIndex], hit.position, Quaternion.identity);
+				
+				// Tuỳ chọn: Kích hoạt hiệu ứng Spawn của Minion tại đây nếu Minion có Script riêng
+			}
+		}
+	}
+	#endregion
 
 	#region Tương tác Đặc biệt (Choáng & Ngắt đòn)
 	public void TriggerStun()
@@ -334,6 +402,8 @@ public class CrustaspikanCombat : MonoBehaviour
 	{
 		if (target == null || IsAttacking || _isStunned || IsBusyTurning()) return false;
 
+		if (CheckSummonCondition()) return true;
+		
 		if (Time.time >= _lastHandAttackTime + _handAttackCooldown)
 		{
 			if (CheckHandAttackRange(target, out _)) return true;
