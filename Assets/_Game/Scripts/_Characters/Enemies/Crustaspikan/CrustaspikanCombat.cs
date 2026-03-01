@@ -17,15 +17,20 @@ public class CrustaspikanCombat : MonoBehaviour
 	private float _lastHandAttackTime = -999f;
 	private float _lastThrowTime = -999f;
 
+	// [MỚI] Cài đặt xoay người khi đang đánh
+	[Header("Attack Tracking (Xoay bám mục tiêu)")]
+	[Tooltip("Tốc độ Boss xoay mặt theo Player khi đang gồng chiêu.")]
+	[SerializeField] private float _attackRotationSpeed = 5f;
+
 	[Header("Skill 1: Hand Attack (Tát gần)")]
 	[SerializeField] private float _handAttackMinRange = 5f;
 	[SerializeField] private float _handAttackMaxRange = 6f;
 	[SerializeField] private float _handDamage = 30f;
 	[SerializeField] private float _knockbackForce = 15f;
 
-	[Tooltip("Kéo Box/Sphere Collider tay vào đây. Nhớ BẬT ENABLE sẵn trên Inspector.")]
-	[SerializeField] private Collider _leftHandCollider;
-	[SerializeField] private Collider _rightHandCollider;
+	[Tooltip("Kéo BoxCollider tay vào đây.")]
+	[SerializeField] private BoxCollider _leftHandCollider;
+	[SerializeField] private BoxCollider _rightHandCollider;
 	[SerializeField] private AudioClip _swipeSound;
 
 	[Header("Skill 2: Throw Rock (Ném đá)")]
@@ -45,21 +50,77 @@ public class CrustaspikanCombat : MonoBehaviour
 	private Coroutine _holdRockCoroutine;
 	private bool _isStunned = false;
 
-	// [CẬP NHẬT] Biến cờ kiểm soát khung hình gây sát thương
 	private bool _hasDealtHandDamage = false;
 	private bool _isLeftHandActive = false;
 	private bool _isRightHandActive = false;
 
 	public bool IsAttacking { get; private set; }
+
+	// [MỚI] Cờ cho phép bám mục tiêu. Được bật khi ra đòn, tắt khi tay chuẩn bị vung xuống.
+	private bool _isTrackingTarget = false;
 	#endregion
 
-	private void Start()
+	private void Start() { }
+
+	private void Update()
 	{
-		// ĐÃ XÓA LỆNH TẮT COLLIDER. Bây giờ tay Boss lúc nào cũng có va chạm vật lý.
+		if (!IsAttacking) return;
+
+		// 1. [MỚI] Xử lý Tracking (Xoay nhẹ theo Player lúc đang gồng)
+		if (_isTrackingTarget && _currentTarget != null && !_isStunned)
+		{
+			HandleAttackTracking();
+		}
+
+		// 2. Quét Hitbox cận chiến
+		if (_hasDealtHandDamage) return;
+
+		if (_isLeftHandActive && _leftHandCollider != null)
+		{
+			CheckMeleeHitbox(_leftHandCollider);
+		}
+		else if (_isRightHandActive && _rightHandCollider != null)
+		{
+			CheckMeleeHitbox(_rightHandCollider);
+		}
 	}
 
-	#region Chống kẹt Animation
+	#region Xoay Bám Mục Tiêu (Attack Tracking)
 
+	private void HandleAttackTracking()
+	{
+		Vector3 direction = (_currentTarget.position - transform.position).normalized;
+		direction.y = 0; // Triệt tiêu trục Y để Boss không ngóc lên cắm xuống
+
+		if (direction != Vector3.zero)
+		{
+			Quaternion targetRotation = Quaternion.LookRotation(direction);
+			// Xoay từ từ mượt mà thay vì giật cục
+			transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _attackRotationSpeed * Time.deltaTime);
+		}
+	}
+
+	/// <summary>
+	/// [MỚI] GẮN VÀO ANIMATION EVENT: Gọi hàm này ở frame mà Boss bắt đầu vung tay xuống (hoặc ném đá đi).
+	/// Giúp khóa hướng đánh lại, tạo cơ hội cho Player lộn nhào né đòn.
+	/// </summary>
+	public void AnimEvent_StopTracking()
+	{
+		_isTrackingTarget = false;
+	}
+
+	/// <summary>
+	/// [MỚI] GẮN VÀO ANIMATION EVENT: Gọi hàm này để BẬT LẠI khả năng xoay bám mục tiêu.
+	/// Dùng cho các chiêu thức kéo dài hoặc combo nhiều nhịp.
+	/// </summary>
+	public void AnimEvent_StartTracking()
+	{
+		_isTrackingTarget = true;
+	}
+
+	#endregion
+
+	#region Chống kẹt Animation
 	public void CancelPendingAttacks()
 	{
 		_animator.ResetTrigger("AttackRightHand");
@@ -67,17 +128,16 @@ public class CrustaspikanCombat : MonoBehaviour
 		_animator.ResetTrigger("UnearthRock");
 		_animator.SetBool("ThrowRock", false);
 		IsAttacking = false;
+		_isTrackingTarget = false; // Reset tracking
 	}
 
 	private bool IsBusyTurning()
 	{
 		return Mathf.Abs(_animator.GetFloat(Animator.StringToHash("Turn"))) > 0.05f;
 	}
-
 	#endregion
 
 	#region Skill 1: Hand Attack (Tát)
-
 	public bool CheckHandAttackRange(Transform target, out bool isRightSide)
 	{
 		isRightSide = true;
@@ -96,31 +156,41 @@ public class CrustaspikanCombat : MonoBehaviour
 	public bool ExecuteHandAttack(Transform target)
 	{
 		if (IsBusyTurning()) { CancelPendingAttacks(); return false; }
-		IsAttacking = true; _isStunned = false;
+		IsAttacking = true;
+		_isStunned = false;
+
+		// [CẬP NHẬT] Lưu Target và cho phép tracking
+		_currentTarget = target;
+		_isTrackingTarget = true;
 
 		if (CheckHandAttackRange(target, out bool isRight))
 		{
 			string triggerName = isRight ? "AttackRightHand" : "AttackLeftHand";
 			_animator.SetTrigger(triggerName);
-			if (_audioSource && _swipeSound) _audioSource.PlayOneShot(_swipeSound);
+			
+			// Delay sound một chút để khớp với animation
+			if (_audioSource && _swipeSound)
+				StartCoroutine(PlaySoundDelayed(_swipeSound, 0.7f));
 
 			_lastHandAttackTime = Time.time;
 			return true;
 		}
-		IsAttacking = false; return false;
+
+		IsAttacking = false;
+		_isTrackingTarget = false;
+		return false;
 	}
 
-	// [CẬP NHẬT] Thay vì bật/tắt Collider, ta chỉ bật/tắt biến cờ (Logic Frame)
 	public void AnimEvent_EnableLeftHand()
 	{
 		_hasDealtHandDamage = false;
-		_isLeftHandActive = true; // Bắt đầu tính sát thương tay trái
+		_isLeftHandActive = true;
 	}
 
 	public void AnimEvent_EnableRightHand()
 	{
 		_hasDealtHandDamage = false;
-		_isRightHandActive = true; // Bắt đầu tính sát thương tay phải
+		_isRightHandActive = true;
 	}
 
 	public void AnimEvent_DisableLeftHand() => _isLeftHandActive = false;
@@ -128,54 +198,36 @@ public class CrustaspikanCombat : MonoBehaviour
 
 	#endregion
 
-	#region XỬ LÝ VA CHẠM CẬN CHIẾN (OnCollisionEnter)
+	#region XỬ LÝ VA CHẠM CẬN CHIẾN (OverlapBox)
 
-	private void OnCollisionEnter(Collision collision)
+	private void CheckMeleeHitbox(BoxCollider handCol)
 	{
-		// Nếu đang không ra đòn hoặc đã gây sát thương rồi -> Bỏ qua
-		if (!IsAttacking || _hasDealtHandDamage) return;
+		Vector3 center = handCol.transform.TransformPoint(handCol.center);
+		Vector3 halfExtents = Vector3.Scale(handCol.size, handCol.transform.lossyScale) * 0.5f;
+		halfExtents *= 1.2f;
 
-		// Nếu đối tượng va chạm không phải là Player -> Bỏ qua
-		if (!collision.gameObject.CompareTag("Player")) return;
+		Collider[] hits = Physics.OverlapBox(center, halfExtents, handCol.transform.rotation);
 
-		// Lấy Collider cụ thể đang va chạm với Player
-		Collider myColliderHit = collision.GetContact(0).thisCollider;
-
-		// [BÍ QUYẾT] Kiểm tra xem cái tay chạm vào có ĐANG ĐƯỢC BẬT CỜ SÁT THƯƠNG không
-		bool isHitByActiveLeft = (myColliderHit == _leftHandCollider && _isLeftHandActive);
-		bool isHitByActiveRight = (myColliderHit == _rightHandCollider && _isRightHandActive);
-
-		// Nếu quệt trúng tay nhưng lúc đó tay chưa tới Frame sát thương (hoặc quệt trúng bụng) -> Bỏ qua
-		if (!isHitByActiveLeft && !isHitByActiveRight) return;
-
-		// 1. GÂY SÁT THƯƠNG
-		PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
-		if (playerHealth != null)
+		foreach (var hit in hits)
 		{
-			playerHealth.TakeDamage(_handDamage);
-			Debug.Log($"[{name}] Tát trúng Player! Gây {_handDamage} sát thương.");
+			if (hit.CompareTag("Player"))
+			{
+				PlayerHealth playerHealth = hit.GetComponent<PlayerHealth>();
+				if (playerHealth != null)
+				{
+					playerHealth.TakeDamage(_handDamage);
+					Debug.Log($"[{name}] Tát trúng Player (OverlapBox)! Gây {_handDamage} sát thương.");
+				}
+
+				_hasDealtHandDamage = true;
+				break;
+			}
 		}
-
-		// 2. LỰC ĐẨY VĂNG (KNOCKBACK NGANG)
-		Rigidbody playerRb = collision.gameObject.GetComponent<Rigidbody>();
-		if (playerRb != null)
-		{
-			Vector3 pushDirection = collision.transform.position - transform.position;
-			pushDirection.y = 0; // Triệt tiêu Y để tránh văng lên trời
-			pushDirection.Normalize();
-
-			// Khóa vận tốc hiện tại để lực văng luôn ổn định
-			playerRb.linearVelocity = new Vector3(0, playerRb.linearVelocity.y, 0);
-			playerRb.AddForce(pushDirection * _knockbackForce, ForceMode.Impulse);
-		}
-
-		_hasDealtHandDamage = true;
 	}
 
 	#endregion
 
 	#region Skill 2: Throw Rock (Ném đá)
-
 	public bool CheckThrowRange(Transform target)
 	{
 		if (target == null || _eyePoint == null) return false;
@@ -186,7 +238,12 @@ public class CrustaspikanCombat : MonoBehaviour
 	public bool ExecuteThrowRock(Transform target)
 	{
 		if (IsBusyTurning()) { CancelPendingAttacks(); return false; }
-		IsAttacking = true; _isStunned = false; _currentTarget = target;
+		IsAttacking = true;
+		_isStunned = false;
+
+		// [CẬP NHẬT]
+		_currentTarget = target;
+		_isTrackingTarget = true;
 
 		_animator.SetTrigger("UnearthRock");
 		if (_audioSource && _grabRockSound)
@@ -240,15 +297,14 @@ public class CrustaspikanCombat : MonoBehaviour
 
 		_currentHeldRock = null;
 	}
-
 	#endregion
 
 	#region Tương tác Đặc biệt (Choáng & Ngắt đòn)
-
 	public void TriggerStun()
 	{
 		_isStunned = true;
 		IsAttacking = false;
+		_isTrackingTarget = false; // Ngừng xoay nếu bị choáng
 
 		if (_holdRockCoroutine != null) StopCoroutine(_holdRockCoroutine);
 
@@ -270,7 +326,6 @@ public class CrustaspikanCombat : MonoBehaviour
 			_currentHeldRock = null;
 		}
 
-		// [CẬP NHẬT] Đảm bảo reset cờ sát thương tay khi bị choáng
 		_isLeftHandActive = false;
 		_isRightHandActive = false;
 	}
@@ -291,15 +346,13 @@ public class CrustaspikanCombat : MonoBehaviour
 
 		return false;
 	}
-
 	#endregion
 
-	#region Utility Events
-
+	#region Utility Events & Debug
 	public void AnimEvent_EndAttack()
 	{
 		IsAttacking = false;
-		// [CẬP NHẬT] Reset cờ an toàn khi thu tay về
+		_isTrackingTarget = false; // Đảm bảo reset tracking khi kết thúc
 		_isLeftHandActive = false;
 		_isRightHandActive = false;
 	}
@@ -310,5 +363,20 @@ public class CrustaspikanCombat : MonoBehaviour
 		if (!_isStunned) _audioSource.PlayOneShot(clip);
 	}
 
+	private void OnDrawGizmos()
+	{
+		if (!Application.isPlaying || !_hasDealtHandDamage)
+		{
+			Gizmos.color = new Color(1, 0, 0, 0.4f);
+			if (_isLeftHandActive && _leftHandCollider != null) DrawBoxCastGizmo(_leftHandCollider);
+			if (_isRightHandActive && _rightHandCollider != null) DrawBoxCastGizmo(_rightHandCollider);
+		}
+	}
+
+	private void DrawBoxCastGizmo(BoxCollider box)
+	{
+		Gizmos.matrix = Matrix4x4.TRS(box.transform.TransformPoint(box.center), box.transform.rotation, box.transform.lossyScale);
+		Gizmos.DrawWireCube(Vector3.zero, box.size * 1.2f);
+	}
 	#endregion
 }

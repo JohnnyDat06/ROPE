@@ -1221,12 +1221,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57a754d04551c4344937f462f9175829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _turnStartThreshold: 15
+  _turnStartThreshold: 30
   _turnEndThreshold: 5
   _alignSpeed: 15
   _stopDistance: 0
   _useTurnInPlace: 1
-  _heavySmoothTime: 1.5
+  _heavySmoothTime: 1
   _backupDistanceThreshold: 1.5
 --- !u!114 &2848472837239421944
 MonoBehaviour:
@@ -1244,22 +1244,23 @@ MonoBehaviour:
   _eyePoint: {fileID: 7272041491732869124}
   _audioSource: {fileID: 6041352164003805295}
   _handAttackCooldown: 2
-  _throwRockCooldown: 6
-  _handAttackMinRange: 3
+  _throwRockCooldown: 12
+  _attackRotationSpeed: 5
+  _handAttackMinRange: 0.1
   _handAttackMaxRange: 8
   _handDamage: 30
   _knockbackForce: 15
   _leftHandCollider: {fileID: 6591330732178255873}
   _rightHandCollider: {fileID: 2397487661866356472}
-  _swipeSound: {fileID: 0}
+  _swipeSound: {fileID: 8300000, guid: 5b415b02a4eb3e841a913f6923578f4c, type: 3}
   _throwMinRange: 17
   _throwMaxRange: 34
   _rockPrefab: {fileID: 1551864030219295432, guid: 643901bd4fd639e4a94dd0691560ba31, type: 3}
   _rockSpawnBone: {fileID: 4110328040988916079}
-  _grabRockSound: {fileID: 0}
-  _grabSoundDelay: 0.3
-  _throwRockSound: {fileID: 0}
-  _holdRockDuration: 0.1
+  _grabRockSound: {fileID: 8300000, guid: ff7868e0e9d342c40a719425da23abe6, type: 3}
+  _grabSoundDelay: 0.7
+  _throwRockSound: {fileID: 8300000, guid: b08f1f8f847459e4ab6d5fa29d6860a4, type: 3}
+  _holdRockDuration: 0.5
 --- !u!82 &6041352164003805295
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2264,7 +2265,7 @@ MonoBehaviour:
   Type: 2
   MainHealth: {fileID: 7396958237253864781}
   DamageMultiplier: 2
-  WeakPointMaxHealth: 500
+  WeakPointMaxHealth: 300
   _currentWeakPointHealth: 0
   WeakPoint: {fileID: 7257948710229461527}
   OnWeakPointBroken:
@@ -2956,7 +2957,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4769455772453128730
 Transform:
   m_ObjectHideFlags: 0
@@ -3524,7 +3525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67bc17683d13844448ddafdb4d60e2cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 1000
+  _maxHealth: 2000
   _curentHealth: 0
 --- !u!1 &8868285556919193819
 GameObject:

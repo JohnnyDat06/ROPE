@@ -9,29 +9,28 @@ public class CrustaspikanMovement : EnemyMovement
 {
 	#region Configuration (Boss Specific)
 	[Header("Heavy Boss Settings")]
-	[Tooltip("Time to smooth damp the input vector. Higher values = heavier feel, slower to stop (gorilla momentum).")]
+	[Tooltip("Thời gian trượt để dừng hẳn/đạt tốc độ tối đa. Càng lớn Boss càng ì ạch.")]
 	[SerializeField] private float _heavySmoothTime = 0.6f;
 
-	[Tooltip("Distance threshold to trigger backing up. Giant bosses rarely back up, so this can be small.")]
+	[Tooltip("Khoảng cách dư ra trước khi Boss lùi lại.")]
 	[SerializeField] private float _backupDistanceThreshold = 1.5f;
 	#endregion
 
 	#region Internal State
-	// Smoothing Variables for Damping
-	private Vector3 _smoothDampVelocity;
-	private Vector3 _currentSmoothInput;
+	// [CẬP NHẬT] Sử dụng Local Momentum (Float) thay vì World Vector3 để tránh lỗi trượt ngang (Strafing)
+	private float _currentVerticalMomentum = 0f;
+	private float _currentHorizontalMomentum = 0f;
 
-	// Flag to detect state transition for seamless animation blending
-	private bool _isEnteringCombat = true;
+	// Các biến tham chiếu cho SmoothDamp
+	private float _verticalVelocityRef;
+	private float _horizontalVelocityRef;
 	#endregion
 
 	#region Public Methods (API)
 
 	/// <summary>
-	/// Handles heavy combat movement. Strict forward/backward movement with large momentum.
+	/// Xử lý di chuyển nặng nề trong Combat.
 	/// </summary>
-	/// <param name="target">The player transform.</param>
-	/// <param name="idealRange">The distance the boss wants to maintain before attacking.</param>
 	public void HandleHeavyCombatMovement(Transform target, float idealRange)
 	{
 		if (_hasTarget)
@@ -40,61 +39,46 @@ public class CrustaspikanMovement : EnemyMovement
 			_agent.isStopped = true;
 		}
 
-		// [FIX 1] Bỏ đoạn lấy _animator.GetFloat() ở đây.
-		// Vì biến _currentSmoothInput ĐÃ ĐƯỢC GIỮ LẠI từ hàm Stop() ở trên rồi!
-		if (_isEnteringCombat)
-		{
-			_isEnteringCombat = false;
-		}
-
-		// [FIX HOÀN HẢO] 
-		// Gọi hàm TryTurnInPlace mà ta vừa ghi đè. Nó sẽ tự động lo việc vừa vặn người vừa phanh!
+		// 1. Nếu Boss cần vặn người tại chỗ, nó sẽ tự động giảm tốc từ từ
 		if (TryTurnInPlace(target.position))
 		{
-			_isEnteringCombat = true;
-			return; // Đang bận xoay và phanh, không xử lý tiến lùi nữa
+			return;
 		}
 
-		//// [FIX 2] Xử lý Turn In Place mượt mà
-		//if (TryTurnInPlace(target.position))
-		//{
-		//	// Thay vì giật về Vector3.zero lập tức, ta cho nó trượt từ từ về 0
-		//	// Boss sẽ lê chân chậm lại trong khi vặn người
-		//	_currentSmoothInput = Vector3.SmoothDamp(
-		//		_currentSmoothInput,
-		//		Vector3.zero,
-		//		ref _smoothDampVelocity,
-		//		_heavySmoothTime
-		//	);
-		//}
-		else
+		// 2. Nếu không xoay, tiến hành xoay mặt và di chuyển tiến/lùi
+		RotateTowards(target.position);
+
+		float targetVertical = CalculateVerticalForce(target.position, idealRange);
+		float targetHorizontal = 0f; // Boss khổng lồ không đi ngang (Strafe)
+
+		// Cập nhật gia tốc mượt mà
+		UpdateMomentum(targetVertical, targetHorizontal);
+	}
+
+	/// <summary>
+	/// [MỚI] Hàm phanh mượt mà. 
+	/// Behavior Node "Smooth Stop" cần gọi hàm này liên tục trong OnUpdate().
+	/// Trả về TRUE khi Boss đã dừng hẳn, lúc này Node mới được return Status.Success.
+	/// </summary>
+	public bool ExecuteSmoothStop()
+	{
+		// Kéo dần vận tốc hiện tại về 0
+		UpdateMomentum(0f, 0f);
+
+		// Kiểm tra xem đã dừng hẳn chưa (sai số 0.05f)
+		bool isStopped = Mathf.Abs(_currentVerticalMomentum) < 0.05f && Mathf.Abs(_currentHorizontalMomentum) < 0.05f;
+
+		if (isStopped)
 		{
-			RotateTowards(target.position);
-
-			Vector3 targetDirection = CalculateRangeForce(target.position, idealRange);
-
-			_currentSmoothInput = Vector3.SmoothDamp(
-				_currentSmoothInput,
-				targetDirection,
-				ref _smoothDampVelocity,
-				_heavySmoothTime
-			);
+			// Đảm bảo ép về 0 tròn trĩnh khi đã trượt xong
+			_currentVerticalMomentum = 0f;
+			_currentHorizontalMomentum = 0f;
+			_animator.SetFloat(_hashHorizontal, 0f);
+			_animator.SetFloat(_hashVertical, 0f);
+			_animator.SetBool(_hashIsMoving, false);
 		}
 
-		// --- APPLY TO ANIMATOR ---
-		Vector3 localInput = transform.InverseTransformDirection(_currentSmoothInput);
-
-		_animator.SetBool(_hashIsMoving, _currentSmoothInput.magnitude > 0.05f);
-
-		// [FIX 3] Bỏ Double Smoothing! 
-		// Vì _currentSmoothInput đã tự tính toán độ trượt, ta chỉ cần truyền thẳng vào Animator (Damp = 0)
-		_animator.SetFloat(_hashHorizontal, localInput.x, 0f, Time.deltaTime);
-		_animator.SetFloat(_hashVertical, localInput.z, 0f, Time.deltaTime);
-
-		if (Application.isEditor)
-		{
-			Debug.DrawRay(transform.position + Vector3.up * 2f, _currentSmoothInput * 3, Color.cyan);
-		}
+		return isStopped;
 	}
 
 	#endregion
@@ -102,31 +86,51 @@ public class CrustaspikanMovement : EnemyMovement
 	#region Helper Logic
 
 	/// <summary>
-	/// Calculates movement towards or away from the target based on ideal range.
+	/// Cập nhật vận tốc Local vào Animator thông qua SmoothDamp
 	/// </summary>
-	private Vector3 CalculateRangeForce(Vector3 targetPos, float idealRange)
+	private void UpdateMomentum(float targetVertical, float targetHorizontal)
+	{
+		_currentVerticalMomentum = Mathf.SmoothDamp(
+			_currentVerticalMomentum,
+			targetVertical,
+			ref _verticalVelocityRef,
+			_heavySmoothTime
+		);
+
+		_currentHorizontalMomentum = Mathf.SmoothDamp(
+			_currentHorizontalMomentum,
+			targetHorizontal,
+			ref _horizontalVelocityRef,
+			_heavySmoothTime
+		);
+
+		_animator.SetBool(_hashIsMoving, Mathf.Abs(_currentVerticalMomentum) > 0.05f || Mathf.Abs(_currentHorizontalMomentum) > 0.05f);
+
+		// Truyền trực tiếp vào Animator (DampTime = 0 vì đã làm mượt bằng toán học ở trên)
+		_animator.SetFloat(_hashHorizontal, _currentHorizontalMomentum, 0f, Time.deltaTime);
+		_animator.SetFloat(_hashVertical, _currentVerticalMomentum, 0f, Time.deltaTime);
+	}
+
+	/// <summary>
+	/// Trả về 1 (Tiến), -1 (Lùi) hoặc 0 (Đứng yên)
+	/// </summary>
+	private float CalculateVerticalForce(Vector3 targetPos, float idealRange)
 	{
 		float distance = Vector3.Distance(transform.position, targetPos);
 
-		// Move closer if too far
-		if (distance > idealRange + _backupDistanceThreshold)
-			return transform.forward;
+		if (distance > idealRange + _backupDistanceThreshold) return 1f;
 
-		// Slowly back up if too close (Optional for giant bosses)
 		if (distance < idealRange - _backupDistanceThreshold)
 		{
-			// Check if backing up is safe (from base class logic)
 			Vector3 backPos = transform.position - transform.forward * 1.5f;
 			if (_agent.isOnNavMesh && _agent.Raycast(backPos, out UnityEngine.AI.NavMeshHit hit))
 			{
-				return Vector3.zero; // Wall behind, stop
+				return 0f;
 			}
-			return -transform.forward;
+			return -1f;
 		}
 
-		// In the "sweet spot". Return zero. 
-		// The SmoothDamp will cause the boss to slide to a halt naturally.
-		return Vector3.zero;
+		return 0f;
 	}
 
 	#endregion
@@ -134,21 +138,7 @@ public class CrustaspikanMovement : EnemyMovement
 	#region Base Overrides
 
 	/// <summary>
-	/// Resets the combat flag when returning to standard NavMesh movement.
-	/// </summary>
-	public override void MoveTo(Vector3 position)
-	{
-		base.MoveTo(position);
-		_isEnteringCombat = true; // Ready for next transition
-	}
-
-	/// <summary>
-	/// Ghi đè logic Turn In Place của lớp cha.
-	/// Boss khổng lồ sẽ VỪA phát Animation xoay, VỪA lê bước trượt tới trước (giảm tốc từ từ) thay vì khựng lại.
-	/// </summary>
-	/// <summary>
-	/// Ghi đè logic Turn In Place của lớp cha.
-	/// Boss khổng lồ sẽ VỪA phát Animation xoay, VỪA lê bước trượt tới trước (giảm tốc từ từ) thay vì khựng lại.
+	/// Ghi đè logic Turn In Place. Bao gồm phanh mượt mà và Hỗ trợ xoay 180 độ.
 	/// </summary>
 	protected override bool TryTurnInPlace(Vector3 targetPos)
 	{
@@ -166,60 +156,50 @@ public class CrustaspikanMovement : EnemyMovement
 
 		if (_isTurningInPlace)
 		{
-			// 1. Kích hoạt Animation vặn người (Turn)
+			// [BÍ QUYẾT TẠO QUÁN TÍNH]
+			// Trong lúc đang vặn người, tiếp tục kéo đà di chuyển về 0 thay vì đứng khựng lại
+			UpdateMomentum(0f, 0f);
 			_animator.SetBool(_hashIsMoving, false);
-			_animator.SetFloat(_hashTurn, Mathf.Sign(signedAngle), 0.1f, Time.deltaTime);
 
-			// 2. [BÍ QUYẾT TẠO QUÁN TÍNH CHO BOSS]
-			// KHÔNG ép Vertical về 0 lập tức như lớp cha.
-			// Dùng SmoothDamp kéo vận tốc hiện tại từ từ về 0.
-			_currentSmoothInput = Vector3.SmoothDamp(
-				_currentSmoothInput,
-				Vector3.zero, // Đích đến là dừng lại
-				ref _smoothDampVelocity,
-				_heavySmoothTime // Dùng độ nặng (momentum) của Boss
-			);
+			// [MỚI] LOGIC XOAY 180 ĐỘ
+			// Nếu góc cần xoay > 90 độ, ta truyền giá trị 2 (hoặc -2) vào Animator Blend Tree.
+			// Nếu <= 90 độ, ta truyền giá trị 1 (hoặc -1).
+			float turnMagnitude = absAngle > 90f ? 2f : 1f;
+			float finalTurnValue = Mathf.Sign(signedAngle) * turnMagnitude;
 
-			// 3. Truyền vận tốc đang giảm dần này vào Animator
-			Vector3 localInput = transform.InverseTransformDirection(_currentSmoothInput);
-			_animator.SetFloat(_hashHorizontal, localInput.x, 0f, Time.deltaTime); // Damp = 0 vì đã SmoothDamp ở trên
-			_animator.SetFloat(_hashVertical, localInput.z, 0f, Time.deltaTime);
+			_animator.SetFloat(_hashTurn, finalTurnValue, 0.1f, Time.deltaTime);
 
-			return true; // Đang trong quá trình xoay
+			return true;
 		}
 
 		_animator.SetFloat(_hashTurn, 0, 0.2f, Time.deltaTime);
 		return false;
 	}
 
-	// 2. Định nghĩa lại hành vi Stop
 	public override void Stop()
 	{
-		// Vẫn lưu lại đà di chuyển trước khi gọi base.Stop()
-		float currentV = _animator.GetFloat(_hashVertical);
+		// Cập nhật lại đà di chuyển thực tế từ Animator trước khi Base xóa nó
+		_currentVerticalMomentum = _animator.GetFloat(_hashVertical);
+		_currentHorizontalMomentum = _animator.GetFloat(_hashHorizontal);
 
 		base.Stop();
-
-		// Giữ lại quán tính để frame sau Boss trượt tiếp
-		_currentSmoothInput = transform.forward * currentV;
-		_isEnteringCombat = true;
 	}
 
-	/// <summary>
-	/// Overrides the base Wall Hit hook to kill momentum when hitting a wall.
-	/// </summary>
 	protected override void OnWallHit()
 	{
-		// A giant boss hitting a wall loses its forward momentum instantly
-		_currentSmoothInput = Vector3.zero;
-		_smoothDampVelocity = Vector3.zero;
+		_currentVerticalMomentum = 0f;
+		_currentHorizontalMomentum = 0f;
+		_verticalVelocityRef = 0f;
+		_horizontalVelocityRef = 0f;
 	}
 
 	protected override void ResetAnimator()
 	{
 		base.ResetAnimator();
-		_currentSmoothInput = Vector3.zero;
-		_smoothDampVelocity = Vector3.zero;
+		_currentVerticalMomentum = 0f;
+		_currentHorizontalMomentum = 0f;
+		_verticalVelocityRef = 0f;
+		_horizontalVelocityRef = 0f;
 	}
 
 	#endregion
