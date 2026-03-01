@@ -49,6 +49,8 @@ public class CrustaspikanCombat : MonoBehaviour
 	[SerializeField] private GameObject[] _minionPrefabs;
 	[SerializeField] private int _minionCount = 3;
 	[SerializeField] private float _summonRadius = 5f;
+	[SerializeField] private float _summonFirstime = 0.6f;
+	[SerializeField] private float _summonSecondtime = 0.4f;
 	[SerializeField] private AudioClip _summonSound;
 	[SerializeField] private float _summonSoundDelay = 0.2f;
 	#endregion
@@ -314,40 +316,49 @@ public class CrustaspikanCombat : MonoBehaviour
 	
 	#region Skill 3: Summon Minions (Triệu hồi)
 	
-	// Kiểm tra xem Boss có đang đến ngưỡng gọi đệ không
 	public bool CheckSummonCondition()
 	{
 		if (_health == null) return false;
 		float healthPercent = (float)_health.curentHealth / _health.maxHealth;
-
-		// Kiểm tra ngưỡng 60% trước. Nếu máu tụt một phát xuống 30% thì nó sẽ gọi đợt 60% trước, 
-		// sau đó đánh xong sẽ tiếp tục gọi đợt 40% ở turn tiếp theo (chống skip phase)
-		if (healthPercent <= 0.6f && !_hasSummonedAt60) return true;
-		if (healthPercent <= 0.4f && !_hasSummonedAt40) return true;
+		
+		if (healthPercent <= _summonFirstime && !_hasSummonedAt60) return true;
+		if (healthPercent <= _summonSecondtime && !_hasSummonedAt40) return true;
 
 		return false;
 	}
 
 	public bool ExecuteSummon()
 	{
-		if (IsBusyTurning() || !CheckSummonCondition()) { CancelPendingAttacks(); return false; }
+		if (!CheckSummonCondition()) return false; 
+
+		CancelPendingAttacks();
+		
 		IsAttacking = true;
 		_isStunned = false;
-		_isTrackingTarget = false; // Triệu hồi thì đứng im gầm lên, không xoay theo Player
+		_isTrackingTarget = false;
+
+		_animator.SetFloat("Turn", 0f);
 
 		float healthPercent = (float)_health.curentHealth / _health.maxHealth;
-		if (healthPercent <= 0.6f && !_hasSummonedAt60) _hasSummonedAt60 = true;
-		else if (healthPercent <= 0.4f && !_hasSummonedAt40) _hasSummonedAt40 = true;
+		
+		if (healthPercent <= _summonSecondtime) 
+		{
+			_hasSummonedAt60 = true;
+			_hasSummonedAt40 = true;
+		}
+		else if (healthPercent <= _summonFirstime) 
+		{
+			_hasSummonedAt60 = true;
+		}
 
-		_animator.SetTrigger("Summon"); // Kích hoạt Animation Gầm/Triệu hồi
+		_animator.SetTrigger("Summon");
 		
 		if (_audioSource && _summonSound)
 			StartCoroutine(PlaySoundDelayed(_summonSound, _summonSoundDelay));
 
 		return true;
 	}
-
-	// [MỚI] GẮN VÀO ANIMATION EVENT: Gọi ở Frame Boss gầm/đập đất
+	
 	public void AnimEvent_SpawnMinions()
 	{
 		if (_minionPrefabs == null || _minionPrefabs.Length == 0 || _isStunned) return;
