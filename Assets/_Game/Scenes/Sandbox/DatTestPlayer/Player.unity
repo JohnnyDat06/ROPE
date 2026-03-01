@@ -4147,6 +4147,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 79415953}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &749855123 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8345070699079395523, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
+  m_PrefabInstance: {fileID: 1603362677}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &749855125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749855123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 146981d2dcb19fa4fb810151684c58dc, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &790589591
 GameObject:
   m_ObjectHideFlags: 3
@@ -5452,9 +5489,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2848472837239421944, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: _health
+      value: 
+      objectReference: {fileID: 2018047577}
+    - target: {fileID: 2848472837239421944, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
       propertyPath: _swipeSound
       value: 
       objectReference: {fileID: 8300000, guid: 5b415b02a4eb3e841a913f6923578f4c, type: 3}
+    - target: {fileID: 2848472837239421944, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: _summonSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 25b3a3a906c4f1147a95dc93852b505c, type: 3}
     - target: {fileID: 2848472837239421944, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
       propertyPath: _grabRockSound
       value: 
@@ -5479,6 +5524,14 @@ PrefabInstance:
       propertyPath: _handAttackMinRange
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 2848472837239421944, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: _minionPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2848472837239421944, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: '_minionPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 263038605331430418, guid: 882dbc4b562b7394da27a8dd22bf80ca, type: 3}
     - target: {fileID: 4051396453097915907, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
       propertyPath: _heavySmoothTime
       value: 1
@@ -10896,7 +10949,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8345070699079395523, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 749855125}
   m_SourcePrefab: {fileID: 100100000, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
 --- !u!1 &1605685710
 GameObject:
@@ -11602,7 +11658,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &1723659396
 AudioSource:
   m_ObjectHideFlags: 0
@@ -14001,6 +14057,17 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.10202995, y: 0.042243063, z: 0.00000035762787}
     m_Extent: {x: 0.88155794, y: 0.24730486, z: 1.0007333}
   m_DirtyAABB: 0
+--- !u!114 &2018047577 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7396958237253864781, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+  m_PrefabInstance: {fileID: 965484974}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67bc17683d13844448ddafdb4d60e2cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2035776378
 GameObject:
   m_ObjectHideFlags: 0
@@ -14413,7 +14480,6 @@ MonoBehaviour:
   _bossHealthBarContainer: {fileID: 252378945}
   _mainHealthSlider: {fileID: 1800665758}
   _smoothEaseSlider: {fileID: 2055473491}
-  _bossNameText: {fileID: 0}
   _bossHitbox: {fileID: 1419107236}
   _mainLerpSpeed: 10
   _easeSlerpSpeed: 2
