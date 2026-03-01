@@ -1194,10 +1194,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eyes:
   - {fileID: 7272041491732869124}
-  viewAngle: 110
+  viewAngle: 190
   viewRadius: 35
   closeRange: 15
-  detectionHoldTime: 10
+  detectionHoldTime: 20
   targetMask:
     serializedVersion: 2
     m_Bits: 128
@@ -1221,7 +1221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57a754d04551c4344937f462f9175829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _turnStartThreshold: 30
+  _turnStartThreshold: 20
   _turnEndThreshold: 5
   _alignSpeed: 15
   _stopDistance: 0

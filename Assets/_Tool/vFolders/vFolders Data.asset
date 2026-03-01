@@ -54,6 +54,8 @@ MonoBehaviour:
     - ff219df3c61e32341864ee78c8459751
     - 363af966c0afc2c4b9fc9201e0f6f43a
     - 81fc48f984fb283438f24093cfd1ee90
+    - 0b0bdee34065bf34cb575a0f5ec4b711
+    - 630630575c2be414f9766b3ef7a8fe87
     values:
     - colorIndex: 0
       iconNameOrGuid: Settings Icon
@@ -133,5 +135,9 @@ MonoBehaviour:
       iconNameOrGuid: cs Script Icon
     - colorIndex: 0
       iconNameOrGuid: cs Script Icon
+    - colorIndex: 0
+      iconNameOrGuid: cs Script Icon
+    - colorIndex: 0
+      iconNameOrGuid: AnimationClip Icon
     - colorIndex: 0
       iconNameOrGuid: cs Script Icon
