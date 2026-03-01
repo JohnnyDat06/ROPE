@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
+	[SerializeField] private bool _isBoss;
 	[SerializeField] private int _maxHealth = 100;
 	[SerializeField] private int _curentHealth;
 
+	public bool IsBoss => _isBoss;
 	public int curentHealth { get => _curentHealth; set => _curentHealth = value; }
 	public int maxHealth { get => _maxHealth; set => _maxHealth = value; }
 
