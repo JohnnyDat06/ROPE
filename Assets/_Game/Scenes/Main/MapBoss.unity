@@ -93541,11 +93541,11 @@ MonoBehaviour:
   bossHealth: {fileID: 8786271}
   videoPlayer: {fileID: 2011217920}
   videoScreen: {fileID: 1077983243}
-  video60Percent: {fileID: 32900000, guid: f4f1b376b11e34641b254bc3e6ddf5bc, type: 3}
+  video60Percent: {fileID: 32900000, guid: 23e48794e34466f46ba4ad5166347f65, type: 3}
   on60PercentStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 32900000, guid: f4f1b376b11e34641b254bc3e6ddf5bc, type: 3}
+      - m_Target: {fileID: 32900000, guid: 23e48794e34466f46ba4ad5166347f65, type: 3}
         m_TargetAssemblyTypeName: 
         m_MethodName: 
         m_Mode: 0
@@ -93560,7 +93560,7 @@ MonoBehaviour:
   on60PercentEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 32900000, guid: f4f1b376b11e34641b254bc3e6ddf5bc, type: 3}
+      - m_Target: {fileID: 32900000, guid: 23e48794e34466f46ba4ad5166347f65, type: 3}
         m_TargetAssemblyTypeName: 
         m_MethodName: 
         m_Mode: 0
