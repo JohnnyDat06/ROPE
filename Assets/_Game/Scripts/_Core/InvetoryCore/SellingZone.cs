@@ -5,12 +5,7 @@ using TMPro;
 
 public class SellingZone : MonoBehaviour
 {
-    [Header("--- Game Balance Settings ---")]
-    [Tooltip("Tỷ lệ phần trăm tổng giá trị đồ trong map cần để thắng (0.75 = 75%)")]
-    [Range(0.1f, 1.0f)]
-    public float winPercentage = 0.75f;
-
-    [Header("--- Current Quota (Auto Calculated) ---")]
+    [Header("--- Current Quota (Nhận tự động từ LevelManager) ---")]
     public int quotaMoney = 0;
 
     [Header("--- Selling Settings ---")]
@@ -28,7 +23,7 @@ public class SellingZone : MonoBehaviour
     public LayerMask groundLayer;
 
     // ==========================================
-    // --- MỚI THÊM: AUDIO SETTINGS ---
+    // --- AUDIO SETTINGS ---
     // ==========================================
     [Header("--- Audio Settings ---")]
     public AudioSource audioSource;
@@ -53,19 +48,10 @@ public class SellingZone : MonoBehaviour
 
     private void Start()
     {
-        CalculateDynamicQuota();
+        // ĐÃ XÓA CalculateDynamicQuota() Ở ĐÂY
+        // Quota giờ đây sẽ do LevelManager.cs gửi trực tiếp vào biến quotaMoney
         itemsOnRug.Clear();
         UpdateUI(0);
-    }
-
-    void CalculateDynamicQuota()
-    {
-        ItemController[] allItemsInMap = FindObjectsByType<ItemController>(FindObjectsSortMode.None);
-        int totalMapValue = 0;
-        foreach (var item in allItemsInMap) if (item.scrapValue > 0) totalMapValue += item.scrapValue;
-        quotaMoney = Mathf.RoundToInt(totalMapValue * winPercentage);
-        if (quotaMoney <= 0) quotaMoney = 100;
-        Debug.Log($"<color=yellow>[GAME BALANCE] Tổng Map: {totalMapValue}$. Quota ({winPercentage * 100}%): {quotaMoney}$</color>");
     }
 
     private void Update()
@@ -105,6 +91,7 @@ public class SellingZone : MonoBehaviour
             rb.useGravity = true;
             rb.linearVelocity = Vector3.zero;
             rb.linearDamping = 0;
+            rb.angularVelocity = Vector3.zero; // Fix thêm để đồ rơi không bị xoay loạn
             rb.angularDamping = 0.05f;
         }
     }
@@ -119,7 +106,7 @@ public class SellingZone : MonoBehaviour
 
         UpdateUI(total);
 
-        if (total >= quotaMoney)
+        if (total >= quotaMoney && quotaMoney > 0) // Thêm điều kiện quotaMoney > 0 để tránh bán nhầm lúc game mới load
         {
             if (!isSelling) StartSellingProcess();
         }
@@ -213,14 +200,12 @@ public class SellingZone : MonoBehaviour
             GameObject card = Instantiate(keyCardPrefab, spawnPos, Quaternion.Euler(-90, 0, 0));
             Rigidbody cardRb = card.GetComponent<Rigidbody>();
 
-            // --- MỚI THÊM: PHÁT ÂM THANH KHI BẮT ĐẦU RƠI ---
             if (audioSource != null && rewardDropSound != null)
             {
                 audioSource.clip = rewardDropSound;
-                audioSource.volume = airborneVolume; // Đặt âm lượng to
+                audioSource.volume = airborneVolume;
                 audioSource.Play();
             }
-            // -----------------------------------------------
 
             if (cardRb)
             {
@@ -255,10 +240,7 @@ public class SellingZone : MonoBehaviour
         if (card == null) yield break;
 
         // KHI CHẠM ĐẤT
-
-        // --- MỚI THÊM: GIẢM ÂM LƯỢNG MƯỢT MÀ XUỐNG KHI CHẠM ĐẤT ---
         StartCoroutine(FadeVolume(landedVolume, fadeDuration));
-        // ---------------------------------------------------------
 
         rb.angularVelocity = Vector3.zero;
         rb.linearVelocity = Vector3.zero;
@@ -284,9 +266,6 @@ public class SellingZone : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // --- MỚI THÊM: HÀM FADE ÂM LƯỢNG ---
-    // ==========================================
     private IEnumerator FadeVolume(float targetVolume, float duration)
     {
         if (audioSource == null) yield break;
@@ -297,23 +276,24 @@ public class SellingZone : MonoBehaviour
         while (time < duration)
         {
             time += Time.deltaTime;
-            // Chuyển đổi mượt mà từ âm lượng hiện tại về âm lượng chạm đất
             audioSource.volume = Mathf.Lerp(startVolume, targetVolume, time / duration);
             yield return null;
         }
 
         audioSource.volume = targetVolume;
     }
-    // ==========================================
 
     void UpdateUI(int current)
     {
         if (infoText == null || isLaunching) return;
         if (isSelling) return;
 
-        string color = current >= quotaMoney ? "green" : "red";
-        string displayQuota = (isQuotaRevealed) ? quotaMoney.ToString() : "???";
+        // Tránh lỗi hiển thị khi quotaMoney chưa được cập nhật kịp từ LevelManager
+        int displayQuota = quotaMoney > 0 ? quotaMoney : 0;
+        string color = (current >= displayQuota && displayQuota > 0) ? "green" : "red";
 
-        infoText.text = $"TOTAL: <color={color}>{current}</color> / {displayQuota}$";
+        string displayStr = (isQuotaRevealed) ? displayQuota.ToString() : "???";
+
+        infoText.text = $"TOTAL: <color={color}>{current}</color> / {displayStr}$";
     }
 }

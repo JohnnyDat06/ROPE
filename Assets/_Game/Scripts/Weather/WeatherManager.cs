@@ -48,8 +48,14 @@ public class WeatherManager : MonoBehaviour
     [Header("--- Player Status ---")]
     [Range(0f, 1f)] public float currentStrikeChance = 0f;
 
+    [Tooltip("Thời gian an toàn không bị sét đánh trúng sau 1 lần bị giật (Giây)")]
+    public float playerStrikeCooldown = 150f;
+
     private bool _isRaining = false;
     private Coroutine _lightningRoutine;
+
+    // Biến lưu mốc thời gian đánh sét tiếp theo (để xử lý cooldown)
+    private float _nextPlayerStrikeTime = 0f;
 
     void Start()
     {
@@ -125,7 +131,8 @@ public class WeatherManager : MonoBehaviour
 
             if (targetToFollow != null)
             {
-                if (currentStrikeChance > 0 && !IsIndoors())
+                // KIỂM TRA COOLDOWN: Chỉ tiến hành giật sét nếu thời gian hiện tại lớn hơn mốc an toàn
+                if (currentStrikeChance > 0 && !IsIndoors() && Time.time >= _nextPlayerStrikeTime)
                 {
                     if (Random.value <= currentStrikeChance)
                     {
@@ -161,6 +168,10 @@ public class WeatherManager : MonoBehaviour
                                 DatScript.PlayerHealth.instance.TakeDamage(9999f);
 
                             struckPlayer = true;
+
+                            // KÍCH HOẠT COOLDOWN 150 GIÂY
+                            _nextPlayerStrikeTime = Time.time + playerStrikeCooldown;
+                            Debug.Log($"<color=yellow>Hệ thống: Kích hoạt thời gian an toàn {playerStrikeCooldown}s. Miễn nhiễm sét mục tiêu!</color>");
                         }
                     }
                 }

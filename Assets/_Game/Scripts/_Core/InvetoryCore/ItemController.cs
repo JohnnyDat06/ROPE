@@ -57,11 +57,11 @@ public class ItemController : MonoBehaviour
 
         switch (data.itemType)
         {
-            case ItemType.Small: scrapValue = Random.Range(1, 11); break;
-            case ItemType.Large: scrapValue = Random.Range(11, 37); break;
+            case ItemType.Small: scrapValue = Random.Range(10, 30); break;
+            case ItemType.Large: scrapValue = Random.Range(20, 46); break;
             case ItemType.IronSmall: scrapValue = Random.Range(16, 45); break;
-            case ItemType.IronLarge: scrapValue = Random.Range(50, 101); break;
-            case ItemType.Special: scrapValue = Random.Range(500, 1000); break;
+            case ItemType.IronLarge: scrapValue = Random.Range(50, 71); break;
+            case ItemType.Special: scrapValue = Random.Range(72, 100); break;
         }
     }
 
@@ -101,13 +101,11 @@ public class ItemController : MonoBehaviour
 
     private IEnumerator HighlightRoutine()
     {
-        // 1. Bật viền lên
+        
         itemOutline.enabled = true;
 
-        // 2. Chờ 2 giây
         yield return new WaitForSeconds(2.0f);
 
-        // 3. Tắt viền đi
         itemOutline.enabled = false;
     }
 }

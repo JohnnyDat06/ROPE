@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
-using System.Collections.Generic;
+using System.Reflection; // Dùng để đọc máu private
+using DatScript;
 
 public class SecurityRoomManager : MonoBehaviour
 {
@@ -11,35 +12,28 @@ public class SecurityRoomManager : MonoBehaviour
     [Header("Calibration")]
     public float quotaMultiplierMin = 1.3f;
     public float quotaMultiplierMax = 2.5f;
-    public float scanningDuration = 1.0f; 
+    public float scanningDuration = 1.0f;
 
     [Header("Game Logic Data")]
     public CheckMode currentMode;
     public ConditionType currentCondition;
     public float targetValue;
 
-    [Header("--- DEBUG SETTINGS ---")]
-    public bool showDebugRays = true; 
-    public bool showDebugLogs = true; 
-
     private PlayerInventorySystem currentPlayerInside = null;
     private float realMapAverageValue = 0;
-    private bool isScanning = false;    
-    private float scanTimer = 0f;       
-    private bool hasPassedInitialScan = false; 
+    private bool isScanning = false;
+    private float scanTimer = 0f;
+    private FieldInfo _hpField; // Biến lưu tham chiếu đến currentHealth
 
-    private void Start()
+    private void Awake()
     {
-        Invoke(nameof(InitializeSecurity), 0.5f);
+        // Chuẩn bị Reflection để đọc máu
+        _hpField = typeof(PlayerHealth).GetField("currentHealth", BindingFlags.NonPublic | BindingFlags.Instance);
     }
+
+    private void Start() => Invoke(nameof(InitializeSecurity), 0.5f);
 
     void InitializeSecurity()
-    {
-        ScanMapItems();
-        RandomizeRoomRules();
-    }
-
-    void ScanMapItems()
     {
         ItemController[] allItems = FindObjectsByType<ItemController>(FindObjectsSortMode.None);
         if (allItems.Length > 0)
@@ -49,6 +43,7 @@ public class SecurityRoomManager : MonoBehaviour
             realMapAverageValue = totalScrap / allItems.Length;
         }
         else realMapAverageValue = 50f;
+        RandomizeRoomRules();
     }
 
     public void RandomizeRoomRules()
@@ -62,27 +57,35 @@ public class SecurityRoomManager : MonoBehaviour
         else
         {
             currentCondition = (Random.value > 0.5f) ? ConditionType.Higher : ConditionType.Lower;
-            float calculatedTarget = realMapAverageValue * Random.Range(quotaMultiplierMin, quotaMultiplierMax);
-            targetValue = Mathf.RoundToInt(calculatedTarget / 10) * 10;
-            if (targetValue < 10) targetValue = 10;
+            targetValue = Mathf.Max(10, Mathf.RoundToInt((realMapAverageValue * Random.Range(quotaMultiplierMin, quotaMultiplierMax)) / 10) * 10);
         }
-        UpdateNeonBoard_Idle(); 
+        UpdateNeonBoard_Idle();
+    }
+
+    // Hàm lấy máu an toàn
+    private bool IsPlayerDead()
+    {
+        if (PlayerHealth.instance == null || _hpField == null) return false;
+        return (float)_hpField.GetValue(PlayerHealth.instance) <= 0;
     }
 
     private void Update()
     {
         if (currentPlayerInside != null)
         {
-            if (isScanning)
+            // --- FIX LỖI HỒI SINH KẸT SÚNG ---
+            // Nếu người chơi chết, ngay lập tức đá khỏi phòng và tắt súng
+            if (IsPlayerDead())
             {
-                HandleScanningPhase();
-                // [DEBUG] Vẽ tia màu vàng (Cảnh báo)
-                if (showDebugRays) DrawDebugRays(Color.yellow);
+                currentPlayerInside = null;
+                isScanning = false;
+                foreach (var turret in turrets) turret.DeactivateTrap();
+                UpdateNeonBoard_Idle();
+                return; // Dừng Update frame này
             }
-            else
-            {
-                CheckPlayerRealtime(currentPlayerInside);
-            }
+
+            if (isScanning) HandleScanningPhase();
+            else CheckPlayerRealtime(currentPlayerInside);
         }
     }
 
@@ -92,30 +95,22 @@ public class SecurityRoomManager : MonoBehaviour
         if (neonBoardText)
         {
             neonBoardText.color = Color.yellow;
-            int dotCount = (int)(Time.time * 3) % 4;
-            string dots = new string('.', dotCount);
-            neonBoardText.text = $"SCANNING{dots}";
+            neonBoardText.text = $"SCANNING{new string('.', (int)(Time.time * 3) % 4)}";
         }
-        if (scanTimer <= 0)
-        {
-            isScanning = false;
-            hasPassedInitialScan = true;
-        }
+        if (scanTimer <= 0) isScanning = false;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !IsPlayerDead())
         {
             var playerInv = other.GetComponent<PlayerInventorySystem>();
             if (playerInv != null)
             {
                 currentPlayerInside = playerInv;
                 isScanning = true;
-                scanTimer = scanningDuration; 
-                hasPassedInitialScan = false;
+                scanTimer = scanningDuration;
                 foreach (var turret in turrets) turret.DeactivateTrap();
-                if (showDebugLogs) Debug.Log("<color=yellow>SECURITY: Player entered. Scanning started...</color>");
             }
         }
     }
@@ -124,11 +119,13 @@ public class SecurityRoomManager : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            currentPlayerInside = null;
-            isScanning = false;
-            hasPassedInitialScan = false;
-            foreach (var turret in turrets) turret.DeactivateTrap();
-            UpdateNeonBoard_Idle();
+            if (currentPlayerInside != null)
+            {
+                currentPlayerInside = null;
+                isScanning = false;
+                foreach (var turret in turrets) turret.DeactivateTrap();
+                UpdateNeonBoard_Idle();
+            }
         }
     }
 
@@ -136,7 +133,6 @@ public class SecurityRoomManager : MonoBehaviour
     {
         float playerValue = (currentMode == CheckMode.TotalValue) ? player.TotalValue : player.TotalItemCount;
         bool isSafe = false;
-
         switch (currentCondition)
         {
             case ConditionType.Lower: isSafe = playerValue < targetValue; break;
@@ -146,39 +142,13 @@ public class SecurityRoomManager : MonoBehaviour
 
         if (!isSafe)
         {
-            // --- VI PHẠM ---
-            foreach (var turret in turrets) 
-            {
-                turret.ActivateTrap(); // SỬA: Không cần truyền player nữa
-                
-                // [DEBUG] Vẽ tia ĐỎ thẳng tắp từ nòng súng
-                if (showDebugRays && turret.firePoint != null)
-                    Debug.DrawRay(turret.firePoint.position, turret.firePoint.forward * 10f, Color.red);
-            }
-
-            if (neonBoardText)
-            {
-                neonBoardText.color = Color.red;
-                neonBoardText.text = "ACCESS DENIED";
-            }
+            foreach (var turret in turrets) turret.ActivateTrap();
+            if (neonBoardText) { neonBoardText.color = Color.red; neonBoardText.text = "ACCESS DENIED"; }
         }
         else
         {
-            // --- AN TOÀN ---
-            foreach (var turret in turrets) 
-            {
-                turret.DeactivateTrap();
-                
-                // [DEBUG] Vẽ tia XANH LÁ thẳng tắp (An toàn)
-                if (showDebugRays && turret.firePoint != null)
-                    Debug.DrawRay(turret.firePoint.position, turret.firePoint.forward * 10f, Color.green);
-            }
-
-            if (neonBoardText)
-            {
-                neonBoardText.color = Color.green;
-                neonBoardText.text = "PASSED";
-            }
+            foreach (var turret in turrets) turret.DeactivateTrap();
+            if (neonBoardText) { neonBoardText.color = Color.green; neonBoardText.text = "PASSED"; }
         }
     }
 
@@ -186,27 +156,8 @@ public class SecurityRoomManager : MonoBehaviour
     {
         if (neonBoardText == null) return;
         string modeStr = currentMode == CheckMode.TotalValue ? "$" : "ITEMS";
-        string condStr = "";
-        switch (currentCondition)
-        {
-            case ConditionType.Lower: condStr = "<"; break;
-            case ConditionType.Equal: condStr = "="; break;
-            case ConditionType.Higher: condStr = ">"; break;
-        }
+        string condStr = currentCondition == ConditionType.Lower ? "<" : (currentCondition == ConditionType.Equal ? "=" : ">");
         neonBoardText.text = $"REQ: {condStr} {targetValue} {modeStr}";
         neonBoardText.color = Color.yellow;
-    }
-
-    // Hàm phụ trợ vẽ tia thẳng
-    void DrawDebugRays(Color color)
-    {
-        foreach (var turret in turrets)
-        {
-            if (turret != null && turret.firePoint != null)
-            {
-                // Thay vì nối vào người chơi, ta vẽ tia Forward dài 10m
-                Debug.DrawRay(turret.firePoint.position, turret.firePoint.forward * 10f, color);
-            }
-        }
     }
 }
