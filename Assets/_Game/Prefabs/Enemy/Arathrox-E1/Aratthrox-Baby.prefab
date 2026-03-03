@@ -774,7 +774,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67bc17683d13844448ddafdb4d60e2cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 40
+  _isBoss: 0
+  _maxHealth: 150
   _curentHealth: 0
 --- !u!114 &8377147500289818138
 MonoBehaviour:
@@ -793,6 +794,9 @@ MonoBehaviour:
   agent: {fileID: 3809652137299540087}
   behaviorAgent: {fileID: 7180495180037368337}
   visionSensor: {fileID: 5011481683402178056}
+  movement: {fileID: 0}
+  DroidOilCombat: {fileID: 0}
+  crustaspikanCombat: {fileID: 0}
   getHitCooldown: 0.5
 --- !u!114 &3605288829673320938
 MonoBehaviour:

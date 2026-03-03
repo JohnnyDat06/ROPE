@@ -1190,7 +1190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isBoss: 0
-  _maxHealth: 100
+  _maxHealth: 200
   _curentHealth: 0
 --- !u!114 &2670987094442713484
 MonoBehaviour:
