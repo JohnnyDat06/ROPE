@@ -8,13 +8,13 @@ public class LevelManager : MonoBehaviour
     public int testQuotaValue = 130;
 
     [Header("--- Spawn Settings ---")]
-    [Tooltip("Số lượng đồ cơ bản TỐI THIỂU muốn xuất hiện (VD: 10)")]
+    [Tooltip("Số lượng đồ cơ bản TỐI THIỂU muốn xuất hiện (VD: 11)")]
     public int minItemsToSpawn = 10;
 
-    [Tooltip("Số lượng đồ cơ bản TỐI ĐA muốn xuất hiện (VD: 12)")]
+    [Tooltip("Số lượng đồ cơ bản TỐI ĐA muốn xuất hiện (VD: 15)")]
     public int maxItemsToSpawn = 12;
 
-    [Tooltip("Số lượng đồ cộng thêm (Buffer dư ra) (VD: 4)")]
+    [Tooltip("Số lượng đồ cộng thêm (Buffer dư ra để người chơi dễ thở) (VD: 10)")]
     public int bufferItemsCount = 4;
 
     [Range(0f, 1f)] public float specialItemChance = 0.3f;
@@ -46,23 +46,21 @@ public class LevelManager : MonoBehaviour
             availableSpawns.Remove(fireRoomSpawnPoint);
         }
 
-        // --- CẬP NHẬT LOGIC TÍNH TỔNG SỐ LƯỢNG SPAWN ---
-        // Tính tổng số đồ = Random(10 đến 12) + 4 đồ dư ra
+        // Tính tổng số đồ sẽ xuất hiện trên map
         int baseSpawnCount = Random.Range(minItemsToSpawn, maxItemsToSpawn + 1);
         int totalSpawnCount = baseSpawnCount + bufferItemsCount;
 
         totalMapValue = 0;
         List<int> spawnedValues = new List<int>();
 
-        // Cảnh báo nếu map không đủ vị trí đặt đồ
         if (totalSpawnCount > availableSpawns.Count)
         {
-            Debug.LogWarning($"[LevelManager] Bạn muốn spawn {totalSpawnCount} món nhưng map chỉ có {availableSpawns.Count} vị trí (Spawn Points). Hệ thống sẽ chỉ spawn tối đa {availableSpawns.Count} món!");
+            Debug.LogWarning($"[LevelManager] Bạn muốn spawn {totalSpawnCount} món nhưng map chỉ có {availableSpawns.Count} vị trí. Sẽ chỉ spawn tối đa {availableSpawns.Count} món!");
             totalSpawnCount = availableSpawns.Count;
         }
 
         // ================================================================
-        // BƯỚC 1: XỬ LÝ PHÒNG LỬA (Giữ nguyên)
+        // BƯỚC 1: XỬ LÝ PHÒNG LỬA
         // ================================================================
         if (fireRoomSpawnPoint != null)
         {
@@ -77,25 +75,20 @@ public class LevelManager : MonoBehaviour
             else if (commonItemTemplates.Count > 0)
             {
                 templateToSpawn = commonItemTemplates[Random.Range(0, commonItemTemplates.Count)];
-                Debug.Log("<color=orange>FIRE ROOM: Spawned COMMON Item (Fallback)</color>");
             }
 
             if (templateToSpawn != null)
             {
                 int val = SpawnItemFromTemplate(templateToSpawn, fireRoomSpawnPoint);
                 spawnedValues.Add(val);
-                totalSpawnCount--; // Trừ đi 1 slot vì đã dành cho phòng lửa
+                totalSpawnCount--;
             }
         }
 
         // ================================================================
-        // BƯỚC 2: SPAWN CÁC MÓN CÒN LẠI BẰNG THUẬT TOÁN "TÚI ĐỒ" (CHỐNG TRÙNG LẶP)
+        // BƯỚC 2: SPAWN CÁC MÓN CÒN LẠI (THUẬT TOÁN TÚI ĐỒ)
         // ================================================================
-
-        // Xáo trộn các vị trí trên map để đồ rớt rải rác
         ShuffleList(availableSpawns);
-
-        // Tạo một cái "Túi" chứa các Item Templates
         List<ItemController> grabBag = new List<ItemController>(commonItemTemplates);
         ShuffleList(grabBag);
 
@@ -105,26 +98,22 @@ public class LevelManager : MonoBehaviour
 
             if (commonItemTemplates.Count > 0)
             {
-                // Nếu rút hết đồ trong túi, đổ đầy lại và xáo trộn để bốc tiếp
                 if (grabBag.Count == 0)
                 {
                     grabBag.AddRange(commonItemTemplates);
                     ShuffleList(grabBag);
-                    Debug.Log("Đã bốc hết 1 vòng đồ, đang xáo trộn lại túi Item!");
                 }
 
-                // Rút món đồ đầu tiên ra khỏi túi
                 ItemController selectedTemplate = grabBag[0];
-                grabBag.RemoveAt(0); // Xóa khỏi túi để không bốc trúng lại ở lượt sau
+                grabBag.RemoveAt(0);
 
-                // Tiến hành Spawn
                 int val = SpawnItemFromTemplate(selectedTemplate, availableSpawns[i]);
                 spawnedValues.Add(val);
             }
         }
 
         // ================================================================
-        // BƯỚC 3: TÍNH QUOTA
+        // BƯỚC 3: TÍNH QUOTA (Theo chuẩn công thức: Num = N - Buffer)
         // ================================================================
         if (overrideQuotaForTesting)
         {
@@ -132,21 +121,37 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            // Tính toán Quota linh hoạt dựa trên giá trị tổng
-            float averageValue = 0;
-            if (spawnedValues.Count > 0) averageValue = (float)totalMapValue / spawnedValues.Count;
+            int totalItemsSpawned = spawnedValues.Count;
 
-            // Giữ lại phần buffer để trừ đi (tạo độ khó hợp lý)
-            int bufferValue = Mathf.RoundToInt(averageValue * bufferItemsCount);
-            currentQuota = Mathf.Max(totalMapValue - bufferValue, Mathf.RoundToInt(totalMapValue * 0.3f));
+            // Tính giá trị trung bình của 1 món đồ
+            float averageItemValue = 0;
+            if (totalItemsSpawned > 0)
+            {
+                averageItemValue = (float)totalMapValue / totalItemsSpawned;
+            }
 
-            Debug.Log($"FINAL QUOTA: {currentQuota} (Total Map Value: {totalMapValue})");
+            // Áp dụng công thức của bạn: Num = Tổng đồ (N) - Đồ dư (Buffer)
+            int numForQuota = totalItemsSpawned - bufferItemsCount;
+
+            // Đề phòng trường hợp bạn nhập số Đồ dư lớn hơn cả Tổng đồ, ta giữ Num tối thiểu là 1 để tránh lỗi Quota = 0$
+            if (numForQuota < 1)
+            {
+                numForQuota = 1;
+            }
+
+            // Tính Quota cuối cùng = Num * Giá trị trung bình
+            currentQuota = Mathf.RoundToInt(numForQuota * averageItemValue);
+
+            // In ra Console để bạn dễ dàng kiểm tra phép tính
+            Debug.Log($"<color=yellow>[GAME BALANCE] Tính Quota theo công thức N - Buffer:</color>");
+            Debug.Log($"Tổng đồ: {totalItemsSpawned} | Đồ dư: {bufferItemsCount} => <color=green>Num (Số đồ làm gốc): {numForQuota}</color>");
+            Debug.Log($"Giá trị trung bình 1 món: {averageItemValue:F1}$");
+            Debug.Log($"<color=orange>FINAL QUOTA = {numForQuota} * {averageItemValue:F1} = {currentQuota}$</color> (Tổng giá trị map: {totalMapValue}$)");
         }
 
         if (sellingZone != null) sellingZone.quotaMoney = currentQuota;
     }
 
-    // --- HÀM MỚI: SPAWN TỪ TEMPLATE ---
     int SpawnItemFromTemplate(ItemController template, Transform location)
     {
         GameObject obj = Instantiate(template.gameObject, location.position, location.rotation);
@@ -161,7 +166,6 @@ public class LevelManager : MonoBehaviour
         return ctrl.scrapValue;
     }
 
-    // --- HÀM TIỆN ÍCH: XÁO TRỘN DANH SÁCH (Thuật toán Fisher-Yates) ---
     void ShuffleList<T>(List<T> list)
     {
         for (int i = 0; i < list.Count; i++)

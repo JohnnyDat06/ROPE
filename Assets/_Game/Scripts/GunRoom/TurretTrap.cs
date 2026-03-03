@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using DatScript; // <-- THÊM DÒNG NÀY để gọi được PlayerHealth
+using System.Reflection;
+using DatScript;
 
 [RequireComponent(typeof(AudioSource))]
 public class TurretTrap : MonoBehaviour
@@ -8,46 +9,35 @@ public class TurretTrap : MonoBehaviour
     [Header("--- 1. Setup Elements ---")]
     public Transform coverCube;
     public Transform hiddenGun;
-    [Tooltip("Trục Z (Mũi tên xanh) của object này là hướng đạn bắn")]
     public Transform firePoint;
     public ParticleSystem muzzleFlashVFX;
-
-    [Header("--- 2. Post-Fire Smoke ---")]
     public ParticleSystem smokeVFX;
-    public float smokeDelayDuration = 2.0f;
 
-    [Header("--- 3. Audio Settings ---")]
+    [Header("--- 2. Combat Settings ---")]
+    public float fireRate = 0.1f;
+    public float maxFireDuration = 7.0f; // Dừng sau 7s
+    public float extraFireAfterExit = 1.5f; // Bắn đuổi 1.5s khi thoát
+    public float damagePerShot = 5f;
+    public LayerMask hitLayers = ~0;
+
+    [Header("--- 3. Audio & Animation ---")]
     public AudioClip fireSoundClip;
     [Range(0f, 1f)] public float baseVolume = 1.0f;
     public float pitchRandomness = 0.15f;
-
-    [Header("--- 4. Combat Settings ---")]
-    public float fireRate = 0.1f;
-    public float minFireDuration = 7.0f;
-    public LayerMask hitLayers = ~0;
-
-    [Header("--- 5. Animation Settings ---")]
+    public float animDuration = 0.3f;
     public Vector3 coverSlideVector = new Vector3(0.3f, 0f, 0f);
-    public float coverSlideDuration = 0.2f;
     public Vector3 coverUpVector = new Vector3(0f, 1.5f, 0f);
-    public float coverUpDuration = 0.3f;
     public Vector3 gunExtendVector = new Vector3(0f, 0f, 0.8f);
-    public float gunExtendDuration = 0.4f;
 
-    [Header("--- 6. Damage Settings ---")]
-    [Tooltip("Lượng máu bị trừ mỗi khi trúng 1 viên đạn")]
-    public float damagePerShot = 5f; // <-- THÊM BIẾN NÀY
-
-    // --- Private ---
     private Vector3 _initCoverPos;
     private Vector3 _initGunPos;
     private AudioSource _audioSource;
     private Coroutine _mainRoutine;
 
     private bool _isTrapActive = false;
-    private bool _isLocked = false;
-    private bool _pendingDeactivate = false;
+    private bool _isPlayerInside = false;
     private float _nextFireTime = 0f;
+    private FieldInfo _hpField;
 
     void Awake()
     {
@@ -56,144 +46,171 @@ public class TurretTrap : MonoBehaviour
 
         _audioSource = GetComponent<AudioSource>();
         _audioSource.playOnAwake = false;
-        _audioSource.loop = false;
 
-        if (muzzleFlashVFX) { var m = muzzleFlashVFX.main; m.playOnAwake = false; muzzleFlashVFX.Stop(); }
-        if (smokeVFX) { var m = smokeVFX.main; m.playOnAwake = false; smokeVFX.Stop(); }
+        _hpField = typeof(PlayerHealth).GetField("currentHealth", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        // Tắt Particle ngay từ trong trứng nước
+        ForceStopParticles();
+    }
+
+    void Start()
+    {
+        // Ép khối và súng luôn ở vị trí tắt/đóng hoàn toàn khi vừa bật game
+        if (coverCube) coverCube.localPosition = _initCoverPos;
+        if (hiddenGun) hiddenGun.localPosition = _initGunPos;
+
+        // Khẳng định lại một lần nữa ở Start cho chắc chắn
+        ForceStopParticles();
+        StopFiringImmediate();
+    }
+
+    // Hàm ép tắt và xóa sạch dấu vết của Particle
+    private void ForceStopParticles()
+    {
+        if (muzzleFlashVFX != null)
+        {
+            var mainFlash = muzzleFlashVFX.main;
+            mainFlash.playOnAwake = false;
+            // Dừng tạo hạt mới VÀ xóa luôn các hạt đang bay lơ lửng
+            muzzleFlashVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
+        if (smokeVFX != null)
+        {
+            var mainSmoke = smokeVFX.main;
+            mainSmoke.playOnAwake = false;
+            smokeVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
     }
 
     public void ActivateTrap()
     {
-        _pendingDeactivate = false;
+        _isPlayerInside = true;
         if (_isTrapActive) return;
-
-        _isTrapActive = true;
-        _isLocked = true;
-
         if (_mainRoutine != null) StopCoroutine(_mainRoutine);
-        _mainRoutine = StartCoroutine(TrapSequenceRoutine());
+        _mainRoutine = StartCoroutine(TrapLifecycleRoutine());
     }
 
     public void DeactivateTrap()
     {
-        _pendingDeactivate = true;
-        if (!_isLocked) StopFiringImmediate();
+        _isPlayerInside = false;
 
-        if (!_isLocked && _isTrapActive)
+        // Đảm bảo nếu bẫy đang không chạy, nó phải ở trạng thái ĐÓNG
+        if (!_isTrapActive)
         {
-            if (_mainRoutine != null) StopCoroutine(_mainRoutine);
-            _mainRoutine = StartCoroutine(CloseSequenceRoutine());
+            if (coverCube) coverCube.localPosition = _initCoverPos;
+            if (hiddenGun) hiddenGun.localPosition = _initGunPos;
         }
     }
 
-    private IEnumerator TrapSequenceRoutine()
+    private IEnumerator TrapLifecycleRoutine()
     {
-        Vector3 slidePos = _initCoverPos + coverSlideVector;
-        Vector3 popUpPos = slidePos + coverUpVector;
-        Vector3 extendPos = _initGunPos + gunExtendVector;
+        _isTrapActive = true;
 
-        yield return StartCoroutine(MoveTransform(coverCube, _initCoverPos, slidePos, coverSlideDuration));
-        yield return StartCoroutine(MoveTransform(coverCube, slidePos, popUpPos, coverUpDuration));
-        yield return StartCoroutine(MoveTransform(hiddenGun, _initGunPos, extendPos, gunExtendDuration));
+        // Mở bẫy
+        yield return StartCoroutine(AnimateParts(_initCoverPos + coverSlideVector, _initCoverPos + coverSlideVector + coverUpVector, _initGunPos + gunExtendVector));
 
         if (muzzleFlashVFX) muzzleFlashVFX.Play();
-        if (smokeVFX) smokeVFX.Stop();
 
-        float timer = 0f;
-        while (timer < minFireDuration)
+        float totalTimer = 0f;
+        float exitGraceTimer = 0f;
+
+        while (totalTimer < maxFireDuration)
         {
-            timer += Time.deltaTime;
-            HandleShooting();
+            // CẮT NGAY LẬP TỨC NẾU MÁU BẰNG 0
+            if (IsPlayerDead()) break;
+
+            if (!_isPlayerInside)
+            {
+                exitGraceTimer += Time.deltaTime;
+                if (exitGraceTimer >= extraFireAfterExit) break;
+            }
+            else
+            {
+                exitGraceTimer = 0f;
+            }
+
+            totalTimer += Time.deltaTime;
+            ExecuteFiring();
             yield return null;
         }
 
-        _isLocked = false;
-
-        if (_pendingDeactivate) yield return StartCoroutine(CloseSequenceRoutine());
-        else
-        {
-            while (!_pendingDeactivate)
-            {
-                HandleShooting();
-                yield return null;
-            }
-            yield return StartCoroutine(CloseSequenceRoutine());
-        }
-    }
-
-    private IEnumerator CloseSequenceRoutine()
-    {
+        // TẮT SÚNG VÀ ÂM THANH TỨC THÌ
         StopFiringImmediate();
 
-        if (smokeVFX)
+        // Chỉ xả khói rườm rà nếu người chơi còn sống và tự thoát được
+        if (!IsPlayerDead() && smokeVFX)
         {
             smokeVFX.Play();
-            yield return new WaitForSeconds(smokeDelayDuration);
+            yield return new WaitForSeconds(1f);
             smokeVFX.Stop();
         }
 
-        Vector3 slidePos = _initCoverPos + coverSlideVector;
-        yield return StartCoroutine(MoveTransform(hiddenGun, hiddenGun.localPosition, _initGunPos, gunExtendDuration));
-        yield return StartCoroutine(MoveTransform(coverCube, coverCube.localPosition, slidePos, coverUpDuration));
-        yield return StartCoroutine(MoveTransform(coverCube, slidePos, _initCoverPos, coverSlideDuration));
+        // Đóng bẫy nhanh chóng
+        yield return StartCoroutine(AnimateParts(_initCoverPos + coverSlideVector, _initCoverPos, _initGunPos, true));
 
         _isTrapActive = false;
-        _isLocked = false;
         _mainRoutine = null;
     }
 
-    private void StopFiringImmediate()
-    {
-        if (muzzleFlashVFX) muzzleFlashVFX.Stop();
-        if (_audioSource) _audioSource.Stop();
-    }
-
-    private void HandleShooting()
+    private void ExecuteFiring()
     {
         if (Time.time >= _nextFireTime)
         {
-            FireStraightShot();
+            if (_audioSource && fireSoundClip)
+            {
+                _audioSource.pitch = Random.Range(1f - pitchRandomness, 1f + pitchRandomness);
+                _audioSource.PlayOneShot(fireSoundClip, baseVolume);
+            }
+
+            if (Physics.Raycast(firePoint.position, firePoint.forward, out RaycastHit hit, 100f, hitLayers))
+            {
+                if (hit.collider.CompareTag("Player") && PlayerHealth.instance != null)
+                {
+                    PlayerHealth.instance.TakeDamage(damagePerShot);
+                }
+            }
             _nextFireTime = Time.time + fireRate;
         }
     }
 
-    // --- LOGIC GÂY SÁT THƯƠNG NẰM Ở ĐÂY ---
-    private void FireStraightShot()
+    private bool IsPlayerDead()
     {
-        if (_audioSource && fireSoundClip)
+        if (PlayerHealth.instance == null || _hpField == null) return false;
+        return (float)_hpField.GetValue(PlayerHealth.instance) <= 0;
+    }
+
+    private void StopFiringImmediate()
+    {
+        if (muzzleFlashVFX) muzzleFlashVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        if (_audioSource) _audioSource.Stop();
+    }
+
+    private IEnumerator AnimateParts(Vector3 slide, Vector3 up, Vector3 gun, bool reverse = false)
+    {
+        if (!reverse)
         {
-            _audioSource.pitch = Random.Range(1f - pitchRandomness, 1f + pitchRandomness);
-            _audioSource.volume = baseVolume;
-            _audioSource.PlayOneShot(fireSoundClip);
+            yield return StartCoroutine(LerpPos(coverCube, coverCube.localPosition, slide, animDuration));
+            yield return StartCoroutine(LerpPos(coverCube, coverCube.localPosition, up, animDuration));
+            yield return StartCoroutine(LerpPos(hiddenGun, hiddenGun.localPosition, gun, animDuration));
         }
-
-        Vector3 direction = firePoint.forward;
-
-        if (Physics.Raycast(firePoint.position, direction, out RaycastHit hit, 100f, hitLayers, QueryTriggerInteraction.Ignore))
+        else
         {
-            // 1. Kiểm tra xem tia đạn có đụng trúng Player không
-            if (hit.collider.CompareTag("Player"))
-            {
-                // 2. Gọi hàm trừ máu thông qua biến instance tĩnh (Singleton)
-                if (PlayerHealth.instance != null)
-                {
-                    PlayerHealth.instance.TakeDamage(damagePerShot);
-                    // (Tuỳ chọn) Bạn có thể sinh ra Particle System máu văng tại hit.point ở đây
-                }
-            }
+            yield return StartCoroutine(LerpPos(hiddenGun, hiddenGun.localPosition, gun, animDuration));
+            yield return StartCoroutine(LerpPos(coverCube, coverCube.localPosition, slide, animDuration));
+            yield return StartCoroutine(LerpPos(coverCube, coverCube.localPosition, up, animDuration));
         }
     }
 
-    private IEnumerator MoveTransform(Transform obj, Vector3 start, Vector3 end, float duration)
+    private IEnumerator LerpPos(Transform t, Vector3 start, Vector3 end, float time)
     {
-        if (duration <= 0f) { obj.localPosition = end; yield break; }
-        float t = 0f;
-        while (t < 1f)
+        float elapsed = 0;
+        while (elapsed < time)
         {
-            t += Time.deltaTime / duration;
-            obj.localPosition = Vector3.Lerp(start, end, Mathf.SmoothStep(0, 1, t));
+            t.localPosition = Vector3.Lerp(start, end, Mathf.SmoothStep(0, 1, elapsed / time));
+            elapsed += Time.deltaTime;
             yield return null;
         }
-        obj.localPosition = end;
+        t.localPosition = end;
     }
 }
