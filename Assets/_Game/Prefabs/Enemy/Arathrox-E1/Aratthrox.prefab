@@ -403,9 +403,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eyes:
   - {fileID: 7412078429931787267}
-  viewAngle: 110
-  viewRadius: 15
-  closeRange: 4
+  viewAngle: 130
+  viewRadius: 17
+  closeRange: 6
   detectionHoldTime: 5
   targetMask:
     serializedVersion: 2

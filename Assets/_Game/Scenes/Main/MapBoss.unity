@@ -11985,9 +11985,13 @@ PrefabInstance:
       propertyPath: _maxHealth
       value: 8000
       objectReference: {fileID: 0}
+    - target: {fileID: 7653513526433469909, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: DamageMultiplier
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 9007858551357040393, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
       propertyPath: WeakPointMaxHealth
-      value: 300
+      value: 600
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -34204,7 +34208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57ecb3557249e514595ad23165fb44e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightDuration: 2
+  highlightDuration: 5
 --- !u!114 &755363256
 MonoBehaviour:
   m_ObjectHideFlags: 0
