@@ -1131,6 +1131,9 @@ MonoBehaviour:
   agent: {fileID: 46970945700997092}
   behaviorAgent: {fileID: 2147543101976045000}
   visionSensor: {fileID: 7861459972058657905}
+  movement: {fileID: 0}
+  DroidOilCombat: {fileID: 0}
+  crustaspikanCombat: {fileID: 0}
   getHitCooldown: 3
 --- !u!114 &4375949174843523533
 MonoBehaviour:
