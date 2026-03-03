@@ -6497,7 +6497,7 @@ MonoBehaviour:
   Surfaces:
   - Albedo: {fileID: 2800000, guid: d1477a8594b62804db26d564c1e32740, type: 3}
     Surface: {fileID: 11400000, guid: be3e2129588d564468f9da7d73fb12fc, type: 2}
-  DefaultSurface: {fileID: 11400000, guid: be3e2129588d564468f9da7d73fb12fc, type: 2}
+  DefaultSurface: {fileID: 11400000, guid: 81220998e2ef76341967d1a4babe9130, type: 2}
 --- !u!4 &1105297156
 Transform:
   m_ObjectHideFlags: 0
@@ -14481,6 +14481,9 @@ MonoBehaviour:
   _mainHealthSlider: {fileID: 1800665758}
   _smoothEaseSlider: {fileID: 2055473491}
   _bossHitbox: {fileID: 1419107236}
+  phase1Enviroment: {fileID: 0}
+  phase2Enviroment: {fileID: 0}
+  healthPhase2: 0.4
   _mainLerpSpeed: 10
   _easeSlerpSpeed: 2
 --- !u!1 &2075410958

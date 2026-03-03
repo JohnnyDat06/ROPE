@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f05eebee7dd21149b14060d6f342497, type: 3}
+  m_Name: Ground Audio Effect - Bullet Impact
+  m_EditorClassIdentifier: 
+  AudioSourcePrefab: {fileID: 1517315014505334097, guid: d6191c5ab4f491445a9cb58f6c199a9f, type: 3}
+  AudioClips:
+  - {fileID: 8300000, guid: 34c97c7610661854cbaead8673889253, type: 3}
+  - {fileID: 8300000, guid: a5c36ac4aacf7fb40aab3c98dc5dae76, type: 3}
+  - {fileID: 8300000, guid: 9f9187e72e5158f4fb5b123b4ee676bc, type: 3}
+  VolumeRange: {x: 0.5, y: 0.75}
