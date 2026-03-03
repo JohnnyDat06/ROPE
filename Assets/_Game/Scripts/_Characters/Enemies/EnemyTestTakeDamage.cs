@@ -12,6 +12,9 @@ public class EnemyTestTakeDamage : MonoBehaviour
 	[SerializeField] private NavMeshAgent agent;
 	[SerializeField] private BehaviorGraphAgent behaviorAgent;
 	[SerializeField] private VisionSensor visionSensor;
+	[SerializeField] private EnemyMovement movement;
+	[SerializeField] private DroidOilCombat DroidOilCombat;
+	[SerializeField] private CrustaspikanCombat crustaspikanCombat;
 
 	[Header("Hit Reactions")]
 	[Tooltip("Thời gian hồi chiêu giữa 2 lần bị choáng (Giây)")]
@@ -84,5 +87,9 @@ public class EnemyTestTakeDamage : MonoBehaviour
 		if (animator != null) animator.SetTrigger("Dead");
 		if (agent != null) agent.enabled = false;
 		if (behaviorAgent != null) behaviorAgent.enabled = false;
+		if (visionSensor != null) visionSensor.enabled = false;
+		if (movement != null) movement.enabled = false;
+		if (DroidOilCombat != null) DroidOilCombat.enabled = false;
+		if (crustaspikanCombat != null) crustaspikanCombat.enabled = false;
 	}
 }

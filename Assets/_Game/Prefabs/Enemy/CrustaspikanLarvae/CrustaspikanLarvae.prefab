@@ -1071,7 +1071,7 @@ GameObject:
   - component: {fileID: 6051811378735468168}
   - component: {fileID: 4375949174843523533}
   - component: {fileID: 5199471548623682000}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: _Hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1145,7 +1145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isBoss: 0
-  _maxHealth: 100
+  _maxHealth: 120
   _curentHealth: 0
 --- !u!114 &5199471548623682000
 MonoBehaviour:
