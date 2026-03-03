@@ -11901,6 +11901,10 @@ PrefabInstance:
       propertyPath: _turnStartThreshold
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 4769455772453128730, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.25
+      objectReference: {fileID: 0}
     - target: {fileID: 5237058898227141499, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
       propertyPath: m_LocalPosition.x
       value: 15.3
@@ -11945,6 +11949,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Crustaspikan
       objectReference: {fileID: 0}
+    - target: {fileID: 6707830547513410899, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6707830547513410899, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: outlineWidth
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6707830547513410899, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: precomputeOutline
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7257948710229461527, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7257948710229461527, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -11968,6 +11988,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3366487263976479341, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1297164003}
+    - targetCorrespondingSourceObject: {fileID: 7257948710229461527, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 755363256}
+    - targetCorrespondingSourceObject: {fileID: 7257948710229461527, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 755363255}
+    - targetCorrespondingSourceObject: {fileID: 7257948710229461527, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 755363257}
   m_SourcePrefab: {fileID: 100100000, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
 --- !u!1 &273781835
 GameObject:
@@ -34116,6 +34145,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4000012506713666, guid: 58d97d456aead63499ac7d5316541f78, type: 3}
   m_PrefabInstance: {fileID: 754804610}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &755363251 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7257948710229461527, guid: bc828e3fb23c59941af3c94c09921add, type: 3}
+  m_PrefabInstance: {fileID: 273175465}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &755363255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755363251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57ecb3557249e514595ad23165fb44e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightDuration: 2
+--- !u!114 &755363256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755363251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 0.09377968, b: 0, a: 1}
+  outlineWidth: 0.1
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!65 &755363257
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755363251}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.2477155, y: 1.8657341, z: 1.5547222}
+  m_Center: {x: 0.00000022825634, y: 1.1925644, z: 0.69852984}
 --- !u!1 &756889830
 GameObject:
   m_ObjectHideFlags: 0
@@ -76739,11 +76825,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c560ee2ccd755c4c8d6ed04c509e2e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxScanRadius: 30
+  maxScanRadius: 69
   scanDuration: 1.5
   itemLayer:
     serializedVersion: 2
     m_Bits: 65536
+  bossWeakPointLayer:
+    serializedVersion: 2
+    m_Bits: 8
   groundLayer:
     serializedVersion: 2
     m_Bits: 0

@@ -7,7 +7,12 @@ public class ScannerSystem : MonoBehaviour
     [Header("--- Scan Settings ---")]
     public float maxScanRadius = 30f;
     public float scanDuration = 1.5f;
+
+    [Tooltip("Layer chứa các vật phẩm có thể nhặt/tương tác")]
     public LayerMask itemLayer;
+
+    [Tooltip("Layer chứa điểm yếu của Boss")]
+    public LayerMask bossWeakPointLayer;
 
     [Tooltip("Chọn Layer của mặt đất/địa hình để sóng bám vào")]
     public LayerMask groundLayer;
@@ -24,16 +29,14 @@ public class ScannerSystem : MonoBehaviour
 
     void Update()
     {
-        // 1. Trừ lùi thời gian hồi chiêu
         if (currentCooldown > 0)
         {
             currentCooldown -= Time.deltaTime;
         }
 
-        // 2. Bấm phím V để quét (chỉ khi hết cooldown và không đang quét)
         if (Input.GetKeyDown(KeyCode.V) && !isScanning && currentCooldown <= 0)
         {
-            currentCooldown = scanCooldown; // Reset lại bộ đếm 10 giây
+            currentCooldown = scanCooldown;
             StartCoroutine(ScanWaveRoutine());
         }
     }
@@ -42,45 +45,37 @@ public class ScannerSystem : MonoBehaviour
     {
         isScanning = true;
         float timer = 0f;
-        HashSet<ItemController> scannedItems = new HashSet<ItemController>();
 
-        // ---------------------------------------------------------
-        // BƯỚC 1: TẠO RA VÒNG SÓNG ÂM VÀ GHIM XUỐNG MẶT ĐẤT
-        // ---------------------------------------------------------
+        // Sử dụng 2 HashSet riêng biệt để quản lý Item và Điểm yếu
+        HashSet<ItemController> scannedItems = new HashSet<ItemController>();
+        HashSet<BossWeakPoint> scannedWeakPoints = new HashSet<BossWeakPoint>();
+
         GameObject waveObj = null;
         if (scanRingPrefab != null)
         {
             Vector3 spawnPos = transform.position;
 
-            // Bắn tia xuống dưới chân nhân vật để tìm mặt đất (quét sâu tối đa 20m)
             if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 20f, groundLayer))
             {
-                // Nếu thấy đất -> Dời tâm sóng xuống đúng điểm chạm đất (nhích lên 0.05f để không chìm)
                 spawnPos = hit.point + Vector3.up * 0.05f;
             }
 
             waveObj = Instantiate(scanRingPrefab, spawnPos, Quaternion.identity);
-
-            // Vì là khối cầu (Sphere) nên khởi tạo Scale = 0 đều cho cả 3 trục
             waveObj.transform.localScale = Vector3.zero;
         }
 
-        // ---------------------------------------------------------
-        // BƯỚC 2: QUÁ TRÌNH SÓNG QUÉT LAN RỘNG DẦN
-        // ---------------------------------------------------------
+        // Gộp cả 2 LayerMask lại để quét trong 1 lần OverlapSphere duy nhất (Tối ưu hiệu suất)
+        LayerMask combinedScanLayer = itemLayer | bossWeakPointLayer;
+
         while (timer < scanDuration)
         {
             timer += Time.deltaTime;
-
-            // Tính bán kính quét hiện tại
             float currentRadius = Mathf.Lerp(0, maxScanRadius, timer / scanDuration);
 
             if (waveObj != null)
             {
-                // Phóng to đều 3 trục (X, Y, Z) để khối cầu nở ra
                 waveObj.transform.localScale = new Vector3(currentRadius * 2f, currentRadius * 2f, currentRadius * 2f);
 
-                // Cập nhật giá trị làm mờ (_Fade) truyền vào Shader Graph
                 Renderer waveRenderer = waveObj.GetComponent<Renderer>();
                 if (waveRenderer != null)
                 {
@@ -89,24 +84,35 @@ public class ScannerSystem : MonoBehaviour
                 }
             }
 
-            // Tìm vật phẩm nằm trong phạm vi khối cầu hiện tại
-            Collider[] hits = Physics.OverlapSphere(transform.position, currentRadius, itemLayer);
+            // Quét tất cả các object thuộc itemLayer HOẶC bossWeakPointLayer
+            Collider[] hits = Physics.OverlapSphere(transform.position, currentRadius, combinedScanLayer);
             foreach (Collider hit in hits)
             {
-                ItemController item = hit.GetComponentInParent<ItemController>();
-                if (item != null && !scannedItems.Contains(item))
+                // 1. Nếu chạm vào Item
+                if ((itemLayer.value & (1 << hit.gameObject.layer)) > 0)
                 {
-                    scannedItems.Add(item);
-                    item.TriggerHighlight(); // Phát sáng bằng Quick Outline
+                    ItemController item = hit.GetComponentInParent<ItemController>();
+                    if (item != null && !scannedItems.Contains(item))
+                    {
+                        scannedItems.Add(item);
+                        item.TriggerHighlight();
+                    }
+                }
+                // 2. Nếu chạm vào Điểm yếu Boss
+                else if ((bossWeakPointLayer.value & (1 << hit.gameObject.layer)) > 0)
+                {
+                    BossWeakPoint weakPoint = hit.GetComponentInParent<BossWeakPoint>();
+                    if (weakPoint != null && !scannedWeakPoints.Contains(weakPoint))
+                    {
+                        scannedWeakPoints.Add(weakPoint);
+                        weakPoint.TriggerHighlight(); // Bật outline cho điểm yếu
+                    }
                 }
             }
 
             yield return null;
         }
 
-        // ---------------------------------------------------------
-        // BƯỚC 3: KẾT THÚC QUÉT -> DỌN DẸP XÓA KHỐI CẦU
-        // ---------------------------------------------------------
         if (waveObj != null)
         {
             Destroy(waveObj);
