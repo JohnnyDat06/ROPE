@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.Video;
+using System.Collections;
 
 public class PlayerInventorySystem : MonoBehaviour
 {
@@ -40,6 +43,21 @@ public class PlayerInventorySystem : MonoBehaviour
     public WeatherManager weatherManager;
 
     // ========================================================================
+    // 8. CUTSCENE & LEVEL TRANSITION SETTINGS
+    // ========================================================================
+    [Header("--- 8. Cutscene & Transition Settings ---")]
+    [Tooltip("Layer của bức tường để check chuyển map (Ví dụ: Map2)")]
+    public LayerMask map2Layer;
+    [Tooltip("Tên chính xác của vật phẩm KeyCard trong ItemData")]
+    public string keyCardName = "KeyCard";
+    [Tooltip("Tên Scene bạn muốn chuyển đến sau khi hết Video")]
+    public string nextSceneName = "Map2_Scene";
+
+    [Header("--- Video References ---")]
+    public VideoPlayer cutscenePlayer;
+    public GameObject videoUIContainer;
+
+    // ========================================================================
     // 2. PRIVATE VARIABLES & PROPERTIES
     // ========================================================================
     private Camera playerCam;
@@ -50,6 +68,9 @@ public class PlayerInventorySystem : MonoBehaviour
     private float pickupTimer = 0f;
     private float throwChargeTimer = 0f;
     private bool isChargingThrow = false;
+
+    private bool isLookingAtMap2Wall = false;
+    private bool isPlayingCutscene = false;
 
     public float TotalWeight { get; private set; }
     public int TotalValue { get; private set; }
@@ -66,10 +87,14 @@ public class PlayerInventorySystem : MonoBehaviour
         if (progressCircle) progressCircle.fillAmount = 0;
         if (promptText) promptText.gameObject.SetActive(false);
         if (totalValueText) totalValueText.text = "TOTAL: $0";
+
+        if (videoUIContainer) videoUIContainer.SetActive(false);
     }
 
     void Update()
     {
+        if (isPlayingCutscene) return;
+
         HandleInteraction();
         HandleInput();
         HandleSlotSelectionUI();
@@ -85,14 +110,43 @@ public class PlayerInventorySystem : MonoBehaviour
         Ray ray = playerCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Debug.DrawRay(ray.origin, ray.direction * interactDistance, Color.red);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, itemLayer))
+        LayerMask combinedMask = itemLayer | map2Layer;
+
+        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, combinedMask))
         {
-            if (hit.collider.TryGetComponent(out ItemController item))
+            if (((1 << hit.collider.gameObject.layer) & itemLayer) != 0)
             {
-                targetItem = item;
+                isLookingAtMap2Wall = false;
+
+                if (hit.collider.TryGetComponent(out ItemController item))
+                {
+                    targetItem = item;
+                    if (promptText)
+                    {
+                        // ĐÃ BỎ MÀU: Hiển thị text thô cơ bản
+                        promptText.text = $"{item.data.itemName} (${item.scrapValue})\n[Press E]";
+                        promptText.gameObject.SetActive(true);
+                    }
+                    return;
+                }
+            }
+            else if (((1 << hit.collider.gameObject.layer) & map2Layer) != 0)
+            {
+                targetItem = null;
+                isLookingAtMap2Wall = true;
+
                 if (promptText)
                 {
-                    promptText.text = $"{item.data.itemName} <color=yellow>(${item.scrapValue})</color>\n<size=80%>[Press E]</size>";
+                    if (CheckHasKeyCard())
+                    {
+                        // ĐÃ BỎ MÀU
+                        promptText.text = "Use KeyCard\n[Press E]";
+                    }
+                    else
+                    {
+                        // ĐÃ BỎ MÀU
+                        promptText.text = "Locked\n[Requires KeyCard]";
+                    }
                     promptText.gameObject.SetActive(true);
                 }
                 return;
@@ -100,6 +154,7 @@ public class PlayerInventorySystem : MonoBehaviour
         }
 
         targetItem = null;
+        isLookingAtMap2Wall = false;
         if (promptText) promptText.gameObject.SetActive(false);
 
         if (!isChargingThrow && pickupTimer > 0)
@@ -111,7 +166,6 @@ public class PlayerInventorySystem : MonoBehaviour
 
     void HandleInput()
     {
-        // Chọn Slot
         if (Input.GetKeyDown(KeyCode.Alpha1)) currentSlotIndex = 0;
         if (Input.GetKeyDown(KeyCode.Alpha2)) currentSlotIndex = 1;
         if (Input.GetKeyDown(KeyCode.Alpha3)) currentSlotIndex = 2;
@@ -122,25 +176,34 @@ public class PlayerInventorySystem : MonoBehaviour
         if (scroll > 0) currentSlotIndex = (currentSlotIndex + 1) % inventorySlots.Length;
         if (scroll < 0) currentSlotIndex = (currentSlotIndex - 1 + inventorySlots.Length) % inventorySlots.Length;
 
-        // Nhặt đồ
-        // Nhặt đồ (Nhấn E 1 lần là nhặt)
-        if (Input.GetKeyDown(KeyCode.E) && targetItem != null && !isChargingThrow)
+        if (Input.GetKeyDown(KeyCode.E) && !isChargingThrow)
         {
-            int emptyIndex = GetEmptySlot();
-            if (emptyIndex != -1)
+            if (isLookingAtMap2Wall)
             {
-                // Nhặt thẳng vào vị trí trống
-                currentSlotIndex = emptyIndex;
-                PickupItem(targetItem, emptyIndex);
-
-                // Reset lại các biến
-                targetItem = null;
-                if (progressCircle) progressCircle.fillAmount = 0; // Đảm bảo vòng tròn tàng hình
-                if (promptText) promptText.gameObject.SetActive(false);
+                if (CheckHasKeyCard())
+                {
+                    StartCoroutine(PlayCutsceneAndTransition());
+                }
+                return;
             }
-            else if (promptText)
+
+            if (targetItem != null)
             {
-                promptText.text = "<color=red>FULL!</color>";
+                int emptyIndex = GetEmptySlot();
+                if (emptyIndex != -1)
+                {
+                    currentSlotIndex = emptyIndex;
+                    PickupItem(targetItem, emptyIndex);
+
+                    targetItem = null;
+                    if (progressCircle) progressCircle.fillAmount = 0;
+                    if (promptText) promptText.gameObject.SetActive(false);
+                }
+                else if (promptText)
+                {
+                    // ĐÃ BỎ MÀU
+                    promptText.text = "FULL!";
+                }
             }
         }
         else if (!isChargingThrow)
@@ -149,7 +212,6 @@ public class PlayerInventorySystem : MonoBehaviour
             if (progressCircle) progressCircle.fillAmount = 0;
         }
 
-        // Ném đồ
         if (Input.GetKeyDown(KeyCode.Q))
         {
             if (inventoryItems[currentSlotIndex] != null)
@@ -186,19 +248,64 @@ public class PlayerInventorySystem : MonoBehaviour
     }
 
     // ========================================================================
-    // 5. ITEM HANDLING
+    // 5. CUTSCENE & SCENE TRANSITION LOGIC 
+    // ========================================================================
+    bool CheckHasKeyCard()
+    {
+        for (int i = 0; i < inventoryItems.Length; i++)
+        {
+            if (inventoryItems[i] != null && inventoryItems[i].data != null)
+            {
+                if (inventoryItems[i].data.itemName == keyCardName)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    IEnumerator PlayCutsceneAndTransition()
+    {
+        isPlayingCutscene = true;
+
+        if (promptText) promptText.gameObject.SetActive(false);
+
+        if (cutscenePlayer != null && videoUIContainer != null)
+        {
+            videoUIContainer.SetActive(true);
+            cutscenePlayer.Prepare();
+
+            while (!cutscenePlayer.isPrepared)
+            {
+                yield return null;
+            }
+
+            cutscenePlayer.Play();
+            yield return new WaitForSeconds(6f);
+        }
+        else
+        {
+            Debug.LogWarning("Chưa gán VideoPlayer hoặc Video UI Container. Đợi 4s rồi chuyển map luôn.");
+            yield return new WaitForSeconds(4f);
+        }
+
+        Debug.Log("Loading next scene: " + nextSceneName);
+        SceneManager.LoadScene(nextSceneName);
+    }
+
+    // ========================================================================
+    // 6. ITEM HANDLING
     // ========================================================================
     void PickupItem(ItemController item, int slotIndex)
     {
         inventoryItems[slotIndex] = item;
         item.transform.SetParent(inventorySlots[slotIndex]);
 
-        // Đặt vị trí và góc xoay về 0 trước để tính toán cho chuẩn
         item.transform.localPosition = Vector3.zero;
         item.transform.localRotation = Quaternion.identity;
         item.transform.localScale = Vector3.one;
 
-        // --- TỰ ĐỘNG CĂN CHỈNH CAMERA UI ---
         Renderer[] renderers = item.GetComponentsInChildren<Renderer>();
         if (renderers.Length > 0)
         {
@@ -221,7 +328,6 @@ public class PlayerInventorySystem : MonoBehaviour
             item.transform.position += offsetToCenter;
         }
 
-        // Áp dụng Offset góc xoay từ ItemData để không bị ngược trong UI
         item.transform.localRotation *= Quaternion.Euler(item.data.inventoryRotationOffset);
         item.transform.localPosition += item.data.inventoryPositionOffset;
 
@@ -235,27 +341,21 @@ public class PlayerInventorySystem : MonoBehaviour
         if (item == null) return;
 
         item.transform.SetParent(null);
-
-        // --- FIX LỖI KÍCH THƯỚC: Trả về scale gốc của map ---
         item.transform.localScale = item.originalScale;
 
         bool isGentleDrop = (forceToApply <= minThrowForce * 1.5f);
 
-        // --- FIX LỖI LỘN NGƯỢC ---
         if (isGentleDrop)
         {
-            // Giữ nguyên trục X, Z để đồ đứng thẳng như map, chỉ xoay trục Y theo hướng Camera
             Vector3 originalEuler = item.originalRotation.eulerAngles;
             Vector3 camEuler = playerCam.transform.eulerAngles;
             item.transform.rotation = Quaternion.Euler(originalEuler.x, camEuler.y, originalEuler.z);
         }
         else
         {
-            // Ném mạnh thì cứ gán lại góc chuẩn rồi để Physics tự xoay
             item.transform.rotation = item.originalRotation;
         }
 
-        // Tính toán độ cao để đặt đồ không xuyên sàn
         float itemHalfHeight = 0.25f;
         Collider col = item.GetComponent<Collider>();
         if (col != null) itemHalfHeight = col.bounds.extents.y;
@@ -299,7 +399,7 @@ public class PlayerInventorySystem : MonoBehaviour
     }
 
     // ========================================================================
-    // 6. HELPER FUNCTIONS & UI
+    // 7. HELPER FUNCTIONS & UI
     // ========================================================================
     int GetEmptySlot()
     {
@@ -350,7 +450,7 @@ public class PlayerInventorySystem : MonoBehaviour
         TotalValue = v;
         TotalItemCount = c;
 
-        if (totalValueText != null) totalValueText.text = $"TOTAL: <color=yellow>${TotalValue}</color>";
+        if (totalValueText != null) totalValueText.text = $"TOTAL: ${TotalValue}";
         if (weatherManager) weatherManager.currentStrikeChance = lightningChance;
     }
 }
