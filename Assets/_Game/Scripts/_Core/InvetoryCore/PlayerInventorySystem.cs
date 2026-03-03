@@ -421,6 +421,7 @@ public class PlayerInventorySystem : MonoBehaviour
     void RotateInventoryItems()
     {
         for (int i = 0; i < inventoryItems.Length; i++)
+          
         {
             if (inventoryItems[i] != null) inventoryItems[i].transform.Rotate(Vector3.up * 30f * Time.deltaTime, Space.World);
         }
@@ -442,7 +443,7 @@ public class PlayerInventorySystem : MonoBehaviour
                 c++;
 
                 if (item.data.itemType == ItemType.IronSmall) lightningChance += 0.01f;
-                else if (item.data.itemType == ItemType.IronLarge) lightningChance += 0.05f;
+                else if (item.data.itemType == ItemType.IronLarge) lightningChance += 0.02f;
             }
         }
 
