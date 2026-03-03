@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
-using System.Reflection; // Dùng để đọc máu private
+using System.Reflection; 
 using DatScript;
 
 public class SecurityRoomManager : MonoBehaviour
@@ -23,11 +23,10 @@ public class SecurityRoomManager : MonoBehaviour
     private float realMapAverageValue = 0;
     private bool isScanning = false;
     private float scanTimer = 0f;
-    private FieldInfo _hpField; // Biến lưu tham chiếu đến currentHealth
+    private FieldInfo _hpField; 
 
     private void Awake()
     {
-        // Chuẩn bị Reflection để đọc máu
         _hpField = typeof(PlayerHealth).GetField("currentHealth", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
@@ -62,7 +61,6 @@ public class SecurityRoomManager : MonoBehaviour
         UpdateNeonBoard_Idle();
     }
 
-    // Hàm lấy máu an toàn
     private bool IsPlayerDead()
     {
         if (PlayerHealth.instance == null || _hpField == null) return false;
@@ -73,15 +71,13 @@ public class SecurityRoomManager : MonoBehaviour
     {
         if (currentPlayerInside != null)
         {
-            // --- FIX LỖI HỒI SINH KẸT SÚNG ---
-            // Nếu người chơi chết, ngay lập tức đá khỏi phòng và tắt súng
             if (IsPlayerDead())
             {
                 currentPlayerInside = null;
                 isScanning = false;
                 foreach (var turret in turrets) turret.DeactivateTrap();
                 UpdateNeonBoard_Idle();
-                return; // Dừng Update frame này
+                return; 
             }
 
             if (isScanning) HandleScanningPhase();
