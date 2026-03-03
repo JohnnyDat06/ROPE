@@ -93624,8 +93624,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  blackScreenImage: {fileID: 1196832209}
-  fadeToBlackDuration: 2
 --- !u!4 &2011217922
 Transform:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using UnityEngine.SceneManagement; // Bắt buộc phải có thư viện này để chuyển Scene
 
 public class BossVideoCutscene : MonoBehaviour
 {
@@ -28,10 +29,6 @@ public class BossVideoCutscene : MonoBehaviour
     public UnityEvent onDeathStart;
     public UnityEvent onDeathEnd;
 
-    [Header("Cài đặt Màn hình đen")]
-    public Image blackScreenImage;
-    public float fadeToBlackDuration = 2f;
-
     private bool _isDeathVideo = false;
 
     private void OnEnable()
@@ -44,6 +41,7 @@ public class BossVideoCutscene : MonoBehaviour
 
         if (videoPlayer != null)
         {
+           
             videoPlayer.loopPointReached += OnVideoFinished;
         }
     }
@@ -64,7 +62,6 @@ public class BossVideoCutscene : MonoBehaviour
 
     private void CheckHealthForCutscene(int damage)
     {
-        // Bỏ qua nếu đã chiếu rồi HOẶC nếu video Boss chết đang chuẩn bị chạy
         if (_hasPlayed60Percent || _isDeathVideo || bossHealth.curentHealth <= 0) return;
 
         float hpPercentage = (float)bossHealth.curentHealth / bossHealth.maxHealth;
@@ -81,24 +78,16 @@ public class BossVideoCutscene : MonoBehaviour
 
     private void HandleBossDeath(Vector3 deathPosition)
     {
-        // Đánh dấu là Boss đã chết để chặn các logic khác
         _isDeathVideo = true;
-
-        // Bắt đầu đếm ngược 5 giây
         StartCoroutine(WaitAndPlayDeathVideo());
     }
 
     private IEnumerator WaitAndPlayDeathVideo()
     {
         Debug.Log($"Boss đã chết! Chờ {delayBeforeDeathVideo} giây trước khi chiếu Cutscene...");
-
-        // Đợi đúng 5 giây theo thời gian thực.
-        // Dùng WaitForSecondsRealtime để đảm bảo đếm đúng giờ ngay cả khi Time.timeScale bị thay đổi bởi kỹ năng nào đó.
         yield return new WaitForSecondsRealtime(delayBeforeDeathVideo);
 
-        // Sau 5 giây, dừng hoàn toàn game lại
         Time.timeScale = 0f;
-
         PlayVideo(videoDeath);
         onDeathStart?.Invoke();
     }
@@ -118,36 +107,18 @@ public class BossVideoCutscene : MonoBehaviour
 
         if (!_isDeathVideo)
         {
+          
             Time.timeScale = 1f;
             on60PercentEnd?.Invoke();
             Debug.Log("Kết thúc Cutscene 60%, Game tiếp tục.");
         }
         else
         {
+            
             onDeathEnd?.Invoke();
-            if (blackScreenImage != null)
-            {
-                StartCoroutine(FadeToBlackCoroutine());
-            }
+            Debug.Log("Video kết thúc. Đang chuyển về MainMenu...");      
+            Time.timeScale = 1f;
+            SceneManager.LoadScene("MainMenu");
         }
-    }
-
-    private IEnumerator FadeToBlackCoroutine()
-    {
-        blackScreenImage.gameObject.SetActive(true);
-        Color color = blackScreenImage.color;
-        float timer = 0f;
-
-        while (timer < fadeToBlackDuration)
-        {
-            timer += Time.unscaledDeltaTime;
-            color.a = Mathf.Lerp(0f, 1f, timer / fadeToBlackDuration);
-            blackScreenImage.color = color;
-            yield return null;
-        }
-
-        color.a = 1f;
-        blackScreenImage.color = color;
-        Debug.Log("Màn hình đã đen hoàn toàn. Kết thúc!");
     }
 }
