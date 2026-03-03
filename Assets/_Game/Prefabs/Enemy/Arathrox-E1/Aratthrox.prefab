@@ -233,6 +233,7 @@ GameObject:
   - component: {fileID: 2973196882313661414}
   - component: {fileID: 2275762008654896442}
   - component: {fileID: 8932481085132612894}
+  - component: {fileID: 6948625054548215746}
   m_Layer: 3
   m_Name: ArathroxObj
   m_TagString: Untagged
@@ -565,6 +566,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6948625054548215746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518434366457916247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2697ea22f37099846921c2357ca018f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weakPointHitbox: {fileID: 1080050256449732443}
+  _behaviorAgent: {fileID: 6460818871355194517}
+  _canShootVariableName: CanShoot
 --- !u!1 &637246557766980381
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,6 +1189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67bc17683d13844448ddafdb4d60e2cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isBoss: 0
   _maxHealth: 100
   _curentHealth: 0
 --- !u!114 &2670987094442713484
@@ -1192,6 +1209,9 @@ MonoBehaviour:
   agent: {fileID: 2154215530032900626}
   behaviorAgent: {fileID: 6460818871355194517}
   visionSensor: {fileID: 2973196882313661414}
+  movement: {fileID: 456563550929242987}
+  DroidOilCombat: {fileID: 0}
+  crustaspikanCombat: {fileID: 0}
   getHitCooldown: 0.5
 --- !u!114 &1889632615935913733
 MonoBehaviour:
