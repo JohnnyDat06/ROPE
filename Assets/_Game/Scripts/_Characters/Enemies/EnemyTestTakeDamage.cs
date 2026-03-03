@@ -79,7 +79,7 @@ public class EnemyTestTakeDamage : MonoBehaviour
 		if (animator != null) animator.ResetTrigger(triggerName);
 	}
 
-	private void Death_OnDeath(Vector3 position)
+	public void Death_OnDeath(Vector3 position)
 	{
 		if (animator != null) animator.SetTrigger("Dead");
 		if (agent != null) agent.enabled = false;

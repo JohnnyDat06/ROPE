@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 52ba9b243690b0341b4413507513ce7e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323953
+  packageName: QA Explosive Device C4 & Defuse Kit
+  packageVersion: 1.0
+  assetPath: Assets/QAtmo/Explosive Device C4 & Defuse Kit/Models/Materials/SapperKit_mtl.mat
+  uploadId: 765873
