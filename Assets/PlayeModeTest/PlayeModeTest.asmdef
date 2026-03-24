@@ -1,0 +1,17 @@
+{
+    "name": "PlayModeTests",
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "references":[
+        "Unity.InputSystem",
+        "Unity.InputSystem.TestFramework"
+    ],
+    "overrideReferences": true,
+    "precompiledReferences":[
+        "nunit.framework.dll"
+    ],
+    "defineConstraints":[
+        "UNITY_INCLUDE_TESTS"
+    ]
+}
