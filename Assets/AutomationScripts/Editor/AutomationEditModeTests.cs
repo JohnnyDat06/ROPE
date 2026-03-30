@@ -96,5 +96,59 @@ namespace AutomationScripts.Editor
 
             UnityEngine.Object.DestroyImmediate(go);
         }
+
+        [Test]
+        [Description("4. Kiểm tra EnemyHitbox: Điểm yếu phải bị phá hủy khi hết máu.")]
+        public void EnemyHitbox_WeakPoint_BrokenWhenHealthZero()
+        {
+            Type enemyHitboxType = GetGameType("EnemyHitbox");
+            Type enemyHealthType = GetGameType("EnemyHealth");
+            Type hitboxTypeEnum = enemyHitboxType.GetNestedType("HitboxType");
+
+            // 1. Setup Enemy và Health
+            GameObject enemyGo = new GameObject("TestEnemy");
+            Component healthComp = enemyGo.AddComponent(enemyHealthType);
+            
+            // 2. Setup Hitbox điểm yếu
+            GameObject hitboxGo = new GameObject("WeakPointHitbox");
+            hitboxGo.transform.SetParent(enemyGo.transform);
+            Component hitboxComp = hitboxGo.AddComponent(enemyHitboxType);
+
+            // 3. Thiết lập các thông số qua Reflection
+            // Type = WeakPoint (Giá trị enum là 2)
+            FieldInfo typeField = enemyHitboxType.GetField("Type");
+            typeField.SetValue(hitboxComp, Enum.ToObject(hitboxTypeEnum, 2));
+
+            // MainHealth = healthComp
+            FieldInfo mainHealthField = enemyHitboxType.GetField("MainHealth");
+            mainHealthField.SetValue(hitboxComp, healthComp);
+
+            // Gán WeakPoint GameObject (Mô phỏng phần nhìn thấy của điểm yếu)
+            GameObject weakPointModel = new GameObject("WeakPointModel");
+            weakPointModel.transform.SetParent(hitboxGo.transform);
+            FieldInfo weakPointField = enemyHitboxType.GetField("WeakPoint", BindingFlags.NonPublic | BindingFlags.Instance);
+            weakPointField.SetValue(hitboxComp, weakPointModel);
+
+            // Thiết lập máu điểm yếu
+            FieldInfo maxHealthField = enemyHitboxType.GetField("WeakPointMaxHealth");
+            maxHealthField.SetValue(hitboxComp, 50);
+            FieldInfo currentHealthField = enemyHitboxType.GetField("_currentWeakPointHealth", BindingFlags.NonPublic | BindingFlags.Instance);
+            currentHealthField.SetValue(hitboxComp, 50);
+
+            // 4. Thực hiện (Act): Gây sát thương phá hủy điểm yếu
+            MethodInfo takeDamageMethod = enemyHitboxType.GetMethod("TakeDamage");
+            takeDamageMethod.Invoke(hitboxComp, new object[] { 50 });
+
+            // 5. Kiểm tra (Assert)
+            PropertyInfo isBrokenProp = enemyHitboxType.GetProperty("IsBroken");
+            bool isBroken = (bool)isBrokenProp.GetValue(hitboxComp);
+            
+            Assert.IsTrue(isBroken, "Biến IsBroken phải là true sau khi điểm yếu hết máu.");
+            Assert.IsFalse(weakPointModel.activeSelf, "GameObject WeakPoint phải bị tắt (Deactivate).");
+            Assert.IsFalse(hitboxGo.activeSelf, "Chính GameObject chứa Hitbox cũng phải bị tắt.");
+
+            // Dọn dẹp
+            UnityEngine.Object.DestroyImmediate(enemyGo);
+        }
     }
 }
