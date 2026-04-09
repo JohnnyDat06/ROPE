@@ -1,0 +1,25 @@
+{
+    "name": "ProjectMain",
+    "rootNamespace": "",
+    "references": [
+        "Unity.TextMeshPro",
+        "LlamAcademy.ImpactSystem",
+        "UnityEngine.UI",
+        "Unity.InputSystem",
+        "Cinemachine",
+        "Unity.Behavior",
+        "Unity.Behavior.SerializableGUID",
+        "Unity.AI.Navigation",
+        "Unity.Animation.Rigging",
+        "Unity.RenderPipelines.Universal.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
