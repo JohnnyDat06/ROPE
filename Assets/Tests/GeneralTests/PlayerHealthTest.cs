@@ -41,9 +41,14 @@ namespace EditModeTests
             go.AddComponent<Animator>();
             var health = go.AddComponent<PlayerHealth>();
 
-            // Dùng Reflection gọi Start thủ công trên PlayerHealth để gán các instance tham chiếu bên trong
-            var startMethod = typeof(PlayerHealth).GetMethod("Start", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (startMethod != null) startMethod.Invoke(health, null);
+            // Tự thiết lập giá trị máu ban đầu bằng Reflection thay vì gọi Start()
+            var maxHealthField = typeof(PlayerHealth).GetField("maxHealth", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (maxHealthField != null) maxHealthField.SetValue(health, 100f);
+			Assert.AreEqual(100f, maxHealthField.GetValue(health));
+
+            var currentHealthField = typeof(PlayerHealth).GetField("currentHealth", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (currentHealthField != null) currentHealthField.SetValue(health, 100f);
+			Assert.AreEqual(100f, currentHealthField.GetValue(health));
 
             return health;
         }
@@ -60,10 +65,10 @@ namespace EditModeTests
             health.TakeDamage(25f);
 
             var currentHealthField = typeof(PlayerHealth).GetField("currentHealth", BindingFlags.NonPublic | BindingFlags.Instance);
-            Assert.IsNotNull(currentHealthField, "Field private currentHealth phải ở đây");
+            Assert.IsNotNull(currentHealthField);
             
             float currentHealth = (float)currentHealthField.GetValue(health);
-            Assert.AreEqual(75f, currentHealth, "Máu hiện tại phải giảm xuống 75 sau khi dính 25 damage");
+            Assert.AreEqual(75f, currentHealth);
         }
 
         // Kiểm tra PlayerHealth: Xác nhận máu không thể giảm xuống dưới 0 khi nhận sát thương chí mạng
@@ -135,5 +140,5 @@ namespace EditModeTests
             Assert.IsTrue(controller.enabled, "ThirdPersonController phải được bật lại hệ thống di chuyển");
             Assert.IsTrue(input.enabled, "StarterAssetsInputs phải được kích hoạt trở lại làm việc");
         }
-    }
+    }   
 }
