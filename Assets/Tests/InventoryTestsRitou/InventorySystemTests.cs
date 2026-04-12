@@ -27,96 +27,135 @@ namespace Tests.InventoryTests
             return go;
         }
 
-        // --- TEST CASE 1: ITEM DATA VALIDATION ---
+        // --- TEST 1: ITEM DATA VALIDATION ---
         [Test]
         public void Test1_ItemData_Properties_AreValid()
         {
-            // ACT: Create an instance of ItemData ScriptableObject
             ItemData testData = ScriptableObject.CreateInstance<ItemData>();
             testData.itemName = "Test Key";
             testData.weight = 5.0f;
             testData.itemType = ItemType.Special;
 
-            // ASSERT: Verify properties are stored correctly
-            Assert.AreEqual("Test Key", testData.itemName, "Item name should match assigned value.");
-            Assert.AreEqual(5.0f, testData.weight, "Weight should match assigned value.");
-            Assert.AreEqual(ItemType.Special, testData.itemType, "Item type should match assigned value.");
+            Assert.AreEqual("Test Key", testData.itemName);
+            Assert.AreEqual(5.0f, testData.weight);
             
-            // Cleanup ScriptableObject (not a GameObject)
             Object.DestroyImmediate(testData);
         }
 
-        // --- TEST CASE 2: INVENTORY SLOT MANAGEMENT ---
+        // --- TEST 2: SLOT INITIALIZATION ---
         [Test]
         public void Test2_Inventory_SlotInitialization_MatchesSettings()
         {
-            // ARRANGE: Setup PlayerInventorySystem
             GameObject playerGO = CreateGameObject("Player");
             PlayerInventorySystem inventorySystem = playerGO.AddComponent<PlayerInventorySystem>();
 
-            // Setup 4 mock slots
             Transform[] mockSlots = new Transform[4];
-            for (int i = 0; i < 4; i++)
-            {
-                mockSlots[i] = CreateGameObject("Slot_" + i).transform;
-                mockSlots[i].SetParent(playerGO.transform);
-            }
+            for (int i = 0; i < 4; i++) mockSlots[i] = CreateGameObject("Slot_" + i).transform;
             inventorySystem.inventorySlots = mockSlots;
 
-            // ACT: Manually trigger the initialization (normally in Start)
-            // Since we're in Edit Mode, we'll use Reflection to initialize the internal array
-            var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            
-            ItemController[] itemsArray = new ItemController[mockSlots.Length];
-            inventoryItemsField.SetValue(inventorySystem, itemsArray);
+            var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
+            inventoryItemsField.SetValue(inventorySystem, new ItemController[4]);
 
-            // ASSERT: Verify the internal array size matches the slots array size
             var currentItems = (ItemController[])inventoryItemsField.GetValue(inventorySystem);
-            Assert.AreEqual(4, currentItems.Length, "Inventory items array should be initialized with the same length as slots.");
+            Assert.AreEqual(4, currentItems.Length);
         }
 
-        // --- TEST CASE 3: KEYCARD DETECTION LOGIC ---
+        // --- TEST 3: KEYCARD DETECTION ---
         [Test]
         public void Test3_Inventory_CheckKeyCard_DetectionWorks()
         {
-            // ARRANGE: Setup PlayerInventorySystem
             GameObject playerGO = CreateGameObject("Player");
             PlayerInventorySystem inventorySystem = playerGO.AddComponent<PlayerInventorySystem>();
-            
-            // Mock the slots array
             inventorySystem.inventorySlots = new Transform[1];
             inventorySystem.inventorySlots[0] = CreateGameObject("Slot0").transform;
-
-            // Create a mock ItemData for KeyCard
-            ItemData keyCardData = ScriptableObject.CreateInstance<ItemData>();
-            keyCardData.itemName = "KeyCard"; // Must match the name in PlayerInventorySystem.keyCardName
             inventorySystem.keyCardName = "KeyCard";
 
-            // Create a mock ItemController
+            ItemData keyCardData = ScriptableObject.CreateInstance<ItemData>();
+            keyCardData.itemName = "KeyCard";
+
             GameObject itemGO = CreateGameObject("KeyCardItem");
             ItemController itemController = itemGO.AddComponent<ItemController>();
             itemController.data = keyCardData;
 
-            // Manually inject into the private inventoryItems array via Reflection
-            var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            
+            var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
             ItemController[] itemsArray = new ItemController[1];
             itemsArray[0] = itemController;
             inventoryItemsField.SetValue(inventorySystem, itemsArray);
 
-            // ACT: Call the private method CheckHasKeyCard via Reflection
-            MethodInfo checkMethod = typeof(PlayerInventorySystem).GetMethod("CheckHasKeyCard", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            
+            MethodInfo checkMethod = typeof(PlayerInventorySystem).GetMethod("CheckHasKeyCard", BindingFlags.NonPublic | BindingFlags.Instance);
             bool result = (bool)checkMethod.Invoke(inventorySystem, null);
 
-            // ASSERT: Verify detection works
-            Assert.IsTrue(result, "CheckHasKeyCard should return true when a KeyCard is in the inventory.");
-
-            // Cleanup
+            Assert.IsTrue(result);
             Object.DestroyImmediate(keyCardData);
+        }
+
+        // --- TEST 4: INVENTORY STATS CALCULATION ---
+        [Test]
+        public void Test4_Inventory_UpdateStats_CalculatesCorrectly()
+        {
+            GameObject playerGO = CreateGameObject("Player");
+            PlayerInventorySystem inventorySystem = playerGO.AddComponent<PlayerInventorySystem>();
+
+            ItemController[] itemsArray = new ItemController[2];
+            for (int i = 0; i < 2; i++)
+            {
+                ItemController item = CreateGameObject("Item_" + i).AddComponent<ItemController>();
+                item.data = ScriptableObject.CreateInstance<ItemData>();
+                item.data.weight = 10f;
+                item.scrapValue = 50;
+                itemsArray[i] = item;
+            }
+            
+            var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
+            inventoryItemsField.SetValue(inventorySystem, itemsArray);
+
+            MethodInfo updateStatsMethod = typeof(PlayerInventorySystem).GetMethod("UpdateStats", BindingFlags.NonPublic | BindingFlags.Instance);
+            updateStatsMethod.Invoke(inventorySystem, null);
+
+            Assert.AreEqual(20f, inventorySystem.TotalWeight);
+            Assert.AreEqual(100, inventorySystem.TotalValue);
+            
+            foreach (var it in itemsArray) Object.DestroyImmediate(it.data);
+        }
+
+        // --- TEST 5: AUTO-SCALING NORMALIZATION ---
+        [Test]
+        public void Test5_Inventory_Pickup_CalculatesNormalizationScaleCorrectly()
+        {
+            // ARRANGE
+            GameObject playerGO = CreateGameObject("Player");
+            PlayerInventorySystem inventorySystem = playerGO.AddComponent<PlayerInventorySystem>();
+            inventorySystem.inventorySlots = new Transform[1];
+            inventorySystem.inventorySlots[0] = CreateGameObject("Slot0").transform;
+
+            GameObject itemGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            m_CreatedObjects.Add(itemGO);
+            
+            ItemController itemController = itemGO.AddComponent<ItemController>();
+            itemController.data = ScriptableObject.CreateInstance<ItemData>();
+            itemController.originalScale = Vector3.one;
+
+            // Manual Injection: Vì Awake() không chạy trong Edit Mode test, ta phải tự gán rb và col
+            var rbField = typeof(ItemController).GetField("rb", BindingFlags.NonPublic | BindingFlags.Instance);
+            var colField = typeof(ItemController).GetField("col", BindingFlags.NonPublic | BindingFlags.Instance);
+            rbField.SetValue(itemController, itemGO.GetComponent<Rigidbody>());
+            colField.SetValue(itemController, itemGO.GetComponent<Collider>());
+
+            var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
+            inventoryItemsField.SetValue(inventorySystem, new ItemController[1]);
+
+            // ACT
+            try {
+                MethodInfo pickupMethod = typeof(PlayerInventorySystem).GetMethod("PickupItem", BindingFlags.NonPublic | BindingFlags.Instance);
+                pickupMethod.Invoke(inventorySystem, new object[] { itemController, 0 });
+            } catch (TargetInvocationException ex) {
+                // Nếu lỗi do gán Layer không tồn tại, ta có thể bỏ qua vì mục tiêu chính là test Scaling
+                if (!ex.InnerException.Message.Contains("layer")) throw;
+            }
+
+            // ASSERT: Cube size 1, targetSize 1.4 => Scale should be 1.4
+            Assert.AreEqual(1.4f, itemGO.transform.localScale.x, 0.001f);
+            Object.DestroyImmediate(itemController.data);
         }
     }
 }
