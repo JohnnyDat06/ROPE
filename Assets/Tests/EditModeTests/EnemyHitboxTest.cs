@@ -1,130 +1,124 @@
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace ROPE.Tests
 {
     public class EnemyHitboxTest
     {
-        private readonly System.Collections.Generic.List<Object> m_TestObjects =
-            new System.Collections.Generic.List<Object>();
+        private readonly System.Collections.Generic.List<Object> m_TestObjects = new System.Collections.Generic.List<Object>();
 
-		[SetUp]
-		public void SetUp()
-		{
-			//EventManager.Clear();
-		}
-
-		[TearDown]
-		public void TearDown()
-		{
-			foreach (Object obj in m_TestObjects)
-			{
-				if (obj != null)
-				{
-					Object.DestroyImmediate(obj);
-				}
-			}
-			m_TestObjects.Clear();
-
-			// Dọn dẹp Events
-			//EventManager.Clear();
-		}
-
-		private GameObject CreateTestObject(string name)
-		{
-			var obj = new GameObject(name);
-			m_TestObjects.Add(obj);
-			return obj;
-		}
-
-        private (EnemyHitbox, EnemyHealth) SetupEnemyHitbox(EnemyHitbox.HitboxType type)
+        // Cleanup
+        [TearDown]
+        public void TearDown()
         {
-            // 1. Tạo Enemy
+            foreach (Object obj in m_TestObjects)
+                if (obj != null) Object.DestroyImmediate(obj);
+            m_TestObjects.Clear();
+        }
+
+        private GameObject CreateTestObject(string name)
+        {
+            var obj = new GameObject(name);
+            m_TestObjects.Add(obj);
+            return obj;
+        }
+
+        // Setup
+        private (EnemyHitbox, EnemyHealth) SetupEnemyHitbox(EnemyHitbox.HitboxType type, int maxHealth = 100, int wpMaxHealth = 50)
+        {
             var enemyGo = CreateTestObject("Enemy_Root");
             var health = enemyGo.AddComponent<EnemyHealth>();
-            
-            // Khởi tạo máu qua Reflection
-            health.maxHealth = 100;
-            var onEnableMethod = typeof(EnemyHealth).GetMethod("OnEnable", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (onEnableMethod != null) onEnableMethod.Invoke(health, null);
+            health.maxHealth = maxHealth;
+            health.curentHealth = maxHealth;
 
-            // 2. Tạo Hitbox (Child)
-            var hitboxGo = CreateTestObject("Hitbox_" + type.ToString());
+            var hitboxGo = CreateTestObject($"Hitbox_{type}");
             hitboxGo.transform.SetParent(enemyGo.transform);
             
             var hitbox = hitboxGo.AddComponent<EnemyHitbox>();
             hitbox.MainHealth = health;
             hitbox.Type = type;
+            hitbox.WeakPointMaxHealth = wpMaxHealth;
 
-            // 3. Tạo WeakPoint visual nếu là loại điểm yếu
             if (type == EnemyHitbox.HitboxType.WeakPoint)
             {
                 var wpVisual = CreateTestObject("WeakPoint_Visual");
                 wpVisual.transform.SetParent(hitboxGo.transform);
                 
-                // Gán vào field private 'WeakPoint' qua Reflection
-                var wpField = typeof(EnemyHitbox).GetField("WeakPoint", BindingFlags.NonPublic | BindingFlags.Instance);
-                if (wpField != null) wpField.SetValue(hitbox, wpVisual);
-                
-                hitbox.WeakPointMaxHealth = 50;
-                
-                // Gọi Start() thủ công để khởi tạo máu điểm yếu
-                var startMethod = typeof(EnemyHitbox).GetMethod("Start", BindingFlags.NonPublic | BindingFlags.Instance);
-                if (startMethod != null) startMethod.Invoke(hitbox, null);
+                typeof(EnemyHitbox).GetField("WeakPoint", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(hitbox, wpVisual);
+                typeof(EnemyHitbox).GetField("_currentWeakPointHealth", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(hitbox, wpMaxHealth);
             }
 
             return (hitbox, health);
         }
 
-        // ── Tests ─────────────────────────────────────────────────────
-
-        // 1. Kiểm tra sát thương loại Normal: Sát thương truyền đi phải giữ nguyên tỉ lệ 1:1
-        [Test]
-        public void TestNormalDamageMultiplier()
+        // Test: Kiểm tra tỉ lệ nhân sát thương (Normal x1, Critical x2, x3.5)
+        [TestCase(EnemyHitbox.HitboxType.Normal, 1.0f, 10, 90)]
+        [TestCase(EnemyHitbox.HitboxType.Critical, 2.0f, 10, 80)]
+        [TestCase(EnemyHitbox.HitboxType.Critical, 3.5f, 10, 65)]
+        public void TestDamageMultipliers(EnemyHitbox.HitboxType type, float multiplier, int damage, int expectedHealth)
         {
-            var (hitbox, health) = SetupEnemyHitbox(EnemyHitbox.HitboxType.Normal);
+            var (hitbox, health) = SetupEnemyHitbox(type);
+            hitbox.DamageMultiplier = multiplier;
 
-            // Bắn 10 sát thương vào hitbox thường
-            hitbox.TakeDamage(10);
+            hitbox.TakeDamage(damage);
 
-            // Kiểm tra máu của Enemy qua property 'curentHealth'
-            Assert.AreEqual(90, health.curentHealth, "Sát thương Normal phải trừ đúng 10 máu (100 - 10 = 90)");
+            Assert.AreEqual(expectedHealth, health.curentHealth);
         }
 
-        // 2. Kiểm tra sát thương loại Critical: Sát thương phải được nhân lên theo hệ số DamageMultiplier
+        // Test: Kiểm tra logic phá hủy điểm yếu (ẩn visual và vô hiệu hóa hitbox)
         [Test]
-        public void TestCriticalDamageMultiplier()
+        public void TestWeakPointBreakingLogic()
         {
-            var (hitbox, health) = SetupEnemyHitbox(EnemyHitbox.HitboxType.Critical);
-            hitbox.DamageMultiplier = 2.5f; // Thiết lập hệ số 2.5x
+            var (hitbox, health) = SetupEnemyHitbox(EnemyHitbox.HitboxType.WeakPoint, 100, 50);
+            var wpVisual = (GameObject)typeof(EnemyHitbox).GetField("WeakPoint", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(hitbox);
 
-            // Bắn 10 sát thương
-            hitbox.TakeDamage(10);
-
-            // 10 * 2.5 = 25 damage
-            Assert.AreEqual(75, health.curentHealth, "Sát thương Critical 2.5x phải trừ 25 máu (100 - 25 = 75)");
-        }
-
-        // 3. Kiểm tra logic phá hủy điểm yếu (Weak Point): Phải bật cờ IsBroken và ẩn GameObject visual
-        [Test]
-        public void TestWeakPointBreakingState()
-        {
-            var (hitbox, health) = SetupEnemyHitbox(EnemyHitbox.HitboxType.WeakPoint);
-            
-            // Lấy reference visual object để kiểm tra sau này
-            var wpField = typeof(EnemyHitbox).GetField("WeakPoint", BindingFlags.NonPublic | BindingFlags.Instance);
-            GameObject wpVisual = (GameObject)wpField.GetValue(hitbox);
-
-            // Bắn sát thương bằng đúng máu điểm yếu (50)
             hitbox.TakeDamage(50);
 
-            // Kiểm tra trạng thái
-            Assert.IsTrue(hitbox.IsBroken, "Biến IsBroken phải là true sau khi điểm yếu hết máu");
-            Assert.IsFalse(wpVisual.activeSelf, "GameObject WeakPoint phải bị ẩn đi (SetActive false)");
+            Assert.IsTrue(hitbox.IsBroken);
+            Assert.IsFalse(wpVisual.activeSelf);
+            Assert.IsFalse(hitbox.gameObject.activeSelf);
+        }
+
+        // Test: Kiểm tra sát thương sau khi điểm yếu đã hỏng (phải quay về sát thương Normal)
+        [Test]
+        public void TestWeakPointDamageAfterBroken()
+        {
+            var (hitbox, health) = SetupEnemyHitbox(EnemyHitbox.HitboxType.WeakPoint, 200, 50);
             
-            // Kiểm tra máu Enemy vẫn bị trừ (điểm yếu vẫn tính sát thương cho máu chính)
-            Assert.AreEqual(50, health.curentHealth, "Enemy vẫn phải nhận 50 sát thương vào máu chính");
+            hitbox.TakeDamage(50);
+            Assert.IsTrue(hitbox.IsBroken);
+
+            hitbox.gameObject.SetActive(true); 
+            hitbox.TakeDamage(20);
+
+            Assert.AreEqual(130, health.curentHealth);
+            
+            int wpHealth = (int)typeof(EnemyHitbox).GetField("_currentWeakPointHealth", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(hitbox);
+            Assert.AreEqual(0, wpHealth);
+        }
+
+        // Test: Kiểm tra tính an toàn, không gây crash nếu thiếu MainHealth
+        [Test]
+        public void TestHitboxSafetyWhenHealthIsNull()
+        {
+            var hitbox = CreateTestObject("LoneHitbox").AddComponent<EnemyHitbox>();
+            hitbox.MainHealth = null;
+
+            Assert.DoesNotThrow(() => hitbox.TakeDamage(10));
+        }
+
+        // Test: Kiểm tra sát thương vượt ngưỡng (Overkill) - Máu ghim về 0
+        [Test]
+        public void TestOverkillDamageClampsAtZero()
+        {
+            var (hitbox, health) = SetupEnemyHitbox(EnemyHitbox.HitboxType.Normal, 100);
+            health.curentHealth = 60;
+            
+            hitbox.TakeDamage(80);
+
+            Assert.AreEqual(0, health.curentHealth);
         }
     }
 }
