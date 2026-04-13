@@ -41,7 +41,11 @@ namespace ROPE.Tests
             go.AddComponent<Animator>();
             var health = go.AddComponent<PlayerHealth>();
 
-            // Tự thiết lập giá trị máu ban đầu bằng Reflection thay vì gọi Start()
+            // Gọi hàm Start bằng Reflection để tự động GetComponent()
+            var startMethod = typeof(PlayerHealth).GetMethod("Start", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (startMethod != null) startMethod.Invoke(health, null);
+
+            // Tự thiết lập/đảm bảo giá trị máu ban đầu bằng Reflection theo ý muốn
             var maxHealthField = typeof(PlayerHealth).GetField("maxHealth", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             if (maxHealthField != null) maxHealthField.SetValue(health, 100f);
 			Assert.AreEqual(100f, maxHealthField.GetValue(health));
@@ -49,6 +53,7 @@ namespace ROPE.Tests
             var currentHealthField = typeof(PlayerHealth).GetField("currentHealth", BindingFlags.NonPublic | BindingFlags.Instance);
             if (currentHealthField != null) currentHealthField.SetValue(health, 100f);
 			Assert.AreEqual(100f, currentHealthField.GetValue(health));
+
 
             return health;
         }
