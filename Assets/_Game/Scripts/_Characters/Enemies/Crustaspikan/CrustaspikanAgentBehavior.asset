@@ -160,7 +160,7 @@ MonoBehaviour:
   - rid: 4469460443636695659
   - rid: 3870753746653282479
   - rid: 3870753780033651620
-  m_VersionTimestamp: 639080916063299610
+  m_VersionTimestamp: 639116932750012582
   m_SerializedVersion: 1
   m_DebugInfo: {fileID: -8870629579605175544}
   m_RuntimeGraph: {fileID: 4832491119397321040}
@@ -204,7 +204,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Get Next Waypoint
     Story: 'Get next waypoint from [Manager] and save to [TargetLocation]'
-    RuntimeTypeString: GetWaypointAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    RuntimeTypeString: GetWaypointAction, ProjectMain, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 54054190655209486
@@ -217,7 +217,7 @@ MonoBehaviour:
       Tooltip: 
     - Name: Manager
       Type:
-        m_SerializableType: WaypointManager, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: WaypointManager, ProjectMain, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     - Name: RandomOffset
@@ -229,7 +229,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Move To Position
     Story: 'Move Agent to [TargetPosition]'
-    RuntimeTypeString: MoveToPositionAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    RuntimeTypeString: MoveToPositionAction, ProjectMain, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 12393906174523608576
@@ -247,14 +247,14 @@ MonoBehaviour:
       Tooltip: 
     - Name: MovementComponent
       Type:
-        m_SerializableType: EnemyMovement, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: EnemyMovement, ProjectMain, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     NamedChildren: []
     IsPlaceholder: 0
   - Name: Chase Target
     Story: 'Chase [Target]'
-    RuntimeTypeString: ChaseTargetAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    RuntimeTypeString: ChaseTargetAction, ProjectMain, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 54054253473341632
@@ -272,7 +272,7 @@ MonoBehaviour:
       Tooltip: 
     - Name: MovementComponent
       Type:
-        m_SerializableType: EnemyMovement, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: EnemyMovement, ProjectMain, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     NamedChildren: []
@@ -359,7 +359,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Crustaspikan Skill Selector
     Story: 'Select and execute attack on [Target]'
-    RuntimeTypeString: CrustaspikanSkillSelectorAction, Assembly-CSharp, Version=0.0.0.0,
+    RuntimeTypeString: CrustaspikanSkillSelectorAction, ProjectMain, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 175921861099712
@@ -389,7 +389,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Smooth Stop
     Story: '[Agent] smoothly decelerates to a complete stop'
-    RuntimeTypeString: SmoothStopAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    RuntimeTypeString: SmoothStopAction, ProjectMain, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 175921861099712
@@ -404,7 +404,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Crustaspikan Heavy Move
     Story: Heavy tactical move around [Player] for [Duration] seconds
-    RuntimeTypeString: CrustaspikanHeavyMoveAction, Assembly-CSharp, Version=0.0.0.0,
+    RuntimeTypeString: CrustaspikanHeavyMoveAction, ProjectMain, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 16861652926736236736
@@ -434,7 +434,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Crustaspikan Heavy Chase
     Story: 'Heavy chase [Target] stopping at [IdealRange]'
-    RuntimeTypeString: CrustaspikanHeavyChaseAction, Assembly-CSharp, Version=0.0.0.0,
+    RuntimeTypeString: CrustaspikanHeavyChaseAction, ProjectMain, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 11533331617603518656
@@ -459,7 +459,7 @@ MonoBehaviour:
   m_SubgraphsInfo: []
   m_BlackboardMissingManagedRef: 0
   m_GraphMissingManagedRef: 0
-  m_HasMissingTypeInManagedRef: 0
+  m_HasMissingTypeInManagedRef: 1
   references:
     version: 2
     RefIds:

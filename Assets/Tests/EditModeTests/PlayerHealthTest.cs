@@ -4,7 +4,7 @@ using UnityEngine;
 using StarterAssets;
 using DatScript;
 
-namespace EditModeTests
+namespace ROPE.Tests
 {
     public class PlayerHealthTest
     {

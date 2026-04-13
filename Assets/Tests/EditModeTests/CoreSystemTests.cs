@@ -3,9 +3,9 @@ using NUnit.Framework;
 using UnityEngine;
 using DatScript; // Namespace cho Checkpoint và GameManager
 
-namespace Tests.GeneralTests
+namespace ROPE.Tests
 {
-    public class GeneralTests
+    public class CoreSystemTests
     {
         // --- TEST CASE 1: KIỂM TRA DỮ LIỆU VẬT PHẨM ---
         [Test]

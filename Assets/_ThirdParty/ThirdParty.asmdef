@@ -1,18 +1,13 @@
 {
-    "name": "ProjectMain",
+    "name": "ThirdParty",
     "rootNamespace": "",
     "references": [
-        "ThirdParty",
-        "Unity.TextMeshPro",
-        "LlamAcademy.ImpactSystem",
-        "UnityEngine.UI",
         "Unity.InputSystem",
-        "Cinemachine",
-        "Unity.Behavior",
-        "Unity.Behavior.SerializableGUID",
-        "Unity.AI.Navigation",
-        "Unity.Animation.Rigging",
         "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.TextMeshPro",
+        "Cinemachine",
+        "UnityEngine.UI",
+        "Unity.Animation.Rigging",
         "Unity.RenderPipelines.Core.Runtime"
     ],
     "includePlatforms": [],

@@ -2,7 +2,7 @@ using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace EditModeTests
+namespace ROPE.Tests
 {
     public class WeaponTest
     {

@@ -1,10 +1,11 @@
 {
-    "name": "InventoryTests",
+    "name": "EditModeTests",
     "rootNamespace": "",
     "references": [
+        "ProjectMain",
+        "ThirdParty",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "ProjectMain"
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [
         "Editor"

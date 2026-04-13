@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Tests.InventoryTests
+namespace ROPE.Tests
 {
     public class InventorySystemTests
     {

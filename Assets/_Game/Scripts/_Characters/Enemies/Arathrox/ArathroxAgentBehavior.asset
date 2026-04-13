@@ -231,7 +231,7 @@ MonoBehaviour:
   - rid: 4469460417986167189
   - rid: 4469460417986167805
   - rid: 4469460418035974603
-  m_VersionTimestamp: 639078305351684012
+  m_VersionTimestamp: 639116932743270095
   m_SerializedVersion: 1
   m_DebugInfo: {fileID: -8870629579605175544}
   m_RuntimeGraph: {fileID: 4832491119397321040}
@@ -275,7 +275,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Get Next Waypoint
     Story: 'Get next waypoint from [Manager] and save to [TargetLocation]'
-    RuntimeTypeString: GetWaypointAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    RuntimeTypeString: GetWaypointAction, ProjectMain, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 54054190655209486
@@ -288,7 +288,7 @@ MonoBehaviour:
       Tooltip: 
     - Name: Manager
       Type:
-        m_SerializableType: WaypointManager, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: WaypointManager, ProjectMain, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     - Name: RandomOffset
@@ -300,7 +300,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Move To Position
     Story: 'Move Agent to [TargetPosition]'
-    RuntimeTypeString: MoveToPositionAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    RuntimeTypeString: MoveToPositionAction, ProjectMain, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 12393906174523608576
@@ -318,14 +318,14 @@ MonoBehaviour:
       Tooltip: 
     - Name: MovementComponent
       Type:
-        m_SerializableType: EnemyMovement, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: EnemyMovement, ProjectMain, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     NamedChildren: []
     IsPlaceholder: 0
   - Name: Chase Target
     Story: 'Chase [Target]'
-    RuntimeTypeString: ChaseTargetAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    RuntimeTypeString: ChaseTargetAction, ProjectMain, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 54054253473341632
@@ -343,7 +343,7 @@ MonoBehaviour:
       Tooltip: 
     - Name: MovementComponent
       Type:
-        m_SerializableType: EnemyMovement, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: EnemyMovement, ProjectMain, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     NamedChildren: []
@@ -370,7 +370,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Arathrox Tactical Move
     Story: Tactical move around [Player] for [Duration] seconds
-    RuntimeTypeString: ArathroxTacticalMove, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    RuntimeTypeString: ArathroxTacticalMove, ProjectMain, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 14555823111661461664
@@ -545,7 +545,7 @@ MonoBehaviour:
   m_SubgraphsInfo: []
   m_BlackboardMissingManagedRef: 0
   m_GraphMissingManagedRef: 0
-  m_HasMissingTypeInManagedRef: 0
+  m_HasMissingTypeInManagedRef: 1
   references:
     version: 2
     RefIds:

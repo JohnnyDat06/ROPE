@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using StarterAssets;
 
-namespace EditModeTests
+namespace ROPE.Tests
 {
     public class PlayerMovementTest
     {
