@@ -108,7 +108,7 @@ namespace Tests.PlayModeTests
         public IEnumerator Test4_Inventory_PickupItem_SetsParentAndState()
         {
             GameObject itemGO = new GameObject("PickupItem");
-            itemGO.AddComponent<BoxCollider>(); // KHẮC PHỤC LỖI MISSING COMPONENTx
+            itemGO.AddComponent<BoxCollider>(); // KHẮC PHỤC LỖI MISSING COMPONENT
             ItemController item = itemGO.AddComponent<ItemController>();
             item.data = ScriptableObject.CreateInstance<ItemData>();
 

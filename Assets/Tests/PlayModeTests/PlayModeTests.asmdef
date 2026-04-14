@@ -3,10 +3,9 @@
     "rootNamespace": "Tests.PlayModeTests",
     "references": [
         "ProjectMain",
+        "ThirdParty",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Unity.InputSystem",
-        "Unity.Animation.Rigging"
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
