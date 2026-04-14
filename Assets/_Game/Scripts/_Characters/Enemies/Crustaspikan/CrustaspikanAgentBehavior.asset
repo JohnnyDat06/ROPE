@@ -160,7 +160,7 @@ MonoBehaviour:
   - rid: 4469460443636695659
   - rid: 3870753746653282479
   - rid: 3870753780033651620
-  m_VersionTimestamp: 639116932750012582
+  m_VersionTimestamp: 639117991323935857
   m_SerializedVersion: 1
   m_DebugInfo: {fileID: -8870629579605175544}
   m_RuntimeGraph: {fileID: 4832491119397321040}
@@ -458,7 +458,7 @@ MonoBehaviour:
     m_Commands: []
   m_SubgraphsInfo: []
   m_BlackboardMissingManagedRef: 0
-  m_GraphMissingManagedRef: 0
+  m_GraphMissingManagedRef: 1
   m_HasMissingTypeInManagedRef: 1
   references:
     version: 2
