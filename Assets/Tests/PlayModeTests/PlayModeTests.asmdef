@@ -4,6 +4,7 @@
     "references": [
         "ProjectMain",
         "ThirdParty",
+        "Unity.Behavior",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
