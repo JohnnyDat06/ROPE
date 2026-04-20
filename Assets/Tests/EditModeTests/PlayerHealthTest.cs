@@ -62,7 +62,7 @@ namespace ROPE.Tests
 
         // Kiểm tra PlayerHealth: Xác nhận người chơi nhận sát thương và property máu giảm chính xác.
         [Test]
-        public void TestTakeDamageReducesHealth()
+        public void TakeDamageReducesHealth()
         {
             var health = SetupPlayerHealth();
             
@@ -79,7 +79,7 @@ namespace ROPE.Tests
         // Kiểm tra PlayerHealth: Xác nhận máu không thể giảm xuống dưới 0 khi nhận sát thương chí mạng
         // phần phụ kiện điều khiển của người chơi cũng bị tắt.
         [Test]
-        public void TestTakeDamageBelowZeroTriggersDeathStateAndClampsHealth()
+        public void TakeDamageLethalTriggersDeath()
         {
             var health = SetupPlayerHealth();
             var go = health.gameObject;
@@ -104,7 +104,7 @@ namespace ROPE.Tests
 
         // Kiểm tra PlayerHealth: Hàm Heal có chức năng tăng máu nhưng ghim lại không cho vượt trần maxHealth.
         [Test]
-        public void TestHealIncreasesHealthButRestrictsToMax()
+        public void HealClampsToMaxHealth()
         {
             var health = SetupPlayerHealth();
             
@@ -124,7 +124,7 @@ namespace ROPE.Tests
 
         // Kiểm tra PlayerHealth: Hàm ResetHealth phục hồi trạng thái sống cùng toàn quyền di chuyển.
         [Test]
-        public void TestResetHealthRestoresComponentsAndHealth()
+        public void ResetHealthRestoresState()
         {
             var health = SetupPlayerHealth();
             var go = health.gameObject;
@@ -144,6 +144,28 @@ namespace ROPE.Tests
             
             Assert.IsTrue(controller.enabled, "ThirdPersonController phải được bật lại hệ thống di chuyển");
             Assert.IsTrue(input.enabled, "StarterAssetsInputs phải được kích hoạt trở lại làm việc");
+        }
+        // Kiểm tra PlayerHealth: Nhận sát thương không gây chết sẽ reset các input di chuyển và hành động
+        // (Ngắt ngắm bắn, ngắt phím chạy, dừng việc bấm phím di chuyển).
+        [Test]
+        public void TakeDamageNonLethalResetsInput()
+        {
+            var health = SetupPlayerHealth();
+            var go = health.gameObject;
+            var input = go.GetComponent<StarterAssetsInputs>();
+
+            // 1. Giả lập người chơi đang vừa chạy, vừa bắn chéo và bấm phím di chuyển
+            input.shoot = true;
+            input.sprint = true;
+            input.move = new Vector2(1f, 1f);
+
+            // 2. Nhận sát thương xước xát (10 damage, chưa chết)
+            health.TakeDamage(10f);
+
+            // 3. Kiểm tra các flags input xem đã được ép dừng lại chưa
+            Assert.IsFalse(input.shoot, "Khi bị thương, biến shoot phải được ngắt (bằng false)");
+            Assert.IsFalse(input.sprint, "Khi bị thương, biến sprint của người chơi phải dừng lại (bằng false)");
+            Assert.AreEqual(Vector2.zero, input.move, "Khi bị thương, di chuyển phải bị reset về Vector2.zero");
         }
     }   
 }
