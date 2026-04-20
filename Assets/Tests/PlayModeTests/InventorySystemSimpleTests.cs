@@ -15,16 +15,13 @@ namespace Tests.PlayModeTests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            // 1. Setup Camera (Required for PlayerInventorySystem to not fail in Start/Update)
             m_MainCam = new GameObject("MainCamera");
             m_MainCam.tag = "MainCamera";
             m_MainCam.AddComponent<Camera>();
 
-            // 2. Setup Player and Inventory
             m_Player = new GameObject("Player");
             m_Inventory = m_Player.AddComponent<PlayerInventorySystem>();
 
-            // 3. Setup 4 slots
             m_Inventory.inventorySlots = new Transform[4];
             for (int i = 0; i < 4; i++)
             {
@@ -32,7 +29,7 @@ namespace Tests.PlayModeTests
                 m_Inventory.inventorySlots[i].SetParent(m_Player.transform);
             }
 
-            yield return null; // Wait 1 frame for Start() to initialize internal arrays
+            yield return null; 
         }
 
         [UnityTearDown]
@@ -60,7 +57,6 @@ namespace Tests.PlayModeTests
             var field = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
             ItemController[] items = (ItemController[])field.GetValue(m_Inventory);
 
-            // Làm đầy tất cả các ô
             for (int i = 0; i < items.Length; i++)
             {
                 GameObject go = new GameObject("Item_" + i);
@@ -72,7 +68,7 @@ namespace Tests.PlayModeTests
 
             Assert.AreEqual(-1, result, "Khi túi đầy, GetEmptySlot phải trả về -1");
 
-            // Cleanup
+            
             foreach (var item in items) Object.Destroy(item.gameObject);
             yield return null;
         }
@@ -84,12 +80,11 @@ namespace Tests.PlayModeTests
             var field = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
             ItemController[] items = (ItemController[])field.GetValue(m_Inventory);
 
-            // Thêm 3 vật phẩm vào túi
             for (int i = 0; i < 3; i++)
             {
                 GameObject go = new GameObject("Item_" + i);
                 ItemController ic = go.AddComponent<ItemController>();
-                ic.data = ScriptableObject.CreateInstance<ItemData>(); // Fix NullReference
+                ic.data = ScriptableObject.CreateInstance<ItemData>(); 
                 items[i] = ic;
             }
 
@@ -98,7 +93,6 @@ namespace Tests.PlayModeTests
 
             Assert.AreEqual(3, m_Inventory.TotalItemCount, "Tổng số lượng vật phẩm phải là 3");
 
-            // Cleanup
             for (int i = 0; i < 3; i++) 
             {
                 Object.Destroy(items[i].data);
@@ -114,7 +108,6 @@ namespace Tests.PlayModeTests
             var field = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
             ItemController[] items = (ItemController[])field.GetValue(m_Inventory);
 
-            // Item 1: Weight 5.5, Value 100
             GameObject go1 = new GameObject("Item1");
             ItemController ic1 = go1.AddComponent<ItemController>();
             ic1.data = ScriptableObject.CreateInstance<ItemData>();
@@ -122,7 +115,6 @@ namespace Tests.PlayModeTests
             ic1.scrapValue = 100;
             items[0] = ic1;
 
-            // Item 2: Weight 2.0, Value 50
             GameObject go2 = new GameObject("Item2");
             ItemController ic2 = go2.AddComponent<ItemController>();
             ic2.data = ScriptableObject.CreateInstance<ItemData>();
@@ -148,7 +140,6 @@ namespace Tests.PlayModeTests
             var field = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
             ItemController[] items = (ItemController[])field.GetValue(m_Inventory);
 
-            // Thêm một vật phẩm không phải KeyCard
             GameObject go = new GameObject("NotAKeyCard");
             ItemController ic = go.AddComponent<ItemController>();
             ic.data = ScriptableObject.CreateInstance<ItemData>();

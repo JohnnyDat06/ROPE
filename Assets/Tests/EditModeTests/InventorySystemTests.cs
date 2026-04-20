@@ -28,11 +28,10 @@ namespace ROPE.Tests
             return go;
         }
 
-        // --- TEST 1: ITEM DATA VALIDATION (Dữ liệu thật) ---
+        // --- TEST 1: ITEM DATA VALIDATION ---
         [Test]
         public void Test1_ItemData_Properties_AreValid()
         {
-            // Sử dụng dữ liệu thật từ Asset thay vì CreateInstance giả
             ItemData testData = AssetDatabase.LoadAssetAtPath<ItemData>(assetPath + "Data_Bolt.asset");
             
             Assert.IsNotNull(testData, "Không tìm thấy file Data_Bolt.asset");
@@ -52,7 +51,6 @@ namespace ROPE.Tests
             slots[1] = CreateGameObject("Slot_1").transform;
             inventorySystem.inventorySlots = slots;
 
-            // Gọi Start qua Reflection để khởi tạo mảng inventoryItems thật
             inventorySystem.GetType().GetMethod("Start", BindingFlags.NonPublic | BindingFlags.Instance)?.Invoke(inventorySystem, null);
 
             var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -69,15 +67,12 @@ namespace ROPE.Tests
             PlayerInventorySystem inventorySystem = playerGO.AddComponent<PlayerInventorySystem>();
             inventorySystem.inventorySlots = new[] { CreateGameObject("Slot0").transform };
             inventorySystem.keyCardName = "KeyCard";
-
-            // Load KeyCard thật (God.asset)
             ItemData keyCardData = AssetDatabase.LoadAssetAtPath<ItemData>(assetPath + "God.asset");
 
             GameObject itemGO = CreateGameObject("KeyCardItem");
             ItemController itemController = itemGO.AddComponent<ItemController>();
             itemController.data = keyCardData;
 
-            // Inject vào hệ thống
             var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
             inventoryItemsField.SetValue(inventorySystem, new[] { itemController });
 
@@ -98,7 +93,7 @@ namespace ROPE.Tests
             
             ItemController item = CreateGameObject("Item").AddComponent<ItemController>();
             item.data = realData;
-            item.scrapValue = 50; // Giá trị trong dải của IronLarge (50-71)
+            item.scrapValue = 50;
             
             var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
             inventoryItemsField.SetValue(inventorySystem, new[] { item });
@@ -126,14 +121,11 @@ namespace ROPE.Tests
             ItemController itemController = itemGO.AddComponent<ItemController>();
             itemController.data = realData;
 
-            // Khởi tạo mảng inventoryItems (vì Start() không tự chạy trong EditMode)
             var inventoryItemsField = typeof(PlayerInventorySystem).GetField("inventoryItems", BindingFlags.NonPublic | BindingFlags.Instance);
             inventoryItemsField.SetValue(inventorySystem, new ItemController[1]);
 
-            // Khởi tạo item (gọi Awake thật)
             itemController.GetType().GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance)?.Invoke(itemController, null);
 
-            // Thực hiện Pickup thật
             MethodInfo pickupMethod = typeof(PlayerInventorySystem).GetMethod("PickupItem", BindingFlags.NonPublic | BindingFlags.Instance);
             pickupMethod.Invoke(inventorySystem, new object[] { itemController, 0 });
 
